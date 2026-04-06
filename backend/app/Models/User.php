@@ -111,9 +111,10 @@ class User extends Authenticatable
 
     public function roles(): BelongsToMany
     {
+        // No withTimestamps() — user_roles uses assigned_at instead of
+        // standard created_at/updated_at columns.
         return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id')
-                    ->withPivot('assigned_by', 'assigned_at')
-                    ->withTimestamps();
+                    ->withPivot('assigned_by', 'assigned_at');
     }
 
     public function quizAttempts(): HasMany

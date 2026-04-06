@@ -52,12 +52,14 @@ class Role extends Model
      */
     public function controls(): BelongsToMany
     {
+        // No withTimestamps() — role_controls does not have
+        // standard created_at/updated_at columns.
         return $this->belongsToMany(
             ModuleControl::class,
             'role_controls',
             'role_id',
             'control_id'
-        )->withPivot('granted_by')->withTimestamps();
+        )->withPivot('granted_by');
     }
 
     // ─── Helpers ───────────────────────────────────────────────────

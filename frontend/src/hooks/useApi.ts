@@ -16,8 +16,8 @@ interface UseApiOptions {
   onError?: (error: string) => void;
 }
 
-export function useApi<T = any, P = any>(
-  apiFunction: (params?: P) => Promise<T>,
+export function useApi<T = any, P extends any[] = any[]>(
+  apiFunction: (...args: P) => Promise<T>,
   options: UseApiOptions = {}
 ) {
   const [state, setState] = useState<UseApiState<T>>({
@@ -27,11 +27,11 @@ export function useApi<T = any, P = any>(
   });
 
   const execute = useCallback(
-    async (params?: P): Promise<T | null> => {
+    async (...args: P): Promise<T | null> => {
       setState(prev => ({ ...prev, loading: true, error: null }));
       
       try {
-        const data = await apiFunction(params);
+        const data = await apiFunction(...args);
         
         setState({
           data,

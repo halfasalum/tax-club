@@ -1,15 +1,9 @@
 // src/api/services/userService.ts
 import { BaseService } from '../baseService';
 
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: 'user' | 'admin';
-  avatar?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import type { User } from './authService';
+
+export type { User };
 
 export interface UpdateUserRequest {
   name?: string;
@@ -18,11 +12,11 @@ export interface UpdateUserRequest {
 }
 
 class UserService extends BaseService {
-  async getUsers(params?: { page?: number; limit?: number }): Promise<{
-    users: User[];
+  async getUsers(params?: { page?: number; limit?: number; search?: string }): Promise<{
+    data: User[];
     total: number;
-    page: number;
-    totalPages: number;
+    current_page: number;
+    last_page: number;
   }> {
     return this.get('/users', { params });
   }

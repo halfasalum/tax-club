@@ -1,71 +1,42 @@
 // src/layouts/MainLayout.tsx
-import type { ReactNode } from 'react';
-import { Outlet } from 'react-router-dom';
-import { 
-  AppShell, 
-  Burger, 
-  NavLink, 
-  Group, 
-  Avatar, 
-  Menu, 
-  Text, 
-  UnstyledButton,
-  useMantineTheme,
-  useMantineColorScheme,
-  Switch
-} from '@mantine/core';
+import { AppShell, Burger, Group, Avatar, Menu, Text, UnstyledButton, useMantineColorScheme, Switch, Box } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { 
-  IconHome, 
-  IconUser, 
-  IconSettings, 
-  IconLogout, 
-  IconMoon, 
-  IconSun,
-  IconDashboard
-} from '@tabler/icons-react';
+import { IconMoon, IconSun, IconLogout, IconUser, IconSettings } from '@tabler/icons-react';
 import { Logo } from '../components/common/Logo';
+import { SidebarNav } from '../components/navigation/SidebarNav';
+import { useAuth } from '../hooks/useAuth';
+import { Outlet, useNavigate } from 'react-router-dom';
 
-interface MainLayoutProps {
-  children?: ReactNode;
-  activePath?: string;
-}
-
-export const MainLayout = ({ children, activePath = '/' }: MainLayoutProps) => {
+export const MainLayout = () => {
   const [opened, { toggle }] = useDisclosure();
-  const theme = useMantineTheme();
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const isDark = colorScheme === 'dark';
 
-  const navItems = [
-    { label: 'Dashboard', icon: IconDashboard, to: '/dashboard' },
-    { label: 'Profile', icon: IconUser, to: '/profile' },
-    { label: 'Settings', icon: IconSettings, to: '/settings' },
-  ];
+  const handleLogout = async () => {
+    await logout();
+    navigate('/auth/signin');
+  };
 
   return (
     <AppShell
       header={{ height: 60 }}
       navbar={{
-        width: 300,
+        width: 280,
         breakpoint: 'sm',
         collapsed: { mobile: !opened },
       }}
       padding="md"
-      style={{
-        background: isDark ? theme.colors.dark[8] : theme.colors.gray[0],
-      }}
     >
-      {/* Header */}
       <AppShell.Header>
         <Group h="100%" px="md" justify="space-between">
           <Group>
             <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-            <Logo size="sm" />
+            <Logo />
           </Group>
 
           <Group>
-            {/* Theme Toggle */}
             <Switch
               checked={colorScheme === 'dark'}
               onChange={() => toggleColorScheme()}
@@ -74,21 +45,15 @@ export const MainLayout = ({ children, activePath = '/' }: MainLayoutProps) => {
               offLabel={<IconMoon size={16} />}
             />
 
-            {/* User Menu */}
             <Menu shadow="md" width={200}>
               <Menu.Target>
                 <UnstyledButton>
                   <Group gap={7}>
-                    <Avatar 
-                      src={null} 
-                      alt="User" 
-                      radius="xl" 
-                      color={isDark ? 'blue' : 'indigo'}
-                    >
-                      JD
+                    <Avatar radius="xl" color="indigo">
+                      {user?.full_name?.charAt(0)}
                     </Avatar>
                     <Text size="sm" fw={500} visibleFrom="sm">
-                      John Doe
+                      {user?.full_name?.split(' ')[0]}
                     </Text>
                   </Group>
                 </UnstyledButton>
@@ -96,16 +61,23 @@ export const MainLayout = ({ children, activePath = '/' }: MainLayoutProps) => {
 
               <Menu.Dropdown>
                 <Menu.Label>Account</Menu.Label>
-                <Menu.Item leftSection={<IconUser size={14} />}>
+                <Menu.Item 
+                  leftSection={<IconUser size={14} />}
+                  onClick={() => navigate('/profile')}
+                >
                   Profile
                 </Menu.Item>
-                <Menu.Item leftSection={<IconSettings size={14} />}>
+                <Menu.Item 
+                  leftSection={<IconSettings size={14} />}
+                  onClick={() => navigate('/settings')}
+                >
                   Settings
                 </Menu.Item>
                 <Menu.Divider />
                 <Menu.Item 
                   leftSection={<IconLogout size={14} />} 
                   color="red"
+                  onClick={handleLogout}
                 >
                   Logout
                 </Menu.Item>
@@ -115,24 +87,12 @@ export const MainLayout = ({ children, activePath = '/' }: MainLayoutProps) => {
         </Group>
       </AppShell.Header>
 
-      {/* Sidebar Navigation */}
       <AppShell.Navbar p="md">
-        {navItems.map((item) => (
-          <NavLink
-            key={item.to}
-            label={item.label}
-            leftSection={<item.icon size={20} />}
-            active={activePath === item.to}
-            href={item.to}
-            variant="subtle"
-            style={{ marginBottom: 4 }}
-          />
-        ))}
+        <SidebarNav />
       </AppShell.Navbar>
 
-      {/* Main Content */}
       <AppShell.Main>
-        {children || <Outlet />}
+        <Outlet />
       </AppShell.Main>
     </AppShell>
   );

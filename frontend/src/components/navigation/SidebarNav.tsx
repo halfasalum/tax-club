@@ -17,7 +17,8 @@ import {
     IconSchool,
     IconVideo,
     IconArticle,
-    IconChartBar
+    IconChartBar,
+    IconPlus
 } from '@tabler/icons-react';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -71,19 +72,18 @@ export const SidebarNav = () => {
             to: '/content',
             permission: 'upload_content',
             children: [
-                { label: 'All Content', icon: IconVideo, to: '/content', permission: 'upload_content' },
-                { label: 'Upload Content', icon: IconArticle, to: '/content/create', permission: 'upload_content' },
+                { label: 'All Content', icon: IconArticle, to: '/content', permission: 'upload_content' },
+                { label: 'Upload Content', icon: IconPlus, to: '/content/create', permission: 'upload_content' },
             ],
         },
         {
-            label: 'Quizzes',
-            icon: IconFileText,
+            label: 'Quiz Management',
+            icon: IconCertificate,
             to: '/quizzes',
             permission: 'create_quiz',
             children: [
-                { label: 'All Quizzes', icon: IconFileText, to: '/quizzes', permission: 'view_results' },
-                { label: 'Create Quiz', icon: IconCertificate, to: '/quizzes/create', permission: 'create_quiz' },
-                { label: 'Results', icon: IconChartBar, to: '/quizzes/results', permission: 'view_results' },
+                { label: 'All Quizzes', icon: IconListCheck, to: '/quizzes', permission: 'view_quizzes' },
+                { label: 'Create Quiz', icon: IconPlus, to: '/quizzes/create', permission: 'create_quiz' },
             ],
         },
         {

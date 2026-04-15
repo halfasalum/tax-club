@@ -48,6 +48,9 @@ Route::prefix('auth')->group(function () {
 Route::get('institutions', [InstitutionController::class, 'index']);
 Route::get('institutions/{id}', [InstitutionController::class, 'show']);
 
+// Global Leaderboard
+Route::get('/leaderboard', [QuizController::class, 'globalLeaderboard']);
+
 // ──────────────────────────────────────────────────────────────
 //  AUTHENTICATED ROUTES (auth:sanctum)
 // ──────────────────────────────────────────────────────────────
@@ -64,6 +67,60 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // ── Dashboard ─────────────────────────────────────────────
     Route::get('dashboard', [DashboardController::class, 'index']);
+
+    Route::get('', [DashboardController::class, '']);
+    // ── Quizzes ───────────────────────────────────────────────
+    Route::prefix('quizzes')->group(function () {
+        // Public routes
+        Route::get('/', [QuizController::class, 'index']);
+        Route::get('/my-attempts', [QuizController::class, 'myAttempts']);
+        Route::get('/{id}', [QuizController::class, 'show']);
+        Route::get('/{id}/questions', [QuizController::class, 'questions']);
+        Route::get('/{id}/manage-questions', [QuizController::class, 'manageQuestions'])
+            ->middleware('permission:edit_quiz');
+        Route::get('/{id}/leaderboard', [QuizController::class, 'leaderboard']);
+        Route::post('/{id}/submit', [QuizController::class, 'submitQuiz']);
+        Route::get('/{id}/my-attempts', [QuizController::class, 'myQuizAttempts']);
+        Route::get('/{id}/attempt/{attemptId}/results', [QuizController::class, 'attemptResults']);
+
+        // Admin routes (require permissions)
+        Route::post('/', [QuizController::class, 'store'])
+            ->middleware('permission:create_quiz');
+
+        Route::put('/{id}', [QuizController::class, 'update'])
+            ->middleware('permission:edit_quiz');
+
+        Route::delete('/{id}', [QuizController::class, 'destroy'])
+            ->middleware('permission:delete_quiz');
+
+        Route::patch('/{id}/toggle', [QuizController::class, 'toggle'])
+            ->middleware('permission:edit_quiz');
+
+        // Question management
+        Route::post('/{id}/questions', [QuizController::class, 'addQuestion'])
+            ->middleware('permission:edit_quiz');
+
+        Route::put('/questions/{questionId}', [QuizController::class, 'updateQuestion'])
+            ->middleware('permission:edit_quiz');
+
+        Route::delete('/questions/{questionId}', [QuizController::class, 'deleteQuestion'])
+            ->middleware('permission:edit_quiz');
+
+        // Answer management
+        Route::post('/questions/{questionId}/answers', [QuizController::class, 'addAnswer'])
+            ->middleware('permission:edit_quiz');
+
+        Route::put('/answers/{answerId}', [QuizController::class, 'updateAnswer'])
+            ->middleware('permission:edit_quiz');
+
+        Route::delete('/answers/{answerId}', [QuizController::class, 'deleteAnswer'])
+            ->middleware('permission:edit_quiz');
+
+        // Reorder questions
+        Route::post('/reorder-questions', [QuizController::class, 'reorderQuestions'])
+            ->middleware('permission:edit_quiz');
+    });
+
 
     // ── Users ─────────────────────────────────────────────────
     Route::prefix('users')->group(function () {
@@ -175,26 +232,7 @@ Route::middleware('auth:sanctum')->group(function () {
             ->middleware('permission:edit_content');
     });
 
-    // ── Quizzes ───────────────────────────────────────────────
-    Route::prefix('quizzes')->group(function () {
-        Route::get('/',         [QuizController::class, 'index']);          // all auth users
-        Route::get('/my-attempts', [QuizController::class, 'myAttempts']); // own history
 
-        Route::post('/',        [QuizController::class, 'store'])
-            ->middleware('permission:create_quiz');
-
-        Route::get('/{id}',     [QuizController::class, 'show']);           // all auth users
-        Route::get('/{id}/leaderboard', [QuizController::class, 'leaderboard']); // all auth users
-
-        Route::put('/{id}',     [QuizController::class, 'update'])
-            ->middleware('permission:edit_quiz');
-
-        Route::delete('/{id}',  [QuizController::class, 'destroy'])
-            ->middleware('permission:delete_quiz');
-
-        Route::post('/{id}/attempts',  [QuizController::class, 'submitAttempt']); // all auth
-        Route::get('/{id}/attempts',   [QuizController::class, 'attempts']);      // all auth
-    });
 
     // ── Opportunities ─────────────────────────────────────────
     Route::prefix('opportunities')->group(function () {
@@ -255,5 +293,4 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{contentId}',  [UserProgressController::class, 'show']);
         Route::post('/',            [UserProgressController::class, 'upsert']);
     });
-
 });

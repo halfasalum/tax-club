@@ -65,7 +65,7 @@ class UserController extends BaseController
             'user_type'      => 'required|in:secondary,college,university,alumni',
             'institution_id' => 'nullable|uuid|exists:institutions,institution_id',
             'role_ids'       => 'nullable|array',
-            'role_ids.*'     => 'uuid|exists:roles,role_id',
+            'role_ids.*'     => 'nullable|uuid|exists:roles,role_id',
         ]);
 
         if ($validator->fails()) {

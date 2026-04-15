@@ -15,6 +15,8 @@ import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import { ModulesList } from './pages/modules/ModulesList';
 import { InstitutionsList } from './pages/institutions/InstitutionsList';
+import { ContentList } from './pages/content/ContentList';
+import { QuizList } from './pages/quiz/QuizList';
 
 function App() {
   return (
@@ -37,11 +39,18 @@ function App() {
               </ProtectedRoute>
             }
           >
+            <Route path="content" element={<ContentList />} />
+            <Route path="content/create" element={<ContentList />} />
             <Route path="modules" element={<ModulesList />} />
             <Route path="modules/create" element={<ModulesList />} />
             <Route path="institutions" element={<InstitutionsList />} />
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
+
+            <Route path="quizzes" element={<QuizList />} />
+            <Route path="quizzes/create" element={<QuizList />} />
+            <Route path="quizzes/results" element={<QuizList />} />
+
             <Route path="users" element={<UsersList />} />
             <Route path="users/create" element={<div>Create User Page</div>} />
             <Route path="users/:id/edit" element={<div>Edit User Page</div>} />

@@ -6,6 +6,7 @@ import { Notifications } from '@mantine/notifications';
 import App from './App';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
+import '@mantine/tiptap/styles.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

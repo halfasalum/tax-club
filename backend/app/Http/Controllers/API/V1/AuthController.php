@@ -39,7 +39,7 @@ class AuthController extends BaseController
             'user_type'      => $request->user_type,
             'institution_id' => $request->institution_id,
             'membership_id'  => strtoupper('TRA-' . Str::random(8)),
-            'is_verified'    => false,
+            'is_verified'    => true,
         ]);
 
         // Auto-assign default role

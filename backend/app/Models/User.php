@@ -80,7 +80,7 @@ class User extends Authenticatable
             ->where('roles.is_active', true)
             ->whereHas('controls', function ($query) use ($controlSlug) {
                 $query->where('slug', $controlSlug)
-                      ->where('module_controls.is_active', true);
+                    ->where('module_controls.is_active', true);
             })->exists();
     }
 
@@ -114,7 +114,7 @@ class User extends Authenticatable
         // No withTimestamps() — user_roles uses assigned_at instead of
         // standard created_at/updated_at columns.
         return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id')
-                    ->withPivot('assigned_by', 'assigned_at');
+            ->withPivot('assigned_by', 'assigned_at');
     }
 
     public function quizAttempts(): HasMany
@@ -135,7 +135,7 @@ class User extends Authenticatable
     public function events(): BelongsToMany
     {
         return $this->belongsToMany(Event::class, 'event_registrations', 'user_id', 'event_id')
-                    ->withPivot('status', 'registered_at');
+            ->withPivot('status', 'registered_at');
     }
 
     public function uploadedContent(): HasMany
@@ -146,5 +146,42 @@ class User extends Authenticatable
     public function postedOpportunities(): HasMany
     {
         return $this->hasMany(Opportunity::class, 'posted_by', 'user_id');
+    }
+
+    // app/Models/User.php - Add these methods
+
+    public function addPoints(int $points, string $reason = null): void
+    {
+        $this->total_points += $points;
+        $this->points_earned_this_month += $points;
+        $this->save();
+
+        // Log points activity (optional)
+        // You can create a points_log table to track points history
+    }
+
+    public function deductPoints(int $points, string $reason = null): void
+    {
+        $this->total_points = max(0, $this->total_points - $points);
+        $this->points_earned_this_month = max(0, $this->points_earned_this_month - $points);
+        $this->save();
+    }
+
+    public function getBestAttemptForQuiz(string $quizId): ?QuizAttempt
+    {
+        return $this->quizAttempts()
+            ->where('quiz_id', $quizId)
+            ->where('is_best_attempt', true)
+            ->first();
+    }
+
+    public function recalculatePoints(): void
+    {
+        $totalPoints = $this->quizAttempts()
+            ->where('is_best_attempt', true)
+            ->sum('total_points_earned');
+
+        $this->total_points = $totalPoints;
+        $this->save();
     }
 }

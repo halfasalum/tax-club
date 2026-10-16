@@ -1,4 +1,3 @@
-// database/migrations/2026_04_15_000001_create_quiz_questions_table.php
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -18,7 +17,7 @@ return new class extends Migration
             $table->integer('order_index')->default(0);
             $table->boolean('is_active')->default(true);
             $table->timestamps();
-            
+
             $table->foreign('quiz_id')->references('quiz_id')->on('quizzes')->onDelete('cascade');
             $table->index('quiz_id');
         });
@@ -30,7 +29,7 @@ return new class extends Migration
             $table->boolean('is_correct')->default(false);
             $table->integer('order_index')->default(0);
             $table->timestamps();
-            
+
             $table->foreign('question_id')->references('question_id')->on('quiz_questions')->onDelete('cascade');
             $table->index('question_id');
         });
@@ -44,7 +43,7 @@ return new class extends Migration
             $table->boolean('is_correct')->default(false);
             $table->integer('points_earned')->default(0);
             $table->timestamps();
-            
+
             $table->foreign('attempt_id')->references('attempt_id')->on('quiz_attempts')->onDelete('cascade');
             $table->foreign('question_id')->references('question_id')->on('quiz_questions');
             $table->foreign('answer_id')->references('answer_id')->on('quiz_answers');

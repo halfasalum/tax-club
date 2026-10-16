@@ -2,24 +2,40 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Support\MemberRegistration;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasUuids, Notifiable;
+    use HasApiTokens, HasFactory, HasUuids, Notifiable;
 
     protected $table = 'users';
+
     protected $primaryKey = 'user_id';
+
     public $timestamps = false; // uses custom created_at / last_login
 
     const CREATED_AT = 'created_at';
+
     const UPDATED_AT = null;
+
+    public const STATUS_PENDING_VERIFICATION = 'pending_verification';
+
+    public const STATUS_ACTIVE = 'active';
+
+    public const STATUS_REJECTED = 'rejected';
+
+    public const STATUS_SUSPENDED = 'suspended';
+
+    public const STATUS_DEACTIVATED = 'deactivated';
 
     protected $fillable = [
         'full_name',
@@ -29,17 +45,24 @@ class User extends Authenticatable
         'user_type',
         'institution_id',
         'membership_id',
+        'registration_reference',
         'is_verified',
+        'account_status',
+        'status_reason',
+        'verified_by',
+        'verified_at',
     ];
 
     protected $hidden = [
         'password_hash',
+        'remember_token',
     ];
 
     protected $casts = [
         'is_verified' => 'boolean',
-        'created_at'  => 'datetime',
-        'last_login'  => 'datetime',
+        'created_at' => 'datetime',
+        'last_login' => 'datetime',
+        'verified_at' => 'datetime',
     ];
 
     /**
@@ -48,6 +71,38 @@ class User extends Authenticatable
     public function getAuthPassword(): string
     {
         return $this->password_hash;
+    }
+
+    // ─── Account Status ───────────────────────────────────────────
+
+    /**
+     * Whether the account may sign in (REG-REQ03/04, REG-REQ06).
+     */
+    public function isActive(): bool
+    {
+        return $this->account_status === self::STATUS_ACTIVE;
+    }
+
+    /**
+     * Find a user by email address or Tanzanian phone number.
+     */
+    public static function findByLoginIdentifier(string $identifier): ?self
+    {
+        $identifier = trim($identifier);
+
+        if (str_contains($identifier, '@')) {
+            return static::where('email', Str::lower($identifier))->first();
+        }
+
+        return static::where('phone', MemberRegistration::normalizePhone($identifier))->first();
+    }
+
+    /**
+     * Whether the user holds any administration permission.
+     */
+    public function canAccessAdmin(): bool
+    {
+        return $this->allControls() !== [];
     }
 
     // ─── RBAC Helpers ─────────────────────────────────────────────
@@ -92,7 +147,7 @@ class User extends Authenticatable
     {
         return $this->roles()
             ->where('roles.is_active', true)
-            ->with(['controls' => fn($q) => $q->where('module_controls.is_active', true)])
+            ->with(['controls' => fn ($q) => $q->where('module_controls.is_active', true)])
             ->get()
             ->pluck('controls')
             ->flatten()
@@ -150,7 +205,7 @@ class User extends Authenticatable
 
     // app/Models/User.php - Add these methods
 
-    public function addPoints(int $points, string $reason = null): void
+    public function addPoints(int $points, ?string $reason = null): void
     {
         $this->total_points += $points;
         $this->points_earned_this_month += $points;
@@ -160,7 +215,7 @@ class User extends Authenticatable
         // You can create a points_log table to track points history
     }
 
-    public function deductPoints(int $points, string $reason = null): void
+    public function deductPoints(int $points, ?string $reason = null): void
     {
         $this->total_points = max(0, $this->total_points - $points);
         $this->points_earned_this_month = max(0, $this->points_earned_this_month - $points);

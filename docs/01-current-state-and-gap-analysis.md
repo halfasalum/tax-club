@@ -24,7 +24,7 @@
 - **Consistent API envelope** (`BaseController::success / error / paginated`).
 - **UUID primary keys** throughout — good for mobile offline sync and non-guessable identifiers.
 - **Quiz engine core**: questions, answers, attempts, per-question responses, best-attempt tracking and points accumulation.
-- **Admin portal shell**: Mantine layout, permission-driven sidebar, protected routes, Axios interceptor.
+- **Admin portal screens** (React/Mantine): useful as a functional reference while they are rebuilt in Livewire (ADR 001); the React code itself is retired.
 
 ---
 

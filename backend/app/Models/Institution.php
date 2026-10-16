@@ -2,19 +2,23 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Institution extends Model
 {
-    use HasUuids;
+    use HasFactory, HasUuids;
 
     protected $table = 'institutions';
+
     protected $primaryKey = 'institution_id';
+
     public $timestamps = false; // only has created_at, no updated_at
 
     const CREATED_AT = 'created_at';
+
     const UPDATED_AT = null;
 
     protected $fillable = [
@@ -26,7 +30,7 @@ class Institution extends Model
 
     protected $casts = [
         'created_at' => 'datetime',
-        'type'       => 'string',
+        'type' => 'string',
     ];
 
     // ─── Relationships ────────────────────────────────────────────

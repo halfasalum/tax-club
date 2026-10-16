@@ -19,13 +19,13 @@ class UserController extends BaseController
     public function index(Request $request): JsonResponse
     {
         $query = User::with(['institution', 'roles'])
-            ->when($request->user_type, fn($q) => $q->where('user_type', $request->user_type))
-            ->when($request->institution_id, fn($q) => $q->where('institution_id', $request->institution_id))
-            ->when($request->is_verified !== null, fn($q) => $q->where('is_verified', filter_var($request->is_verified, FILTER_VALIDATE_BOOLEAN)))
-            ->when($request->search, fn($q) => $q->where(function ($q) use ($request) {
+            ->when($request->user_type, fn ($q) => $q->where('user_type', $request->user_type))
+            ->when($request->institution_id, fn ($q) => $q->where('institution_id', $request->institution_id))
+            ->when($request->is_verified !== null, fn ($q) => $q->where('is_verified', filter_var($request->is_verified, FILTER_VALIDATE_BOOLEAN)))
+            ->when($request->search, fn ($q) => $q->where(function ($q) use ($request) {
                 $q->where('full_name', 'like', "%{$request->search}%")
-                  ->orWhere('email', 'like', "%{$request->search}%")
-                  ->orWhere('membership_id', 'like', "%{$request->search}%");
+                    ->orWhere('email', 'like', "%{$request->search}%")
+                    ->orWhere('membership_id', 'like', "%{$request->search}%");
             }))
             ->orderBy('created_at', 'desc');
 
@@ -39,14 +39,14 @@ class UserController extends BaseController
     public function show(string $id): JsonResponse
     {
         $user = User::with(['institution', 'roles.controls', 'quizAttempts', 'progress'])
-                    ->find($id);
+            ->find($id);
 
         if (! $user) {
             return $this->error('User not found.', 404);
         }
 
         return $this->success([
-            'user'        => $user,
+            'user' => $user,
             'permissions' => $user->allControls(),
         ]);
     }
@@ -58,14 +58,14 @@ class UserController extends BaseController
     public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'full_name'      => 'required|string|max:150',
-            'email'          => 'required|email|unique:users,email',
-            'phone'          => 'nullable|string|max:20|unique:users,phone',
-            'password'       => 'required|string|min:8',
-            'user_type'      => 'required|in:secondary,college,university,alumni',
+            'full_name' => 'required|string|max:150',
+            'email' => 'required|email|unique:users,email',
+            'phone' => 'nullable|string|max:20|unique:users,phone',
+            'password' => 'required|string|min:8',
+            'user_type' => 'required|in:secondary,college,university,alumni',
             'institution_id' => 'nullable|uuid|exists:institutions,institution_id',
-            'role_ids'       => 'nullable|array',
-            'role_ids.*'     => 'nullable|uuid|exists:roles,role_id',
+            'role_ids' => 'nullable|array',
+            'role_ids.*' => 'nullable|uuid|exists:roles,role_id',
         ]);
 
         if ($validator->fails()) {
@@ -73,21 +73,24 @@ class UserController extends BaseController
         }
 
         $user = User::create([
-            'full_name'      => $request->full_name,
-            'email'          => $request->email,
-            'phone'          => $request->phone,
-            'password_hash'  => Hash::make($request->password),
-            'user_type'      => $request->user_type,
+            'full_name' => $request->full_name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'password_hash' => Hash::make($request->password),
+            'user_type' => $request->user_type,
             'institution_id' => $request->institution_id,
-            'membership_id'  => strtoupper('TRA-' . Str::random(8)),
-            'is_verified'    => true, // admin-created users are pre-verified
+            'membership_id' => strtoupper('TRA-'.Str::random(8)),
+            'is_verified' => true, // admin-created users are pre-verified
+            'account_status' => User::STATUS_ACTIVE,
         ]);
 
         // Assign specified roles or fall back to default
         $roleIds = $request->role_ids ?? [];
         if (empty($roleIds)) {
             $default = Role::getDefault();
-            if ($default) $roleIds = [$default->role_id];
+            if ($default) {
+                $roleIds = [$default->role_id];
+            }
         }
 
         foreach ($roleIds as $roleId) {
@@ -113,11 +116,11 @@ class UserController extends BaseController
         }
 
         $validator = Validator::make($request->all(), [
-            'full_name'      => 'sometimes|string|max:150',
-            'phone'          => "sometimes|string|max:20|unique:users,phone,{$user->user_id},user_id",
-            'user_type'      => 'sometimes|in:secondary,college,university,alumni',
+            'full_name' => 'sometimes|string|max:150',
+            'phone' => "sometimes|string|max:20|unique:users,phone,{$user->user_id},user_id",
+            'user_type' => 'sometimes|in:secondary,college,university,alumni',
             'institution_id' => 'nullable|uuid|exists:institutions,institution_id',
-            'is_verified'    => 'sometimes|boolean',
+            'is_verified' => 'sometimes|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -166,7 +169,7 @@ class UserController extends BaseController
         }
 
         $validator = Validator::make($request->all(), [
-            'role_ids'   => 'required|array|min:1',
+            'role_ids' => 'required|array|min:1',
             'role_ids.*' => 'uuid|exists:roles,role_id',
         ]);
 
@@ -174,7 +177,7 @@ class UserController extends BaseController
             return $this->error('Validation failed.', 422, $validator->errors());
         }
 
-        $syncData = collect($request->role_ids)->mapWithKeys(fn($rid) => [
+        $syncData = collect($request->role_ids)->mapWithKeys(fn ($rid) => [
             $rid => ['assigned_by' => $request->user()->user_id, 'assigned_at' => now()],
         ])->toArray();
 
@@ -196,7 +199,7 @@ class UserController extends BaseController
         }
 
         $validator = Validator::make($request->all(), [
-            'role_ids'   => 'required|array|min:1',
+            'role_ids' => 'required|array|min:1',
             'role_ids.*' => 'uuid|exists:roles,role_id',
         ]);
 

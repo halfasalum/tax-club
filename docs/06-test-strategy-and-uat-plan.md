@@ -14,8 +14,8 @@
 | Unit | Pure domain logic: scoring, points rules, eligibility, numbering, state machines | PHPUnit / Pest; Vitest | Devs | Every PR |
 | Feature (API) | Each endpoint: happy path, validation, permission + **scope** denial, workflow transition errors, exceptional conditions from the SRS | Laravel HTTP tests on MySQL 8 (CI service) | Devs | Every PR; ≥ 70 % coverage of `app/Domain` |
 | Contract | API matches OpenAPI; generated TS client compiles | Spectral lint + schema assertion | Devs | Every PR |
-| Component/UI | Admin portal and member app components | Vitest + Testing Library; React Native Testing Library | Devs | Every PR |
-| End-to-end | Critical journeys on real builds | Playwright (admin + member web), **Maestro** (Android/iOS) | QA automation | Nightly on staging; must pass for release |
+| Component/UI | Livewire components (web); Flutter widgets (mobile) | `Livewire::test()` feature tests; `flutter test` widget tests | Devs | Every PR |
+| End-to-end | Critical journeys on real builds | Playwright (public site, member portal, admin), **Maestro** or Flutter `integration_test` (Android/iOS) | QA automation | Nightly on staging; must pass for release |
 | Exploratory & device | Low-end Android lab (5 devices, Android 8–14), iOS 15+, slow 3G profiles | Manual, charters | QA | Each sprint |
 | Performance | NFR-02/03/15: quiz peak, broadcast fan-out, list endpoints | k6 | QA + DevOps | R2, R3, RH |
 | Security | OWASP ASVS L2 checklist, DAST (ZAP) on staging, independent pen test (API, web, mobile) | ZAP, MobSF, external vendor | Security | Each release (DAST); RH (pen test) |

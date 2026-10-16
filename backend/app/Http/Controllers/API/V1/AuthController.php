@@ -2,70 +2,47 @@
 
 namespace App\Http\Controllers\API\V1;
 
-use App\Models\Role;
 use App\Models\User;
+use App\Support\MemberRegistration;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 
 class AuthController extends BaseController
 {
     /**
      * POST /api/v1/auth/register
-     * Register a new user. Auto-assigns the default role.
+     * Submit a membership registration. The account stays pending until a
+     * patron or TRA coordinator approves it, so no token is issued here.
      */
     public function register(Request $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'full_name'      => 'required|string|max:150',
-            'email'          => 'required|email|unique:users,email',
-            'phone'          => 'nullable|string|max:20|unique:users,phone',
-            'password'       => 'required|string|min:8|confirmed',
-            'user_type'      => 'required|in:secondary,college,university,alumni',
-            'institution_id' => 'nullable|uuid|exists:institutions,institution_id',
-        ]);
+        $validator = Validator::make(MemberRegistration::normalizeInput($request->all()), MemberRegistration::rules());
 
         if ($validator->fails()) {
             return $this->error('Validation failed.', 422, $validator->errors());
         }
 
-        $user = User::create([
-            'full_name'      => $request->full_name,
-            'email'          => $request->email,
-            'phone'          => $request->phone,
-            'password_hash'  => Hash::make($request->password),
-            'user_type'      => $request->user_type,
-            'institution_id' => $request->institution_id,
-            'membership_id'  => strtoupper('TRA-' . Str::random(8)),
-            'is_verified'    => true,
-        ]);
-
-        // Auto-assign default role
-        $defaultRole = Role::getDefault();
-        if ($defaultRole) {
-            $user->roles()->attach($defaultRole->role_id, [
-                'assigned_by' => null,
-                'assigned_at' => now(),
-            ]);
-        }
-
-        $token = $user->createToken('mobile_app')->plainTextToken;
+        $user = MemberRegistration::register($validator->validated());
 
         return $this->success([
-            'user'  => $this->formatUser($user),
-            'token' => $token,
-        ], 'Registration successful.', 201);
+            'registration_reference' => $user->registration_reference,
+            'account_status' => $user->account_status,
+        ], 'Registration submitted. You can sign in after your membership is confirmed.', 201);
     }
 
     /**
      * POST /api/v1/auth/login
+     * Accepts a phone number or email as `identifier` (`email` is still
+     * accepted for older app builds).
      */
     public function login(Request $request): JsonResponse
     {
+        $request->merge(['identifier' => $request->input('identifier', $request->input('email'))]);
+
         $validator = Validator::make($request->all(), [
-            'email'    => 'required|email',
+            'identifier' => 'required|string|max:150',
             'password' => 'required|string',
         ]);
 
@@ -73,14 +50,14 @@ class AuthController extends BaseController
             return $this->error('Validation failed.', 422, $validator->errors());
         }
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::findByLoginIdentifier($request->identifier);
 
         if (! $user || ! Hash::check($request->password, $user->password_hash)) {
             return $this->error('Invalid credentials.', 401);
         }
 
-        if (! $user->is_verified) {
-            return $this->error('Your account is not yet verified. Please verify your email or phone.', 403);
+        if (! $user->isActive()) {
+            return $this->error(MemberRegistration::blockedLoginMessage($user), 403);
         }
 
         // Update last login timestamp
@@ -93,8 +70,8 @@ class AuthController extends BaseController
         $token = $user->createToken('mobile_app')->plainTextToken;
 
         return $this->success([
-            'user'        => $this->formatUser($user->load('roles')),
-            'token'       => $token,
+            'user' => $this->formatUser($user->load('roles')),
+            'token' => $token,
             'permissions' => $user->allControls(),
         ], 'Login successful.');
     }
@@ -120,29 +97,21 @@ class AuthController extends BaseController
         $user = $request->user()->load(['roles.controls', 'institution']);
 
         return $this->success([
-            'user'        => $this->formatUser($user),
-            'roles'       => $user->roles->map(fn($r) => ['name' => $r->name, 'slug' => $r->slug]),
+            'user' => $this->formatUser($user),
+            'roles' => $user->roles->map(fn ($r) => ['name' => $r->name, 'slug' => $r->slug]),
             'permissions' => $user->allControls(),
         ]);
     }
 
     /**
      * POST /api/v1/auth/verify
-     * Mark user as verified (called after OTP confirmation).
-     * Requires: auth:sanctum
+     * Members can no longer verify themselves: membership is confirmed by a
+     * patron or TRA coordinator (REG-REQ02). Kept so older app builds get a
+     * clear answer instead of a 404.
      */
     public function verify(Request $request): JsonResponse
     {
-        $user = $request->user();
-
-        if ($user->is_verified) {
-            return $this->error('Account is already verified.', 409);
-        }
-
-        $user->is_verified = true;
-        $user->save();
-
-        return $this->success(null, 'Account verified successfully.');
+        return $this->error('Membership is confirmed by your patron or TRA coordinator.', 410);
     }
 
     /**
@@ -153,7 +122,7 @@ class AuthController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'current_password' => 'required|string',
-            'password'         => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
         if ($validator->fails()) {
@@ -180,18 +149,19 @@ class AuthController extends BaseController
     private function formatUser(User $user): array
     {
         return [
-            'user_id'       => $user->user_id,
-            'full_name'     => $user->full_name,
-            'email'         => $user->email,
-            'phone'         => $user->phone,
-            'user_type'     => $user->user_type,
+            'user_id' => $user->user_id,
+            'full_name' => $user->full_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'user_type' => $user->user_type,
             'membership_id' => $user->membership_id,
-            'is_verified'   => $user->is_verified,
-            'created_at'    => $user->created_at,
-            'last_login'    => $user->last_login,
-            'institution'   => $user->institution ? [
+            'is_verified' => $user->is_verified,
+            'account_status' => $user->account_status,
+            'created_at' => $user->created_at,
+            'last_login' => $user->last_login,
+            'institution' => $user->institution ? [
                 'institution_id' => $user->institution->institution_id,
-                'name'           => $user->institution->name,
+                'name' => $user->institution->name,
             ] : null,
         ];
     }

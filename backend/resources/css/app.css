@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@plugin '@tailwindcss/typography';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -6,6 +7,68 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Schibsted Grotesk', ui-sans-serif, system-ui, sans-serif;
+    --font-receipt: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+    --color-ink: #14284b;
+    --color-ink-soft: #2a3f66;
+    --color-paper: #f7f8fb;
+    --color-flag: #f2b705;
+    --color-flag-deep: #b88a00;
+    --color-savanna: #1e7f4f;
+    --color-slate: #5b6478;
+    --color-line: #dde2ec;
+    --color-danger: #b3261e;
+}
+
+@layer base {
+    html {
+        -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+        @apply bg-paper font-sans text-ink antialiased;
+    }
+
+    :focus-visible {
+        outline: 3px solid var(--color-flag);
+        outline-offset: 2px;
+    }
+}
+
+/* The EFD-style receipt in the home hero: a torn, zig-zag bottom edge.
+   The shadow sits on the wrapper because the mask would clip a box-shadow. */
+.receipt-shadow {
+    filter: drop-shadow(0 18px 22px rgb(0 0 0 / 0.35));
+}
+
+.receipt {
+    --tooth: 10px;
+    mask:
+        conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / calc(var(--tooth) * 2) 100%;
+    padding-bottom: calc(var(--tooth) + 1.5rem);
+}
+
+.receipt-leader {
+    background-image: radial-gradient(circle, currentColor 0.75px, transparent 1px);
+    background-size: 6px 6px;
+    background-position: 0 70%;
+    background-repeat: repeat-x;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .receipt-print {
+        animation: receipt-print 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+
+    @keyframes receipt-print {
+        from {
+            clip-path: inset(0 0 100% 0);
+            transform: translateY(-12px);
+        }
+        to {
+            clip-path: inset(0 0 0 0);
+            transform: translateY(0);
+        }
+    }
 }

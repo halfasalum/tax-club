@@ -23,7 +23,7 @@ The SRS defers many rules to "approved" or "where applicable" values. Each item 
 | D-17 | Certificate templates, signatories, issuing authority | TRA Commissioner for Taxpayer Services signature image; bilingual; QR to public verify page | Programme Office | S16 | CER-REQ01 | Open |
 | D-18 | Notification channels, SMS budget, default languages | In-app + push for all; SMS only for OTP, verification decisions and urgent notices; Kiswahili default | PO + Finance | S4 | NOT-REQ01/02/05 | Open |
 | D-19 | Analytics & Reporting module scope (not in SRS) | Add M13 with programme dashboards: membership, learning, quizzes, events, opportunities, safety; CSV/XLSX export | PO | S13 | INS-REQ08, OPP-REQ08, EVT-REQ08, SAF-REQ06 | Open |
-| D-20 | Confirm member-app technology | React Native (Expo), one codebase for iOS, Android and member web (doc 02 §3) | TRA ICT + Tech Lead | S0 | — | Open |
+| D-20 | Confirm member-app technology | Web: server-rendered Laravel (Blade + Livewire + Tailwind). Mobile: Flutter (ADR 001) | TRA ICT + Tech Lead | S0 | — | **Decided 16 Oct 2026** (product owner: no React, Laravel serves web + API) |
 | D-21 | Repository visibility and ownership | Move to a TRA-owned private GitHub organisation; vendor access through teams | TRA ICT | S0 | — | Open |
 | D-22 | Content moderation staffing model | 2 TRA moderators + patrons as space moderators for their club; Safeguarding Officer on call | Programme Office | S14 | COM-REQ08, SAF-REQ02 | Open |
 

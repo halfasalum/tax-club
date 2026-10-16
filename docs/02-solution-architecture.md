@@ -188,6 +188,21 @@ Rule: controllers handle validation and authorisation and delegate to an Action/
 
 The member web portal (Livewire) offers the same journeys in the browser. Offline (mobile): API responses are cached locally with drift/Hive. Content can be downloaded for offline reading. Quiz attempts start online (for time-limit integrity) but tolerate brief drops by queuing the submission with the server-issued start time.
 
+## 6a. Visual identity (web)
+
+The web front end uses the TRA corporate palette taken from tra.go.tz and the TRA emblem. All values are design tokens in `backend/resources/css/app.css`, so a brand update is a one-file change.
+
+| Token | Hex | Source on tra.go.tz | Use |
+|---|---|---|---|
+| `brand` | `#F9E50F` | `cp-yellow` | Hero and page headers, primary highlights, active tabs |
+| `brand-bright` | `#FDEE02` | `yellow-active` | Hover on yellow buttons |
+| `ink` | `#020202` | `cp-black` | Text, primary buttons, header and footer |
+| `ink-soft` | `#222222` | `black-active` | Secondary text on yellow |
+| `slate` | `#4B5563` | `black-normal` | Muted text |
+| `savanna` / `danger` | `#15803D` / `#B42318` | — | Success and error states |
+
+Typeface: **Nunito** (as on tra.go.tz) for all text; IBM Plex Mono only for receipt-style reference numbers. Every text/background pair meets WCAG 2.1 AA (black on TRA yellow is 16:1). Focus is shown as a black outline with a yellow halo, so it stays visible on yellow, white and black surfaces.
+
 ## 7. Environments
 
 | Env | Purpose | Data |

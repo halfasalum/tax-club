@@ -9,57 +9,68 @@
     $currentName = preg_replace('/^(sw|en)\./', '', (string) request()->route()?->getName());
     $otherLocale = app()->getLocale() === 'sw' ? 'en' : 'sw';
     $switchUrl = $alternates[$otherLocale] ?? Locales::route('home', [], $otherLocale);
+    $accountUrl = auth()->check() ? (auth()->user()->canAccessAdmin() ? route('admin.dashboard') : route('member.dashboard')) : null;
 @endphp
-<header class="border-b border-line bg-white">
-    <div class="mx-auto flex max-w-6xl items-center gap-6 px-4 py-4 sm:px-6">
-        <a href="{{ Locales::route('home') }}" class="flex items-center gap-2.5" aria-label="TRA Tax Club — {{ __('Home') }}">
-            <svg viewBox="0 0 32 32" class="size-8 shrink-0" aria-hidden="true">
-                <rect width="32" height="32" rx="7" fill="#14284b"/>
-                <path d="M9 7h14v18l-2.33-1.6L18.33 25 16 23.4 13.67 25l-2.34-1.6L9 25z" fill="#f2b705"/>
-                <path d="M12 12h8M12 15.5h8M12 19h5" stroke="#14284b" stroke-width="1.6" stroke-linecap="round"/>
-            </svg>
-            <span class="leading-none">
-                <span class="block text-[0.7rem] font-semibold text-slate">TRA</span>
-                <span class="block text-lg font-extrabold tracking-tight">Tax Club</span>
-            </span>
-        </a>
 
-        <nav class="ml-4 hidden items-center gap-1 md:flex" aria-label="{{ __('Main') }}">
+{{-- Utility bar, as on tra.go.tz --}}
+<div class="bg-ink text-sm text-white">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-2 sm:px-6">
+        <a href="https://www.tra.go.tz" class="font-semibold text-white/80 hover:text-white" rel="noopener">{{ __('An official programme of the Tanzania Revenue Authority') }}</a>
+        <a href="{{ $switchUrl }}" hreflang="{{ $otherLocale }}" lang="{{ $otherLocale }}" class="flex shrink-0 items-center gap-1.5 font-bold text-brand hover:text-brand-bright">
+            <svg viewBox="0 0 20 20" class="size-4" fill="currentColor" aria-hidden="true"><path d="M10 1.5a8.5 8.5 0 1 0 0 17 8.5 8.5 0 0 0 0-17Zm5.9 7.75h-2.92a13.6 13.6 0 0 0-1.06-4.86 7.02 7.02 0 0 1 3.98 4.86ZM10 3.1c.73.9 1.73 2.97 1.96 6.15H8.04C8.27 6.07 9.27 4 10 3.1ZM8.08 4.39a13.6 13.6 0 0 0-1.06 4.86H4.1a7.02 7.02 0 0 1 3.98-4.86ZM4.1 10.75h2.92c.1 1.84.48 3.5 1.06 4.86a7.02 7.02 0 0 1-3.98-4.86ZM10 16.9c-.73-.9-1.73-2.97-1.96-6.15h3.92c-.23 3.18-1.23 5.25-1.96 6.15Zm1.92-1.29c.58-1.36.96-3.02 1.06-4.86h2.92a7.02 7.02 0 0 1-3.98 4.86Z"/></svg>
+            {{ Locales::SUPPORTED[$otherLocale] }}
+        </a>
+    </div>
+</div>
+
+<header class="sticky top-0 z-40 border-b-4 border-brand bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/85">
+    <div class="mx-auto flex max-w-7xl items-center gap-6 px-4 py-3 sm:px-6">
+        @include('partials.brand')
+
+        <nav class="ml-6 hidden items-center gap-1 lg:flex" aria-label="{{ __('Main') }}">
             @foreach ($navigation as $item)
                 @php($isActive = \Illuminate\Support\Str::is($item['active'], $currentName))
-                <a href="{{ Locales::route($item['route']) }}"
-                   @if ($isActive) aria-current="page" @endif
-                   class="rounded-md px-3 py-2 text-[0.95rem] font-medium {{ $isActive ? 'text-ink underline decoration-flag decoration-[3px] underline-offset-8' : 'text-slate hover:text-ink' }}">
+                <a href="{{ Locales::route($item['route']) }}" @if ($isActive) aria-current="page" @endif
+                   @class(['rounded-lg px-4 py-2.5 text-[0.98rem] font-extrabold transition-colors', 'bg-brand text-ink' => $isActive, 'text-ink-soft hover:bg-brand-wash' => ! $isActive])>
                     {{ $item['label'] }}
                 </a>
             @endforeach
         </nav>
 
-        <div class="ml-auto flex items-center gap-2">
-            <a href="{{ $switchUrl }}" hreflang="{{ $otherLocale }}" lang="{{ $otherLocale }}"
-               class="rounded-md px-2.5 py-2 text-sm font-medium text-slate hover:text-ink">
-                {{ Locales::SUPPORTED[$otherLocale] }}
-            </a>
-            @auth
-                <a href="{{ auth()->user()->canAccessAdmin() ? route('admin.dashboard') : route('member.dashboard') }}"
-                   class="rounded-md bg-ink px-4 py-2 text-sm font-semibold text-white hover:bg-ink-soft">{{ __('My account') }}</a>
+        <div class="ml-auto hidden items-center gap-2 sm:flex">
+            @if ($accountUrl)
+                <a href="{{ $accountUrl }}" class="btn-primary">{{ __('My account') }}</a>
             @else
-                <a href="{{ route('login') }}" class="hidden rounded-md px-3 py-2 text-sm font-semibold text-ink hover:bg-paper sm:inline-block">{{ __('Sign in') }}</a>
-                <a href="{{ route('register') }}" class="rounded-md bg-flag px-4 py-2 text-sm font-bold text-ink hover:bg-[#ffc81f]">{{ __('Join Tax Club') }}</a>
-            @endauth
+                <a href="{{ route('login') }}" class="btn px-4 text-ink hover:bg-brand-wash">{{ __('Sign in') }}</a>
+                <a href="{{ route('register') }}" class="btn-brand">{{ __('Join Tax Club') }}</a>
+            @endif
         </div>
-    </div>
 
-    <nav class="flex gap-1 overflow-x-auto border-t border-line px-2 md:hidden" aria-label="{{ __('Main') }}">
-        @foreach ($navigation as $item)
-            @php($isActive = \Illuminate\Support\Str::is($item['active'], $currentName))
-            <a href="{{ Locales::route($item['route']) }}" @if ($isActive) aria-current="page" @endif
-               class="whitespace-nowrap px-3 py-3 text-sm font-medium {{ $isActive ? 'text-ink underline decoration-flag decoration-[3px] underline-offset-8' : 'text-slate' }}">
-                {{ $item['label'] }}
-            </a>
-        @endforeach
-        @guest
-            <a href="{{ route('login') }}" class="whitespace-nowrap px-3 py-3 text-sm font-semibold text-ink sm:hidden">{{ __('Sign in') }}</a>
-        @endguest
-    </nav>
+        {{-- Mobile menu: a native disclosure, so it works without JavaScript --}}
+        <details class="group ml-auto lg:hidden sm:ml-2">
+            <summary class="grid size-12 cursor-pointer list-none place-items-center rounded-xl border-2 border-ink [&::-webkit-details-marker]:hidden" aria-label="{{ __('Menu') }}">
+                <svg viewBox="0 0 24 24" class="size-6 group-open:hidden" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+                <svg viewBox="0 0 24 24" class="hidden size-6 group-open:block" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+            </summary>
+            <nav class="absolute inset-x-0 top-full border-b-4 border-brand bg-white px-4 pb-6 pt-2 shadow-xl" aria-label="{{ __('Main') }}">
+                <ul class="space-y-1">
+                    @foreach ($navigation as $item)
+                        @php($isActive = \Illuminate\Support\Str::is($item['active'], $currentName))
+                        <li>
+                            <a href="{{ Locales::route($item['route']) }}" @if ($isActive) aria-current="page" @endif
+                               @class(['block rounded-xl px-4 py-3.5 text-lg font-extrabold', 'bg-brand' => $isActive, 'hover:bg-brand-wash' => ! $isActive])>{{ $item['label'] }}</a>
+                        </li>
+                    @endforeach
+                </ul>
+                <div class="mt-4 grid gap-2">
+                    @if ($accountUrl)
+                        <a href="{{ $accountUrl }}" class="btn-primary">{{ __('My account') }}</a>
+                    @else
+                        <a href="{{ route('register') }}" class="btn-brand">{{ __('Join Tax Club') }}</a>
+                        <a href="{{ route('login') }}" class="btn-ghost">{{ __('Sign in') }}</a>
+                    @endif
+                </div>
+            </nav>
+        </details>
+    </div>
 </header>

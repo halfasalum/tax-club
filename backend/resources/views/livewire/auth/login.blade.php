@@ -1,31 +1,39 @@
 <div>
-    <h1 class="text-3xl font-extrabold tracking-tight">{{ __('Sign in') }}</h1>
-    <p class="mt-2 text-slate">{{ __('Use the phone number or email you registered with.') }}</p>
+    <h1 class="text-3xl font-black tracking-tight">{{ __('Welcome back') }}</h1>
+    <p class="mt-2 text-lg text-slate">{{ __('Use the phone number or email you registered with.') }}</p>
 
-    <form wire:submit="login" class="mt-8 space-y-5" novalidate>
+    <form wire:submit="login" class="mt-8 space-y-6" novalidate>
         <div>
-            <label for="identifier" class="block text-sm font-semibold">{{ __('Phone number or email') }}</label>
+            <label for="identifier" class="block font-extrabold">{{ __('Phone number or email') }}</label>
             <input wire:model="identifier" id="identifier" type="text" autocomplete="username" inputmode="email" autofocus
-                   @class(['mt-1.5 w-full rounded-md border bg-white px-4 py-3 focus:outline-none', 'border-danger' => $errors->has('identifier'), 'border-line focus:border-ink' => ! $errors->has('identifier')])
+                   @class(['field', 'field-error' => $errors->has('identifier')])
+                   placeholder="0712 345 678"
                    aria-describedby="identifier-error" @error('identifier') aria-invalid="true" @enderror>
-            @error('identifier')<p id="identifier-error" class="mt-1.5 text-sm text-danger">{{ $message }}</p>@enderror
+            @error('identifier')<p id="identifier-error" class="mt-2 flex gap-2 font-semibold text-danger" role="alert">{{ $message }}</p>@enderror
         </div>
 
-        <div>
-            <label for="password" class="block text-sm font-semibold">{{ __('Password') }}</label>
-            <input wire:model="password" id="password" type="password" autocomplete="current-password"
-                   @class(['mt-1.5 w-full rounded-md border bg-white px-4 py-3 focus:outline-none', 'border-danger' => $errors->has('password'), 'border-line focus:border-ink' => ! $errors->has('password')])>
-            @error('password')<p class="mt-1.5 text-sm text-danger">{{ $message }}</p>@enderror
+        <div x-data="{ show: false }">
+            <label for="password" class="block font-extrabold">{{ __('Password') }}</label>
+            <div class="relative">
+                <input wire:model="password" id="password" :type="show ? 'text' : 'password'" type="password" autocomplete="current-password"
+                       @class(['field pr-24', 'field-error' => $errors->has('password')])>
+                <button type="button" x-on:click="show = !show" class="absolute right-2 top-1/2 mt-[3px] -translate-y-1/2 rounded-lg px-3 py-2 text-sm font-extrabold hover:bg-brand-wash"
+                        :aria-pressed="show.toString()" aria-controls="password">
+                    <span x-show="!show">{{ __('Show') }}</span><span x-show="show" x-cloak>{{ __('Hide') }}</span>
+                </button>
+            </div>
+            @error('password')<p class="mt-2 font-semibold text-danger" role="alert">{{ $message }}</p>@enderror
         </div>
 
-        <button type="submit" class="w-full rounded-md bg-ink px-5 py-3 font-semibold text-white hover:bg-ink-soft disabled:opacity-60" wire:loading.attr="disabled">
+        <button type="submit" class="btn-primary w-full text-lg" wire:loading.attr="disabled">
             <span wire:loading.remove wire:target="login">{{ __('Sign in') }}</span>
             <span wire:loading wire:target="login">{{ __('Signing in…') }}</span>
         </button>
     </form>
 
-    <p class="mt-8 text-slate">
-        {{ __('New to Tax Club?') }}
-        <a href="{{ route('register') }}" class="font-semibold text-ink underline decoration-flag decoration-2 underline-offset-4">{{ __('Join Tax Club') }}</a>
-    </p>
+    <div class="mt-8 rounded-2xl bg-brand-wash p-5">
+        <p class="font-extrabold">{{ __('New to Tax Club?') }}</p>
+        <p class="mt-1 text-slate">{{ __('Membership is free for students. It takes about two minutes.') }}</p>
+        <a href="{{ route('register') }}" class="btn-brand mt-4 w-full">{{ __('Join Tax Club') }}</a>
+    </div>
 </div>

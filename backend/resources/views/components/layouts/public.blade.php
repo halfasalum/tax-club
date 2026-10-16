@@ -23,6 +23,7 @@
             '@id' => url('/').'#organization',
             'name' => $siteName,
             'url' => url('/'),
+            'logo' => asset('images/tra-logo.png'),
             'parentOrganization' => ['@type' => 'GovernmentOrganization', 'name' => 'Tanzania Revenue Authority', 'url' => 'https://www.tra.go.tz'],
         ],
         [
@@ -65,17 +66,13 @@
     <meta property="og:image" content="{{ $ogImage }}">
     <meta property="og:locale" content="{{ $locale === 'sw' ? 'sw_TZ' : 'en_GB' }}">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="theme-color" content="#14284b">
 
-    <link rel="icon" href="{{ asset('favicon.svg') }}" type="image/svg+xml">
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=schibsted-grotesk:400,500,600,700,800|ibm-plex-mono:400,500,600&display=swap" rel="stylesheet">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @include('partials.head-assets')
 
     <script type="application/ld+json">{!! json_encode(['@context' => 'https://schema.org', '@graph' => $graph], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>
 </head>
 <body class="min-h-screen flex flex-col">
-    <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-ink focus:px-4 focus:py-2 focus:text-white">{{ __('Skip to content') }}</a>
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-brand focus:px-4 focus:py-3 focus:font-extrabold focus:text-ink">{{ __('Skip to content') }}</a>
 
     @include('partials.site-header', ['alternates' => $alternates])
 

@@ -58,6 +58,37 @@ class Register extends Component
         return $this->institution_id ? Institution::find($this->institution_id) : null;
     }
 
+    /**
+     * Check contact details as soon as the student leaves each field.
+     */
+    public function updated(string $property): void
+    {
+        if (! in_array($property, ['full_name', 'phone', 'email'], true)) {
+            return;
+        }
+
+        if ($property !== 'full_name') {
+            $this->{$property} = MemberRegistration::normalizeInput([$property => $this->{$property}])[$property];
+        }
+
+        if (filled($this->{$property}) || $property !== 'email') {
+            $this->validateOnly($property, MemberRegistration::rules());
+        }
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function messages(): array
+    {
+        return [
+            'phone.regex' => __('Enter a Tanzanian mobile number, for example 0712 345 678.'),
+            'phone.unique' => __('This phone number is already registered. Sign in or recover your account.'),
+            'email.unique' => __('This email is already registered. Sign in or recover your account.'),
+            'accepted_terms.accepted' => __('You must accept the terms to register.'),
+        ];
+    }
+
     public function updatedUserType(): void
     {
         $this->clearInstitution();
@@ -91,15 +122,7 @@ class Register extends Component
         $this->phone = $normalized['phone'];
         $this->email = $normalized['email'];
 
-        $validated = $this->validate(
-            MemberRegistration::rules() + ['accepted_terms' => ['accepted']],
-            [
-                'phone.regex' => __('Enter a Tanzanian mobile number, for example 0712 345 678.'),
-                'phone.unique' => __('This phone number is already registered. Sign in or recover your account.'),
-                'email.unique' => __('This email is already registered. Sign in or recover your account.'),
-                'accepted_terms.accepted' => __('You must accept the terms to register.'),
-            ],
-        );
+        $validated = $this->validate(MemberRegistration::rules() + ['accepted_terms' => ['accepted']]);
 
         $user = MemberRegistration::register($validated);
         RateLimiter::hit($throttleKey, 3600);

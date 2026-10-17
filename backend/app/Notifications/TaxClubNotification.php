@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Models\NotificationTemplate;
 use App\Models\User;
 use App\Notifications\Channels\SmsChannel;
+use App\Support\NotificationPreferences;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
@@ -110,6 +111,16 @@ abstract class TaxClubNotification extends Notification implements ShouldQueue
 
         if (static::required() || ($template?->sms_enabled ?? static::smsByDefault())) {
             $channels[] = SmsChannel::class;
+        }
+
+        // Members may switch off optional categories (NOT-REQ05).
+        if ($notifiable instanceof User && static::preferenceCategory() && ! static::required()) {
+            $preference = NotificationPreferences::for($notifiable, static::preferenceCategory());
+            $channels = array_values(array_filter($channels, fn ($channel) => match ($channel) {
+                'database' => $preference['inbox'],
+                SmsChannel::class => $preference['sms'],
+                default => true,
+            }));
         }
 
         return $channels;

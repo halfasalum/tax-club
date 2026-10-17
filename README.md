@@ -35,6 +35,9 @@ php artisan serve
 | `/app/card` | Digital membership card with QR code (print or save as PDF) |
 | `/app/profile` | Profile: photo, contact details, SMS language, phone and password change, alumni request |
 | `/app/notifications` | In-app notification inbox |
+| `/app/learn` | Learning hub: modules, search, lessons with progress |
+| `/app/quizzes` | Quizzes with timer, autosave and results |
+| `/app/points` | Points, badges and leaderboards |
 | `/verify`, `/verify/{token}` | Check a membership card by QR scan or number (public, rate-limited) |
 | `/admin` | Administration Portal: registration queue, institutions and Tax Clubs |
 | `/admin/institutions` | Register or import institutions, set up Tax Clubs, assign patrons |
@@ -42,6 +45,9 @@ php artisan serve
 | `/admin/statistics` | Members by region, institution and category, with CSV download |
 | `/admin/coordinators` | Assign TRA coordinators to regions |
 | `/admin/notifications`, `/admin/sms` | Message wording and channels; SMS delivery with retry |
+| `/admin/learning` | Write lessons, review, publish and version them; modules and categories |
+| `/admin/quizzes` | Build quizzes, review, open for a period, results |
+| `/admin/gamification` | Point values, daily cap, leaderboards on/off, badges |
 | `/admin/audit` | Audit log of changes and sign-ins |
 | `/sitemap.xml`, `/robots.txt` | SEO |
 | `/api/v1/...` | Mobile API |
@@ -77,6 +83,16 @@ QUEUE_CONNECTION=database
 - The QR code on the card opens `/verify/{token}`. The token is random, so a card cannot be forged from the number. Members can replace their QR code if the card is lost or shared, and old copies then stop verifying.
 - Anyone can check a card. They see whether it is valid and the member's short name (e.g. "Asha M."). Officers with the **Verify Membership** permission also see the full name, number, category, institution and an "Under 18" badge. Every check is recorded in `membership_verifications`.
 - API: `GET /api/v1/membership/card` and `POST /api/v1/membership/card/reissue` (signed in), and `POST /api/v1/membership/verify` with `token` or `membership_number` (public; full details with an officer's token).
+
+## Learning, quizzes and points (Release 2)
+
+- **Lessons** are written in Markdown, sent for review, and published now or on a date, with an optional end date. Every change is a new version that is reviewed again; members keep seeing the live version until the new one is published. Tax content is due for review 12 months after publication.
+- **Reviews** need a second person: nobody can approve their own lesson or quiz (`FOUR_EYES_REVIEW=true`).
+- **Quizzes** can be scored or practice, with a pass mark, time limit, number of attempts, which attempt counts (best or latest), and when correct answers are shown. The server times each attempt and closes it when time runs out, using the answers already saved. Questions are locked once members have taken a quiz; make a new version instead.
+- **Points** (decision D-15 values, editable): quiz pass 10, each correct answer 1 (best attempt only), lesson 2, module 10, at most 50 automatic points per day. Officers can add or remove points with a reason. Badges are awarded automatically.
+- Uploaded lesson files go to the `public` disk: run `php artisan storage:link` once.
+- The scheduler also publishes scheduled lessons and closes overdue quiz attempts.
+- After pulling, also run `php artisan db:seed --class=ContentCategorySeeder` and `php artisan db:seed --class=BadgeSeeder`.
 
 ## Roles and access
 

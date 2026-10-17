@@ -8,12 +8,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class UserProgress extends Model
 {
     protected $table = 'user_progress';
+
     public $incrementing = true;
+
     public $timestamps = false;
 
     protected $fillable = [
         'user_id',
         'content_id',
+        'content_version',
         'status',
         'progress_percent',
         'started_at',
@@ -23,8 +26,8 @@ class UserProgress extends Model
 
     protected $casts = [
         'progress_percent' => 'integer',
-        'started_at'       => 'datetime',
-        'completed_at'     => 'datetime',
+        'started_at' => 'datetime',
+        'completed_at' => 'datetime',
         'last_accessed_at' => 'datetime',
     ];
 

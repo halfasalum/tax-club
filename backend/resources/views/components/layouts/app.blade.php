@@ -10,13 +10,18 @@
             $user->hasControl('view_members') ? ['route' => 'admin.members.index', 'match' => 'admin.members.*', 'label' => __('Members')] : null,
             $user->hasControl('view_institutions') ? ['route' => 'admin.institutions.index', 'match' => 'admin.institutions.*', 'label' => __('Institutions')] : null,
             collect(['upload_content', 'edit_content', 'review_content', 'publish_content'])->contains(fn ($control) => $user->hasControl($control)) ? ['route' => 'admin.learning.index', 'match' => 'admin.learning.*', 'label' => __('Learning')] : null,
+            collect(['create_quiz', 'edit_quiz', 'review_quiz', 'publish_quiz', 'view_results'])->contains(fn ($control) => $user->hasControl($control)) ? ['route' => 'admin.quizzes.index', 'match' => 'admin.quizzes.*', 'label' => __('Quizzes')] : null,
             $user->hasControl('view_statistics') ? ['route' => 'admin.statistics', 'label' => __('Statistics')] : null,
             $user->hasControl('assign_coordinator') ? ['route' => 'admin.coordinators', 'label' => __('Coordinators')] : null,
             $user->hasControl('manage_notification_templates') ? ['route' => 'admin.notifications', 'label' => __('Notifications')] : ($user->hasControl('view_sms_log') ? ['route' => 'admin.sms', 'label' => __('SMS delivery')] : null),
+            $user->hasControl('manage_gamification') ? ['route' => 'admin.gamification', 'label' => __('Points')] : null,
             $user->hasControl('view_audit_log') ? ['route' => 'admin.audit', 'label' => __('Audit log')] : null,
         ]))
         : [
             ['route' => 'member.dashboard', 'label' => __('My Tax Club')],
+            ['route' => 'member.learn', 'match' => 'member.learn*', 'label' => __('Learn')],
+            ['route' => 'member.quizzes', 'match' => 'member.quizzes*', 'label' => __('Quizzes')],
+            ['route' => 'member.leaderboard', 'label' => __('Points')],
             ['route' => 'member.card', 'label' => __('My card')],
             ['route' => 'member.profile', 'label' => __('My profile')],
         ];

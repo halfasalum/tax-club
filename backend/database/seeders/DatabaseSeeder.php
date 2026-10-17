@@ -39,6 +39,7 @@ class DatabaseSeeder extends Seeder
             SuperAdminRoleSeeder::class,
             PatronRoleSeeder::class,
             ContentCategorySeeder::class,
+            BadgeSeeder::class,
             SuperUserSeeder::class,
         ]);
 

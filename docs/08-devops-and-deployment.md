@@ -12,24 +12,22 @@
 flowchart LR
   PR[Pull request] --> S[Static: lint, types,<br/>gitleaks, SAST, audit]
   S --> T[Unit + feature tests<br/>MySQL + Redis services]
-  T --> B[Build: API image,<br/>admin bundle, Expo web]
+  T --> B[Build: Laravel image<br/>incl. Vite/Tailwind assets]
   B --> M{merge to main}
   M --> DEV[Deploy dev]
   DEV --> STG[Deploy staging<br/>on release tag]
   STG --> E2E[Playwright + Maestro<br/>ZAP baseline]
   E2E --> APP{Change Advisory<br/>approval}
   APP --> PROD[Deploy production<br/>blue/green]
-  B --> EAS[EAS Build: Android AAB,<br/>iOS IPA]
-  EAS --> STORE[TestFlight / Play internal →<br/>staged rollout]
+  M --> FL[Flutter build: Android AAB,<br/>iOS IPA]
+  FL --> STORE[TestFlight / Play internal →<br/>staged rollout]
 ```
 
 | Artefact | Build | Deploy |
 |---|---|---|
 | API | Docker image (php-fpm 8.3 + nginx), `composer install --no-dev`, `config:cache`, `route:cache` | Blue/green or rolling on container host; `php artisan migrate --force` as a pre-deploy job; queue workers and scheduler as separate containers |
-| Admin portal | `vite build` → static bundle | Served by nginx/CDN behind the same domain (`admin.<domain>`) |
-| Member web | `expo export --platform web` | Static hosting/CDN (`app.<domain>`) |
-| Mobile | EAS Build (managed credentials) | TestFlight / Play internal → closed testing (pilot) → staged production rollout 10 % → 50 % → 100 % |
-| OTA fixes | EAS Update for JS-only fixes, channel per release | Only for non-native changes; store review policies respected |
+| Web front end | `npm ci && npm run build` (Vite + Tailwind) inside the API image build | Served by the same Laravel app: public site at `/` and `/en`, member portal at `/app`, admin at `/admin`. Hashed assets under `/build` cached for 1 year |
+| Mobile | Flutter build in CI (Codemagic or GitHub Actions macOS runner) with signing keys in the secret store | TestFlight / Play internal → closed testing (pilot) → staged production rollout 10 % → 50 % → 100 % |
 
 **FTP deployment and `uploadOnSave` are retired.** Production changes happen only through the pipeline.
 

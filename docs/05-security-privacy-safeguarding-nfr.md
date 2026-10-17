@@ -98,3 +98,4 @@
 | NFR-13 | Observability | Centralised logs, error tracking, uptime alerts to the on-call channel within 5 min |
 | NFR-14 | Maintainability | ≥ 70 % backend line coverage on domain/services; OpenAPI spec published per release; ADRs for significant decisions |
 | NFR-15 | Notifications | Transactional notifications dispatched ≤ 60 s after the triggering event (p95); broadcasts of 100k recipients completed ≤ 30 min |
+| NFR-16 | SEO | Public pages server-rendered with canonical, `hreflang` (sw/en), Open Graph and JSON-LD; Lighthouse SEO ≥ 95 and LCP ≤ 2.5 s on a mid-range Android over 4G; sitemap updated on publish; non-production environments blocked from indexing |

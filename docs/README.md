@@ -12,6 +12,7 @@ These documents take the April 2026 prototype to the full **Functional Requireme
 | 06 | [Test Strategy & UAT Plan](06-test-strategy-and-uat-plan.md) | Test levels, critical journeys, UAT entry/exit, quality gates | QA, BA, SMEs |
 | 07 | [Execution Plan](07-execution-plan.md) | Releases, sprint plan, team, RACI, governance, risks, procurement, next steps | Sponsor, PO, Delivery Mgr |
 | 08 | [DevOps & Deployment](08-devops-and-deployment.md) | CI/CD, environments, mobile release process, runbooks, go-live checklist | DevOps, TRA ICT |
+| ADR | [001 — Server-rendered Laravel + Flutter](adr/001-server-rendered-laravel-and-flutter.md) | Why the web is one Laravel app with no React, and mobile is Flutter | TRA ICT, Tech Lead |
 | 09 | [Decisions & Business Rules Register](09-decisions-and-business-rules-register.md) | 22 open decisions with proposed defaults, owners and deadlines | PO, Programme Office |
 | — | [Requirements-Traceability-Matrix.xlsx](Requirements-Traceability-Matrix.xlsx) | All 100 requirements: status, gap, release, sprint, size, decisions, test cases; release capacity plan; sprint calendar | Everyone |
 
@@ -20,9 +21,9 @@ These documents take the April 2026 prototype to the full **Functional Requireme
 - **Urgent:** FTP passwords and a zipped production `.env` are committed to the public repository. Rotate the credentials and purge the history before any other work (doc 05 §2).
 - **Plan:** 6 releases + hardening over 22 two-week sprints, **2 Nov 2026 → 24 Sep 2027**. Pilot from **1 Mar 2027**; public store launch **12 Apr 2027**.
 - **Key design choice:** build the reusable engines once (workflow, audience targeting, cases, audit, scoped RBAC, notifications). The SRS repeats each of these patterns across 6–7 modules.
-- **Stack:** keep Laravel 12 + React/Mantine admin; add one **React Native (Expo)** codebase for the iOS, Android and member web apps.
+- **Stack (ADR 001):** one **Laravel 13** app in `backend/` serves the SEO public website, the member portal, the Administration Portal (Blade + Livewire 4 + Tailwind CSS 4) and the `/api/v1` JSON API. **Flutter** for the iOS and Android apps. No React.
 
 ## Maintaining these documents
 - The RTM is the single source of truth for scope and status. Update the *Delivery status* column at every sprint review.
 - Record decisions in doc 09's change log. Update the affected acceptance criteria in the backlog the same week.
-- Architecture changes are recorded as ADRs in `docs/adr/` (template to be added in S0).
+- Architecture changes are recorded as ADRs in `docs/adr/`.

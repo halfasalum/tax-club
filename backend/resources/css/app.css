@@ -1,11 +1,135 @@
 @import 'tailwindcss';
+@plugin '@tailwindcss/typography';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
+/*
+ * TRA corporate palette, taken from tra.go.tz (styl.css: cp-yellow, yellow-active,
+ * cp-black, black-active, black-normal) and the TRA emblem. Change brand colours
+ * here only; every page uses these tokens.
+ */
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Nunito', ui-sans-serif, system-ui, sans-serif;
+    --font-receipt: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+    --color-brand: #f9e50f;        /* TRA yellow (cp-yellow) */
+    --color-brand-bright: #fdee02; /* TRA yellow, hover (yellow-active) */
+    --color-brand-wash: #fff9c2;   /* light yellow tint for highlights */
+    --color-ink: #020202;          /* TRA black (cp-black) */
+    --color-ink-soft: #222222;     /* TRA charcoal (black-active) */
+    --color-slate: #4b5563;        /* TRA grey (black-normal) */
+    --color-line: #e5e7eb;
+    --color-paper: #ffffff;
+    --color-mist: #f6f6f3;         /* neutral section background */
+    --color-savanna: #15803d;      /* success */
+    --color-danger: #b42318;       /* errors */
+}
+
+@layer base {
+    html {
+        -webkit-text-size-adjust: 100%;
+        scroll-behavior: smooth;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        html {
+            scroll-behavior: auto;
+        }
+    }
+
+    body {
+        @apply bg-paper font-sans text-ink antialiased;
+    }
+
+    /* Yellow alone is invisible on white, black alone is invisible on black:
+       a black outline with a yellow halo works on every surface. */
+    :focus-visible {
+        outline: 3px solid var(--color-ink);
+        outline-offset: 2px;
+        box-shadow: 0 0 0 6px var(--color-brand);
+        border-radius: 6px;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+
+    ::selection {
+        background: var(--color-brand);
+        color: var(--color-ink);
+    }
+}
+
+@utility btn {
+    @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-xl px-6 py-3 text-base font-extrabold transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-60;
+}
+
+@utility btn-primary {
+    @apply btn bg-ink text-white hover:bg-ink-soft;
+}
+
+@utility btn-brand {
+    @apply btn bg-brand text-ink shadow-[inset_0_-3px_0_rgb(0_0_0/0.15)] hover:bg-brand-bright;
+}
+
+@utility btn-ghost {
+    @apply btn border-2 border-ink bg-white text-ink hover:bg-brand-wash;
+}
+
+@utility field {
+    @apply mt-1.5 block min-h-12 w-full rounded-xl border-2 border-line bg-white px-4 py-3 text-base text-ink placeholder:text-slate/60 transition-colors hover:border-slate/40 focus:border-ink;
+}
+
+@utility field-error {
+    @apply border-danger bg-danger/5;
+}
+
+@utility link {
+    @apply font-bold text-ink underline decoration-brand decoration-[3px] underline-offset-4 hover:decoration-ink;
+}
+
+/* Faint diagonal hatching on the yellow hero, like security print on a TRA form. */
+.sun-hatch {
+    background-color: var(--color-brand);
+    background-image: repeating-linear-gradient(135deg, rgb(0 0 0 / 0.035) 0 2px, transparent 2px 14px);
+}
+
+/* The EFD-style receipt in the home hero: a torn, zig-zag bottom edge.
+   The shadow sits on the wrapper because the mask would clip a box-shadow. */
+.receipt-shadow {
+    filter: drop-shadow(0 18px 22px rgb(0 0 0 / 0.35));
+}
+
+.receipt {
+    --tooth: 10px;
+    mask:
+        conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / calc(var(--tooth) * 2) 100%;
+    padding-bottom: calc(var(--tooth) + 1.5rem);
+}
+
+.receipt-leader {
+    background-image: radial-gradient(circle, currentColor 0.75px, transparent 1px);
+    background-size: 6px 6px;
+    background-position: 0 70%;
+    background-repeat: repeat-x;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .receipt-print {
+        animation: receipt-print 1100ms cubic-bezier(0.2, 0.7, 0.2, 1) 200ms both;
+    }
+
+    @keyframes receipt-print {
+        from {
+            clip-path: inset(0 0 100% 0);
+            transform: translateY(-14px);
+        }
+        to {
+            clip-path: inset(0 0 0 0);
+            transform: translateY(0);
+        }
+    }
 }

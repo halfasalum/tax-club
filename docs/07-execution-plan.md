@@ -56,7 +56,7 @@ gantt
 ### R0 — Stabilise & Foundations (S0–S1)
 **S0 (2–13 Nov)**
 - Day 1–2: rotate all exposed credentials; delete `sftp.json` and the zips; purge history; make the repo private; turn on secret scanning (doc 05 §2).
-- Monorepo layout (`apps/api`, `apps/admin`, `apps/member`, `packages/*`), Docker Compose dev stack, `.env.example` hygiene.
+- Single Laravel 13 app in `backend/` (web + API, ADR 001), Docker Compose dev stack, `.env.example` hygiene. Flutter app repo/folder created for mobile.
 - Fix migrations (D1, D2), route bug (D3), lockfile (D4). Seed roles and permissions properly (D6, D7).
 - CI: lint (Pint, ESLint), PHPUnit with MySQL service, TS type-check, gitleaks, Composer/npm audit, build.
 - Architecture sign-off workshop with TRA ICT. Kick off procurement items (§7).
@@ -64,7 +64,7 @@ gantt
 **S1 (16–27 Nov)**
 - Shared services: Audit Log, Numbering, Publishing Workflow, Scoped RBAC + Policies.
 - OpenAPI generation + `packages/api-client`.
-- Expo app scaffold (navigation, auth shell, en/sw i18n, theming, offline cache); admin portal router clean-up.
+- Flutter app scaffold (navigation, auth shell, en/sw i18n, theming, offline cache); Livewire admin shell replacing the React admin.
 - UX: design system and R1 journeys in Figma; guerrilla usability test with 8–10 students and 2 patrons.
 
 *Exit:* no secrets in repo or history; CI green; `migrate:fresh --seed` works; staging environment live; baseline feature tests for existing endpoints; ADRs 001–006 merged.
@@ -123,8 +123,8 @@ Independent penetration test and fixes, DAST, load/soak test, accessibility audi
 | Delivery Manager / Scrum Master | 1 | Plan, ceremonies, risks, reporting |
 | Tech Lead / Architect | 1 | Architecture, code review, shared engines, security |
 | Backend developers (Laravel) | 2 | API, domain modules, jobs |
-| Mobile/web developers (React Native/Expo) | 2 | Member app (iOS, Android, web) |
-| Frontend developer (React/Mantine) | 1 | Admin portal |
+| Mobile developers (Flutter) | 2 | iOS and Android apps |
+| Laravel front-end developer (Blade/Livewire/Tailwind) | 1 | Public website (SEO), member portal, Administration Portal |
 | UI/UX designer | 1 (0.5 after R2) | Design system, journeys, usability tests with students |
 | QA engineers | 2 (1 manual/UAT, 1 automation) | Test design, automation (Pest/PHPUnit, Playwright, Maestro), regression |
 | DevOps engineer | 0.5 | Infrastructure, CI/CD, monitoring, backups |

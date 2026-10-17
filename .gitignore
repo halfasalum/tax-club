@@ -28,3 +28,7 @@ Homestead.json
 .env.production
 .phpactor.json
 auth.json
+
+# Editor deployment settings may contain credentials
+.vscode/sftp.json
+*.zip

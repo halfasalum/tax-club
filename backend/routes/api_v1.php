@@ -27,8 +27,11 @@ use App\Http\Controllers\API\V1\DashboardController;
 use App\Http\Controllers\API\V1\EventController;
 use App\Http\Controllers\API\V1\ForumPostController;
 use App\Http\Controllers\API\V1\InstitutionController;
+use App\Http\Controllers\API\V1\MembershipController;
 use App\Http\Controllers\API\V1\ModuleController;
+use App\Http\Controllers\API\V1\NotificationController;
 use App\Http\Controllers\API\V1\OpportunityController;
+use App\Http\Controllers\API\V1\ProfileController;
 use App\Http\Controllers\API\V1\QuizController;
 use App\Http\Controllers\API\V1\RoleController;
 use App\Http\Controllers\API\V1\UserController;
@@ -41,34 +44,58 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
-    Route::post('login',    [AuthController::class, 'login']);
+    Route::post('login', [AuthController::class, 'login'])->middleware('throttle:10,1');
+    Route::post('login/verify', [AuthController::class, 'verifyLogin'])->middleware('throttle:10,1');
+    Route::post('recover', [AuthController::class, 'recover'])->middleware('throttle:10,15');
+    Route::post('recover/reset', [AuthController::class, 'resetPassword'])->middleware('throttle:10,15');
 });
 
 // Institutions list is public — needed during registration dropdown
+Route::post('membership/verify', [MembershipController::class, 'verify'])->middleware('throttle:20,1');
+
 Route::get('institutions', [InstitutionController::class, 'index']);
 Route::get('institutions/{id}', [InstitutionController::class, 'show']);
-
-// Global Leaderboard
-Route::get('/leaderboard', [QuizController::class, 'globalLeaderboard']);
 
 // ──────────────────────────────────────────────────────────────
 //  AUTHENTICATED ROUTES (auth:sanctum)
 // ──────────────────────────────────────────────────────────────
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'active'])->group(function () {
 
     // ── Auth ──────────────────────────────────────────────────
     Route::prefix('auth')->group(function () {
-        Route::post('logout',          [AuthController::class, 'logout']);
-        Route::get('me',               [AuthController::class, 'me']);
-        Route::post('verify',          [AuthController::class, 'verify']);
+        Route::post('logout', [AuthController::class, 'logout']);
+        Route::get('me', [AuthController::class, 'me']);
+        Route::post('verify', [AuthController::class, 'verify']);
         Route::post('change-password', [AuthController::class, 'changePassword']);
     });
+
+    // ── Leaderboard (members only; names are shortened for privacy) ──
+    Route::get('leaderboard', [QuizController::class, 'globalLeaderboard']);
+
+    // Profile (PRO-REQ01-03, REG-REQ07)
+    Route::get('profile', [ProfileController::class, 'show']);
+    Route::put('profile', [ProfileController::class, 'update']);
+    Route::post('profile/photo', [ProfileController::class, 'updatePhoto'])->middleware('throttle:10,60');
+    Route::delete('profile/photo', [ProfileController::class, 'deletePhoto']);
+    Route::post('profile/phone', [ProfileController::class, 'requestPhoneChange'])->middleware('throttle:5,15');
+    Route::post('profile/phone/confirm', [ProfileController::class, 'confirmPhoneChange'])->middleware('throttle:10,15');
+    Route::post('profile/alumni-request', [ProfileController::class, 'requestAlumni']);
+    Route::delete('profile/alumni-request', [ProfileController::class, 'cancelAlumniRequest']);
+    Route::get('members/{id}', [ProfileController::class, 'member'])->whereUuid('id');
+
+    // Notification inbox (NOT-REQ06)
+    Route::get('notifications', [NotificationController::class, 'index']);
+    Route::post('notifications/read-all', [NotificationController::class, 'markAllRead']);
+    Route::post('notifications/{id}/read', [NotificationController::class, 'markRead'])->whereUuid('id');
+
+    // Digital membership card
+    Route::get('membership/card', [MembershipController::class, 'card']);
+    Route::post('membership/card/reissue', [MembershipController::class, 'reissue'])->middleware('throttle:5,60');
 
     // ── Dashboard ─────────────────────────────────────────────
     Route::get('dashboard', [DashboardController::class, 'index']);
 
-    Route::get('', [DashboardController::class, '']);
     // ── Quizzes ───────────────────────────────────────────────
     Route::prefix('quizzes')->group(function () {
         // Public routes
@@ -121,13 +148,12 @@ Route::middleware('auth:sanctum')->group(function () {
             ->middleware('permission:edit_quiz');
     });
 
-
     // ── Users ─────────────────────────────────────────────────
     Route::prefix('users')->group(function () {
-        Route::get('/',    [UserController::class, 'index'])
+        Route::get('/', [UserController::class, 'index'])
             ->middleware('permission:view_users');
 
-        Route::post('/',   [UserController::class, 'store'])
+        Route::post('/', [UserController::class, 'store'])
             ->middleware('permission:add_user');
 
         Route::get('/{id}', [UserController::class, 'show'])
@@ -148,10 +174,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // ── Institutions (write — admin only) ─────────────────────
     Route::prefix('institutions')->group(function () {
-        Route::post('/',      [InstitutionController::class, 'store'])
+        Route::post('/', [InstitutionController::class, 'store'])
             ->middleware('permission:add_institution');
 
-        Route::put('/{id}',   [InstitutionController::class, 'update'])
+        Route::put('/{id}', [InstitutionController::class, 'update'])
             ->middleware('permission:edit_institution');
 
         Route::delete('/{id}', [InstitutionController::class, 'destroy'])
@@ -160,22 +186,22 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // ── Roles ─────────────────────────────────────────────────
     Route::prefix('roles')->group(function () {
-        Route::get('/',    [RoleController::class, 'index'])
+        Route::get('/', [RoleController::class, 'index'])
             ->middleware('permission:view_roles');
 
-        Route::post('/',   [RoleController::class, 'store'])
+        Route::post('/', [RoleController::class, 'store'])
             ->middleware('permission:add_role');
 
-        Route::get('/{id}',    [RoleController::class, 'show'])
+        Route::get('/{id}', [RoleController::class, 'show'])
             ->middleware('permission:view_roles');
 
-        Route::put('/{id}',    [RoleController::class, 'update'])
+        Route::put('/{id}', [RoleController::class, 'update'])
             ->middleware('permission:edit_role');
 
         Route::delete('/{id}', [RoleController::class, 'destroy'])
             ->middleware('permission:delete_role');
 
-        Route::post('/{id}/controls',   [RoleController::class, 'assignControls'])
+        Route::post('/{id}/controls', [RoleController::class, 'assignControls'])
             ->middleware('permission:edit_role');
 
         Route::delete('/{id}/controls', [RoleController::class, 'removeControls'])
@@ -184,30 +210,30 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // ── Modules & Controls ────────────────────────────────────
     Route::prefix('modules')->group(function () {
-        Route::get('/',    [ModuleController::class, 'index'])
+        Route::get('/', [ModuleController::class, 'index'])
             ->middleware('permission:view_modules');
 
-        Route::post('/',   [ModuleController::class, 'store'])
+        Route::post('/', [ModuleController::class, 'store'])
             ->middleware('permission:add_module');
 
-        Route::get('/{id}',    [ModuleController::class, 'show'])
+        Route::get('/{id}', [ModuleController::class, 'show'])
             ->middleware('permission:view_modules');
 
-        Route::put('/{id}',    [ModuleController::class, 'update'])
+        Route::put('/{id}', [ModuleController::class, 'update'])
             ->middleware('permission:edit_module');
 
         Route::delete('/{id}', [ModuleController::class, 'destroy'])
             ->middleware('permission:delete_module');
 
         // Controls nested under module
-        Route::get('/{id}/controls',  [ModuleController::class, 'controls'])
+        Route::get('/{id}/controls', [ModuleController::class, 'controls'])
             ->middleware('permission:view_modules');
 
         Route::post('/{id}/controls', [ModuleController::class, 'storeControl'])
             ->middleware('permission:add_module');
 
         // Control-level actions (not nested — uses controlId directly)
-        Route::put('/controls/{controlId}',    [ModuleController::class, 'updateControl'])
+        Route::put('/controls/{controlId}', [ModuleController::class, 'updateControl'])
             ->middleware('permission:edit_module');
 
         Route::delete('/controls/{controlId}', [ModuleController::class, 'destroyControl'])
@@ -216,10 +242,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // ── Content (Lessons) ─────────────────────────────────────
     Route::prefix('content')->group(function () {
-        Route::get('/',    [ContentController::class, 'index']);   // all authenticated users
+        Route::get('/', [ContentController::class, 'index']);   // all authenticated users
         Route::get('/{id}', [ContentController::class, 'show']);   // all authenticated users
 
-        Route::post('/',   [ContentController::class, 'store'])
+        Route::post('/', [ContentController::class, 'store'])
             ->middleware('permission:upload_content');
 
         Route::put('/{id}', [ContentController::class, 'update'])
@@ -232,14 +258,12 @@ Route::middleware('auth:sanctum')->group(function () {
             ->middleware('permission:edit_content');
     });
 
-
-
     // ── Opportunities ─────────────────────────────────────────
     Route::prefix('opportunities')->group(function () {
-        Route::get('/',     [OpportunityController::class, 'index']);   // all auth users
+        Route::get('/', [OpportunityController::class, 'index']);   // all auth users
         Route::get('/{id}', [OpportunityController::class, 'show']);    // all auth users
 
-        Route::post('/',    [OpportunityController::class, 'store'])
+        Route::post('/', [OpportunityController::class, 'store'])
             ->middleware('permission:add_opportunity');
 
         Route::put('/{id}', [OpportunityController::class, 'update'])
@@ -251,10 +275,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // ── Forum ─────────────────────────────────────────────────
     Route::prefix('forum')->group(function () {
-        Route::get('/',     [ForumPostController::class, 'index']);   // all auth users
+        Route::get('/', [ForumPostController::class, 'index']);   // all auth users
         Route::get('/{id}', [ForumPostController::class, 'show']);    // all auth users
 
-        Route::post('/',    [ForumPostController::class, 'store'])
+        Route::post('/', [ForumPostController::class, 'store'])
             ->middleware('permission:create_forum_post');
 
         Route::post('/{id}/reply', [ForumPostController::class, 'reply']); // all auth users
@@ -265,10 +289,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // ── Events ────────────────────────────────────────────────
     Route::prefix('events')->group(function () {
-        Route::get('/',     [EventController::class, 'index']);   // all auth users
+        Route::get('/', [EventController::class, 'index']);   // all auth users
         Route::get('/{id}', [EventController::class, 'show']);    // all auth users
 
-        Route::post('/',    [EventController::class, 'store'])
+        Route::post('/', [EventController::class, 'store'])
             ->middleware('permission:add_event');
 
         Route::put('/{id}', [EventController::class, 'update'])
@@ -278,7 +302,7 @@ Route::middleware('auth:sanctum')->group(function () {
             ->middleware('permission:delete_event');
 
         // Registration actions (any authenticated user)
-        Route::post('/{id}/register',   [EventController::class, 'register']);
+        Route::post('/{id}/register', [EventController::class, 'register']);
         Route::delete('/{id}/register', [EventController::class, 'cancelRegistration']);
 
         // Attendee list (admin only)
@@ -288,9 +312,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // ── User Progress ─────────────────────────────────────────
     Route::prefix('progress')->group(function () {
-        Route::get('/',             [UserProgressController::class, 'index']);
-        Route::get('/summary',      [UserProgressController::class, 'summary']);
-        Route::get('/{contentId}',  [UserProgressController::class, 'show']);
-        Route::post('/',            [UserProgressController::class, 'upsert']);
+        Route::get('/', [UserProgressController::class, 'index']);
+        Route::get('/summary', [UserProgressController::class, 'summary']);
+        Route::get('/{contentId}', [UserProgressController::class, 'show']);
+        Route::post('/', [UserProgressController::class, 'upsert']);
     });
 });

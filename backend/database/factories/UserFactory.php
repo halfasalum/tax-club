@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Institution;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
@@ -18,28 +19,57 @@ class UserFactory extends Factory
     protected static ?string $password;
 
     /**
-     * Define the model's default state.
+     * An active, verified student member.
      *
      * @return array<string, mixed>
      */
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'full_name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
-            'remember_token' => Str::random(10),
+            'phone' => '+2557'.fake()->unique()->numerify('########'),
+            'password_hash' => static::$password ??= Hash::make('password'),
+            'user_type' => 'secondary',
+            'institution_id' => Institution::factory(),
+            'membership_id' => 'TC-'.now()->format('y').'-'.Str::upper(Str::random(8)),
+            'card_token' => Str::random(32),
+            'membership_issued_at' => now(),
+            'registration_reference' => 'REG-'.now()->format('Y').'-'.Str::upper(Str::random(6)),
+            'is_verified' => true,
+            'account_status' => User::STATUS_ACTIVE,
+            'date_of_birth' => now()->subYears(20)->toDateString(),
+            'age_band' => User::AGE_ADULT,
+            'preferred_locale' => 'en',
         ];
     }
 
     /**
-     * Indicate that the model's email address should be unverified.
+     * A member under 18 with guardian details.
      */
-    public function unverified(): static
+    public function minor(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
+        return $this->state(fn () => [
+            'date_of_birth' => now()->subYears(15)->toDateString(),
+            'age_band' => User::AGE_MINOR,
+            'guardian_name' => 'Mzazi '.fake()->lastName(),
+            'guardian_phone' => '+2557'.fake()->numerify('########'),
+            'guardian_relationship' => 'parent',
+            'guardian_consent_at' => now(),
+        ]);
+    }
+
+    /**
+     * A registration awaiting verification.
+     */
+    public function pending(): static
+    {
+        return $this->state(fn () => [
+            'membership_id' => null,
+            'card_token' => null,
+            'membership_issued_at' => null,
+            'is_verified' => false,
+            'account_status' => User::STATUS_PENDING_VERIFICATION,
         ]);
     }
 }

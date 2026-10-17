@@ -18,8 +18,8 @@
 ```mermaid
 flowchart LR
   subgraph Clients
-    M[Member App<br/>iOS · Android · Web<br/>Expo / React Native]
-    A[Admin Portal<br/>React + Mantine]
+    M[Mobile App<br/>iOS · Android<br/>Flutter]
+    A[Laravel web: public site,<br/>member portal, admin portal<br/>Blade · Livewire · Tailwind]
     V[Public verify pages<br/>card & certificate]
   end
   subgraph Edge
@@ -61,21 +61,20 @@ The team is small, the domain is cohesive and the load is modest (projected nati
 
 | Concern | Choice | Notes |
 |---|---|---|
-| API | **Laravel 12 / PHP 8.3**, Sanctum (token auth for mobile, cookie SPA auth for admin) | Keep the prototype's stack |
-| API contract | **OpenAPI 3.1** generated from code (e.g. `dedoc/scramble`) | Typed TS client generated for both front ends |
+| Application | **Laravel 13 / PHP 8.3**, one app in `backend/` serving the web front end and `/api/v1`. Sanctum tokens for mobile; session auth for the web | See ADR 001 |
+| Web front end | **Blade + Livewire 4 (Alpine.js) + Tailwind CSS 4**, server-rendered, built with Vite | Public website (SEO), member portal and Administration Portal in one codebase. No React |
+| SEO | Server-rendered HTML, canonical + `hreflang` (sw at `/`, en at `/en`), Open Graph, JSON-LD, dynamic `sitemap.xml` and `robots.txt` | Already implemented in the foundation branch |
+| API contract | **OpenAPI 3.1** generated from code (e.g. `dedoc/scramble`) | Dart client generated for the Flutter app |
 | Database | **MySQL 8.0** (InnoDB, utf8mb4), UUID PKs | Read replica for reporting from Release 3 |
 | Cache / queue / locks | **Redis 7** + Laravel queues (+ Horizon dashboard) | Notifications, scoring, certificate PDFs |
 | Scheduler | Laravel Scheduler (`schedule:work` under supervisor) | Scheduled publish, auto-close, reminders, waitlist expiry |
 | Files | S3-compatible storage (MinIO on-prem, or cloud) + signed URLs | Virus scan on upload (ClamAV) |
 | Search | MySQL FULLTEXT first; Meilisearch if relevance needs grow | LRN-REQ07, OPP-REQ04 |
 | PDF / QR | `barryvdh/laravel-dompdf` (or Browsershot), `bacon/bacon-qr-code` | Certificates, membership card |
-| Member app | **Expo (React Native) + Expo Router + TypeScript**, one codebase for iOS, Android and Web | Reuses the team's React/TS skills; `react-native-web` serves the member web app; EAS Build/Update for store releases and OTA fixes |
-| Member app libs | TanStack Query (offline cache), Zustand, react-hook-form + zod, i18next (en/sw), expo-camera (QR), expo-notifications, expo-secure-store | |
-| Admin portal | Existing **React 19 + Vite + Mantine 9** | Fix routing and permissions; add workflow, queue and report screens |
-| Monorepo | pnpm workspaces + Turborepo: `apps/api`, `apps/admin`, `apps/member`, `packages/api-client`, `packages/i18n`, `packages/ui-tokens` | Shared types and translations |
-| Observability | Sentry (API + apps), structured JSON logs, uptime checks, Laravel Pulse | |
+| Mobile app | **Flutter 3 (Dart)** for iOS and Android | Performs well on low-end Android; one codebase for both stores |
+| Mobile libs | Riverpod (state), dio + generated OpenAPI client, drift/Hive (offline cache), flutter_secure_storage, mobile_scanner (QR), firebase_messaging, intl (en/sw) | |
 
-**Mobile alternative considered: Flutter.** Its rendering performance on low-end Android is excellent, but it would add a second language (Dart) and could not share code with the React admin portal or the member web app. React Native/Expo is recommended unless TRA ICT standards mandate otherwise.
+**Why not React or React Native:** the web front end is now server-rendered Laravel (ADR 001), so a React Native app would no longer share code with the web. Flutter gives the best performance on the low-end Android phones many students use.
 
 **New dependencies need approval.** The backend `CLAUDE.md` asks for approval before changing dependencies. Each package above is listed in the Release 0 change request.
 
@@ -172,7 +171,7 @@ app/
 ```
 Rule: controllers handle validation and authorisation and delegate to an Action/Service class. Domain events (e.g. `MembershipActivated`) decouple modules from Notifications, Gamification and Audit.
 
-## 6. Member app structure (Expo)
+## 6. Member experience (Flutter app and Livewire member portal)
 
 | Area | Screens (MVP in bold) |
 |---|---|
@@ -187,7 +186,22 @@ Rule: controllers handle validation and authorisation and delegate to an Action/
 | Alumni & Mentorship | Directory, sessions, mentor application, mentorship request/tracker |
 | More | Notification inbox and preferences, feedback, settings, help |
 
-Offline: the TanStack Query cache is persisted to MMKV. Content can be downloaded for offline reading. Quiz attempts start online (for time-limit integrity) but tolerate brief drops by queuing the submission with the server-issued start time.
+The member web portal (Livewire) offers the same journeys in the browser. Offline (mobile): API responses are cached locally with drift/Hive. Content can be downloaded for offline reading. Quiz attempts start online (for time-limit integrity) but tolerate brief drops by queuing the submission with the server-issued start time.
+
+## 6a. Visual identity (web)
+
+The web front end uses the TRA corporate palette taken from tra.go.tz and the TRA emblem. All values are design tokens in `backend/resources/css/app.css`, so a brand update is a one-file change.
+
+| Token | Hex | Source on tra.go.tz | Use |
+|---|---|---|---|
+| `brand` | `#F9E50F` | `cp-yellow` | Hero and page headers, primary highlights, active tabs |
+| `brand-bright` | `#FDEE02` | `yellow-active` | Hover on yellow buttons |
+| `ink` | `#020202` | `cp-black` | Text, primary buttons, header and footer |
+| `ink-soft` | `#222222` | `black-active` | Secondary text on yellow |
+| `slate` | `#4B5563` | `black-normal` | Muted text |
+| `savanna` / `danger` | `#15803D` / `#B42318` | — | Success and error states |
+
+Typeface: **Nunito** (as on tra.go.tz) for all text; IBM Plex Mono only for receipt-style reference numbers. Every text/background pair meets WCAG 2.1 AA (black on TRA yellow is 16:1). Focus is shown as a black outline with a yellow halo, so it stays visible on yellow, white and black surfaces.
 
 ## 7. Environments
 

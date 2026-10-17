@@ -37,6 +37,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             ModuleSeeder::class,
             SuperAdminRoleSeeder::class,
+            PatronRoleSeeder::class,
             SuperUserSeeder::class,
         ]);
 

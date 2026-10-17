@@ -6,7 +6,7 @@
 @endphp
 <div>
     <nav aria-label="{{ __('Breadcrumb') }}" class="text-sm font-bold">
-        <a href="{{ route('admin.institutions.index') }}" class="link">{{ __('Institutions') }}</a>
+        <a wire:navigate href="{{ route('admin.institutions.index') }}" class="link">{{ __('Institutions') }}</a>
     </nav>
 
     <div class="mt-4 flex flex-wrap items-start justify-between gap-4">
@@ -20,7 +20,7 @@
             </p>
         </div>
         @if ($can['edit'])
-            <a href="{{ route('admin.institutions.edit', $institution) }}" class="btn-ghost">{{ __('Edit details') }}</a>
+            <a wire:navigate href="{{ route('admin.institutions.edit', $institution) }}" class="btn-ghost">{{ __('Edit details') }}</a>
         @endif
     </div>
 
@@ -232,7 +232,7 @@
                     <div class="flex flex-wrap items-end justify-between gap-3">
                         <h2 id="changes-heading" class="text-2xl font-black">{{ __('Detail changes') }}</h2>
                         @if ($can['audit'])
-                            <a href="{{ route('admin.audit', ['subject' => $institution->institution_id]) }}" class="link">{{ __('Full audit log') }}</a>
+                            <a wire:navigate href="{{ route('admin.audit', ['subject' => $institution->institution_id]) }}" class="link">{{ __('Full audit log') }}</a>
                         @endif
                     </div>
                     <ul class="mt-4 divide-y divide-line">
@@ -282,7 +282,7 @@
             </div>
 
             @if ($can['members'])
-                <a href="{{ route('admin.members.index', ['institution' => $institution->institution_id]) }}" class="btn-ghost w-full">{{ __('See members') }}</a>
+                <a wire:navigate href="{{ route('admin.members.index', ['institution' => $institution->institution_id]) }}" class="btn-ghost w-full">{{ __('See members') }}</a>
             @endif
 
             @if ($can['status'])

@@ -11,7 +11,7 @@
     </div>
 
     @if ($resume && ! $filtering)
-        <a href="{{ route('member.learn.lesson', $resume->content) }}" class="sun-hatch mt-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border-4 border-ink p-5 shadow-[6px_6px_0_var(--color-ink)] transition hover:-translate-y-0.5">
+        <a wire:navigate href="{{ route('member.learn.lesson', $resume->content) }}" class="sun-hatch mt-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border-4 border-ink p-5 shadow-[6px_6px_0_var(--color-ink)] transition hover:-translate-y-0.5">
             <span>
                 <span class="block text-sm font-extrabold text-ink-soft">{{ __('Continue where you left off') }}</span>
                 <span class="text-xl font-black">{{ $resume->content->title }}</span>
@@ -26,7 +26,7 @@
             <ul class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach ($modules as ['module' => $module, 'status' => $status])
                     <li wire:key="module-{{ $module->id }}">
-                        <a href="{{ route('member.learn.module', $module) }}" class="flex h-full flex-col rounded-2xl border-2 border-line bg-white p-5 transition hover:border-ink">
+                        <a wire:navigate href="{{ route('member.learn.module', $module) }}" class="flex h-full flex-col rounded-2xl border-2 border-line bg-white p-5 transition hover:border-ink">
                             <span class="text-sm font-extrabold text-slate">{{ $module->category?->name() }}</span>
                             <span class="mt-1 text-lg font-black leading-snug">{{ $module->title }}</span>
                             <span class="mt-2 flex-1 text-slate">{{ \Illuminate\Support\Str::limit($module->summary, 110) }}</span>
@@ -69,7 +69,7 @@
             @forelse ($this->lessons as $lesson)
                 @php($state = $progress->get($lesson->content_id))
                 <li wire:key="lesson-{{ $lesson->content_id }}">
-                    <a href="{{ route('member.learn.lesson', $lesson) }}" class="flex h-full flex-col rounded-2xl border-2 border-line bg-white p-5 transition hover:border-ink">
+                    <a wire:navigate href="{{ route('member.learn.lesson', $lesson) }}" class="flex h-full flex-col rounded-2xl border-2 border-line bg-white p-5 transition hover:border-ink">
                         <span class="flex flex-wrap items-center gap-2 text-sm font-extrabold">
                             <span class="rounded-full bg-brand px-2.5 py-0.5">{{ $types[$lesson->content_type] ?? $lesson->content_type }}</span>
                             <span class="text-slate">{{ $levels[$lesson->level] ?? '' }}@if ($lesson->estimated_minutes) · {{ __(':minutes min', ['minutes' => $lesson->estimated_minutes]) }}@endif</span>

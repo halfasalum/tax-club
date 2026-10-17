@@ -13,7 +13,7 @@
     $statusTone = $member->isActive() ? 'bg-[#dcfce7] text-savanna' : ($member->account_status === User::STATUS_SUSPENDED ? 'bg-[#fef3f2] text-danger' : 'bg-mist text-slate');
 @endphp
 <div>
-    <a href="{{ route('admin.members.index') }}" class="link">← {{ __('Members') }}</a>
+    <a wire:navigate href="{{ route('admin.members.index') }}" class="link">← {{ __('Members') }}</a>
 
     <div class="mt-4 flex flex-wrap items-start justify-between gap-4">
         <div class="flex items-start gap-4">
@@ -33,7 +33,7 @@
             </div>
         </div>
         @if ($can['audit'])
-            <a href="{{ route('admin.audit', ['subject' => $member->user_id]) }}" class="btn-ghost">{{ __('Audit log') }}</a>
+            <a wire:navigate href="{{ route('admin.audit', ['subject' => $member->user_id]) }}" class="btn-ghost">{{ __('Audit log') }}</a>
         @endif
     </div>
 

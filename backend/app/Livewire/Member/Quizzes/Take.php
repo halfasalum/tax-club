@@ -36,7 +36,7 @@ class Take extends Component
         if ($attempt->status === QuizAttempt::SUBMITTED || QuizEngine::isOverdue($attempt)) {
             QuizEngine::submit($attempt, automatic: true);
 
-            return $this->redirectRoute('member.quizzes.result', $attempt, navigate: false);
+            return $this->redirectRoute('member.quizzes.result', $attempt, navigate: true);
         }
 
         // Every question starts with an empty answer: a list for multi-select.
@@ -75,7 +75,7 @@ class Take extends Component
     {
         QuizEngine::submit($this->attempt, automatic: $timeUp);
 
-        return $this->redirectRoute('member.quizzes.result', $this->attempt, navigate: false);
+        return $this->redirectRoute('member.quizzes.result', $this->attempt, navigate: true);
     }
 
     private function isMulti(string $questionId): bool

@@ -1,5 +1,5 @@
 <div class="mx-auto max-w-5xl">
-    <a href="{{ route('admin.learning.index') }}" class="link">← {{ __('Learning content') }}</a>
+    <a wire:navigate href="{{ route('admin.learning.index') }}" class="link">← {{ __('Learning content') }}</a>
     <h1 class="mt-4 text-3xl font-black tracking-tight sm:text-4xl">{{ __('Categories') }}</h1>
     <p class="mt-2 text-lg text-slate">{{ __('Members browse lessons and quizzes by category.') }}</p>
 

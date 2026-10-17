@@ -6,8 +6,8 @@
 @endphp
 <div class="mx-auto max-w-3xl">
     <nav class="flex flex-wrap gap-2 text-sm font-bold" aria-label="{{ __('Breadcrumb') }}">
-        <a href="{{ route('member.learn') }}" class="link">{{ __('Learn') }}</a>
-        @if ($module)<span aria-hidden="true">/</span><a href="{{ route('member.learn.module', $module) }}" class="link">{{ $module->title }}</a>@endif
+        <a wire:navigate href="{{ route('member.learn') }}" class="link">{{ __('Learn') }}</a>
+        @if ($module)<span aria-hidden="true">/</span><a wire:navigate href="{{ route('member.learn.module', $module) }}" class="link">{{ $module->title }}</a>@endif
     </nav>
 
     <h1 class="mt-4 text-3xl font-black leading-tight tracking-tight sm:text-4xl">{{ $lesson->title }}</h1>
@@ -54,14 +54,14 @@
 
         <div class="mt-6 flex flex-wrap gap-3">
             @if ($quiz && $quiz->isAvailableTo(auth()->user()))
-                <a href="{{ route('member.quizzes.show', $quiz) }}" class="btn-brand">{{ __('Take the quiz') }}</a>
+                <a wire:navigate href="{{ route('member.quizzes.show', $quiz) }}" class="btn-brand">{{ __('Take the quiz') }}</a>
             @endif
             @if ($next)
-                <a href="{{ route('member.learn.lesson', $next) }}" class="btn-ghost">{{ __('Next lesson') }}: {{ \Illuminate\Support\Str::limit($next->title, 40) }}</a>
+                <a wire:navigate href="{{ route('member.learn.lesson', $next) }}" class="btn-ghost">{{ __('Next lesson') }}: {{ \Illuminate\Support\Str::limit($next->title, 40) }}</a>
             @elseif ($module)
-                <a href="{{ route('member.learn.module', $module) }}" class="btn-ghost">{{ __('Back to the module') }}</a>
+                <a wire:navigate href="{{ route('member.learn.module', $module) }}" class="btn-ghost">{{ __('Back to the module') }}</a>
             @else
-                <a href="{{ route('member.learn') }}" class="btn-ghost">{{ __('More lessons') }}</a>
+                <a wire:navigate href="{{ route('member.learn') }}" class="btn-ghost">{{ __('More lessons') }}</a>
             @endif
         </div>
     </div>

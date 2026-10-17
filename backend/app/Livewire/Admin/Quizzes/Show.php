@@ -94,7 +94,7 @@ class Show extends Component
         $copy = QuizWorkflow::duplicate($this->quiz, auth()->user());
         session()->flash('status', __('A new draft was created from :code.', ['code' => $this->quiz->code]));
 
-        return $this->redirectRoute('admin.quizzes.edit', $copy, navigate: false);
+        return $this->redirectRoute('admin.quizzes.edit', $copy, navigate: true);
     }
 
     private function attempt(callable $action, string $success): void

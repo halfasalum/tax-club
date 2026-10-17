@@ -3,7 +3,7 @@
     <h1 class="text-3xl font-black tracking-tight sm:text-4xl">{{ __('Notifications') }}</h1>
     <p class="mt-2 max-w-[65ch] text-lg text-slate">{{ __('Change the wording of each message and choose whether it goes by SMS, to the in-app inbox, or both. One SMS holds about 160 characters; longer messages cost more.') }}</p>
     @if (auth()->user()->hasControl('view_sms_log'))
-        <a href="{{ route('admin.sms') }}" class="link mt-3 inline-block">{{ __('See SMS delivery') }}</a>
+        <a wire:navigate href="{{ route('admin.sms') }}" class="link mt-3 inline-block">{{ __('See SMS delivery') }}</a>
     @endif
 
     @if ($statusMessage)

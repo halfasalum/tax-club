@@ -17,7 +17,7 @@
     $previewContent->media_path = $shown['media_path'] ?? null;
 @endphp
 <div>
-    <a href="{{ route('admin.learning.index') }}" class="link">← {{ __('Learning content') }}</a>
+    <a wire:navigate href="{{ route('admin.learning.index') }}" class="link">← {{ __('Learning content') }}</a>
 
     <div class="mt-4 flex flex-wrap items-start justify-between gap-4">
         <div>
@@ -47,7 +47,7 @@
             @endif
         </div>
         @if ($can['edit'])
-            <a href="{{ route('admin.learning.edit', $content) }}" class="btn-ghost">{{ $revision ? __('Edit') : __('Start a new version') }}</a>
+            <a wire:navigate href="{{ route('admin.learning.edit', $content) }}" class="btn-ghost">{{ $revision ? __('Edit') : __('Start a new version') }}</a>
         @endif
     </div>
 

@@ -5,7 +5,7 @@
     $audiences = ['secondary' => __('Secondary school'), 'college' => __('College'), 'university' => __('University'), 'alumni' => __('Alumni')];
 @endphp
 <div>
-    <a href="{{ route('admin.learning.index') }}" class="link">← {{ __('Learning content') }}</a>
+    <a wire:navigate href="{{ route('admin.learning.index') }}" class="link">← {{ __('Learning content') }}</a>
     <div class="mt-4 flex flex-wrap items-end justify-between gap-4">
         <div>
             <h1 class="text-3xl font-black tracking-tight sm:text-4xl">{{ __('Modules') }}</h1>

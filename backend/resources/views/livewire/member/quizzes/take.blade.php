@@ -4,7 +4,7 @@
         <div class="mx-auto flex max-w-2xl items-center justify-between gap-3">
             <p class="font-black">{{ __(':answered of :total answered', ['answered' => $answered, 'total' => $questions->count()]) }}</p>
             @if ($secondsLeft !== null)
-                <p x-data="{ left: {{ (int) $secondsLeft }}, timer: null }"
+                <p x-data="{ left: {{ (int) $secondsLeft }}, timer: null, destroy() { clearInterval(this.timer) } }"
                    x-init="timer = setInterval(() => { left = Math.max(0, left - 1); if (left === 0) { clearInterval(timer); $wire.submit(true) } }, 1000)"
                    :class="left < 60 ? 'bg-danger text-white' : 'bg-brand text-ink'"
                    class="rounded-full px-4 py-1.5 font-receipt text-lg font-semibold tabular-nums" role="timer" aria-live="off">

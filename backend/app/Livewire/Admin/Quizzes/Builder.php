@@ -115,7 +115,7 @@ class Builder extends Component
         $quiz = QuizWorkflow::create($data, auth()->user());
         session()->flash('status', __('Quiz created. Now add the questions.'));
 
-        return $this->redirectRoute('admin.quizzes.edit', $quiz, navigate: false);
+        return $this->redirectRoute('admin.quizzes.edit', $quiz, navigate: true);
     }
 
     public function newQuestion(): void

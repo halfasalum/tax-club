@@ -1,5 +1,5 @@
 <div class="mx-auto max-w-2xl">
-    <a href="{{ route('member.quizzes.show', $quiz) }}" class="link">← {{ $quiz->title }}</a>
+    <a wire:navigate href="{{ route('member.quizzes.show', $quiz) }}" class="link">← {{ $quiz->title }}</a>
 
     <section @class(['mt-6 rounded-3xl border-4 p-8 text-center', 'border-savanna bg-[#ecfdf3]' => $attempt->passed, 'border-ink bg-white' => ! $attempt->passed])>
         <p class="text-6xl font-black tabular-nums">{{ (int) $attempt->percent }}%</p>
@@ -13,9 +13,9 @@
         @endif
         <div class="mt-6 flex flex-wrap justify-center gap-3">
             @if ($status['can_start'])
-                <a href="{{ route('member.quizzes.show', $quiz) }}" class="btn-primary">{{ __('Try again') }}</a>
+                <a wire:navigate href="{{ route('member.quizzes.show', $quiz) }}" class="btn-primary">{{ __('Try again') }}</a>
             @endif
-            <a href="{{ route('member.quizzes') }}" class="btn-ghost">{{ __('More quizzes') }}</a>
+            <a wire:navigate href="{{ route('member.quizzes') }}" class="btn-ghost">{{ __('More quizzes') }}</a>
         </div>
     </section>
 

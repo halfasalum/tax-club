@@ -6,7 +6,6 @@ use App\Models\Content;
 use App\Models\ContentCategory;
 use App\Models\ContentVersion;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Url;
@@ -44,7 +43,7 @@ class Index extends Component
     public function items(): LengthAwarePaginator
     {
         $search = trim($this->search);
-        $open = fn (Builder $query) => $query->whereIn('status', ContentVersion::OPEN);
+        $open = fn ($query) => $query->whereIn('status', ContentVersion::OPEN);
 
         return Content::query()
             ->with(['category', 'versions' => $open])

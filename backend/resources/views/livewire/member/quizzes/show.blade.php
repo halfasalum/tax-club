@@ -1,5 +1,5 @@
 <div class="mx-auto max-w-2xl">
-    <a href="{{ route('member.quizzes') }}" class="link">← {{ __('Quizzes') }}</a>
+    <a wire:navigate href="{{ route('member.quizzes') }}" class="link">← {{ __('Quizzes') }}</a>
     <h1 class="mt-4 text-3xl font-black tracking-tight sm:text-4xl">{{ $quiz->title }}</h1>
     @if ($quiz->description)<p class="mt-2 text-lg text-slate">{{ $quiz->description }}</p>@endif
 
@@ -18,7 +18,7 @@
 
         @error('start')<p class="mt-4 font-semibold text-danger" role="alert">{{ $message }}</p>@enderror
         @if ($status['in_progress'])
-            <a href="{{ route('member.quizzes.take', $status['in_progress']) }}" class="btn-brand mt-6 w-full text-lg">{{ __('Continue your attempt') }}</a>
+            <a wire:navigate href="{{ route('member.quizzes.take', $status['in_progress']) }}" class="btn-brand mt-6 w-full text-lg">{{ __('Continue your attempt') }}</a>
         @elseif ($status['can_start'])
             <button type="button" wire:click="start" class="btn-primary mt-6 w-full text-lg">{{ $attempts->isEmpty() ? __('Start quiz') : __('Try again') }}</button>
         @else
@@ -37,7 +37,7 @@
                             <span class="text-slate">· {{ $attempt->submitted_at?->translatedFormat('j M Y H:i') }}</span>
                             @if ($attempt->is_best_attempt)<span class="ml-1 rounded-full bg-brand px-2 py-0.5 text-xs font-extrabold">{{ __('Counts') }}</span>@endif
                         </span>
-                        <a href="{{ route('member.quizzes.result', $attempt) }}" @class(['font-black', 'text-savanna' => $attempt->passed])>{{ (int) $attempt->percent }}% →</a>
+                        <a wire:navigate href="{{ route('member.quizzes.result', $attempt) }}" @class(['font-black', 'text-savanna' => $attempt->passed])>{{ (int) $attempt->percent }}% →</a>
                     </li>
                 @endforeach
             </ul>

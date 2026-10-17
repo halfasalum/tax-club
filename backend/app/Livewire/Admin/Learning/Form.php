@@ -162,7 +162,7 @@ class Form extends Component
             session()->flash('status', __('Draft saved.'));
         }
 
-        return $this->redirectRoute('admin.learning.show', $this->content, navigate: false);
+        return $this->redirectRoute('admin.learning.show', $this->content, navigate: true);
     }
 
     public function render(): mixed

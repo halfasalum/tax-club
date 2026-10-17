@@ -94,6 +94,29 @@ QUEUE_CONNECTION=database
 - The scheduler also publishes scheduled lessons and closes overdue quiz attempts.
 - After pulling, also run `php artisan db:seed --class=ContentCategorySeeder` and `php artisan db:seed --class=BadgeSeeder`.
 
+## Speed
+
+The app itself answers most pages in 15–40 ms with under 15 database queries. If it feels slow locally, it is almost always the local PHP setup:
+
+1. **Turn on PHP's code cache for the command line.** `php artisan serve` uses the CLI, where opcache is usually off, so every request re-reads all of Laravel. In your `php.ini` (find it with `php --ini`):
+   ```ini
+   opcache.enable_cli=1
+   opcache.validate_timestamps=1
+   opcache.revalidate_freq=0
+   ```
+2. **Let the dev server answer requests in parallel.** Keep `PHP_CLI_SERVER_WORKERS=4` in `.env`. `composer run dev` starts `php artisan serve --no-reload` so the setting is used (restart it after changing `.env`).
+3. **Windows:** prefer [Laravel Herd](https://herd.laravel.com) (nginx + PHP-FPM with opcache) over `php artisan serve`, and exclude the project folder from real-time antivirus scanning; scanning `vendor/` on every request is a common cause of 1–2 s page loads.
+4. **Not editing CSS or JS?** Run `npm run build` once instead of `npm run dev`.
+5. Keep `BOOST_BROWSER_LOGS_WATCHER=false` unless you need browser logs in Laravel Boost.
+
+What the app does to stay fast:
+- Moving between pages inside the portal swaps only the page content (Livewire `wire:navigate`); menu links start loading on hover.
+- Fonts are served from this site, not a third-party font server.
+- Each person's permissions are loaded once per request.
+- Indexes cover member lists, unread notifications, quiz attempts and leaderboards.
+
+**Production checklist:** `composer install --no-dev --optimize-autoloader`, `npm run build`, `php artisan optimize` (caches config, routes, views and events; run again after each deploy), PHP-FPM with opcache on, Redis for `CACHE_STORE`, `SESSION_DRIVER` and `QUEUE_CONNECTION` when available, and long browser caching for `/build`, `/fonts` and `/images` (already set in `public/.htaccess` for Apache).
+
 ## Roles and access
 
 | Role | Sees | Can |

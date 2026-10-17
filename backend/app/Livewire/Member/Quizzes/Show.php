@@ -36,7 +36,7 @@ class Show extends Component
             return null;
         }
 
-        return $this->redirectRoute('member.quizzes.take', $attempt, navigate: false);
+        return $this->redirectRoute('member.quizzes.take', $attempt, navigate: true);
     }
 
     public function render(): mixed

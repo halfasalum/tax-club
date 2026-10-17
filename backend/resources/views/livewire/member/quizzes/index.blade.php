@@ -6,7 +6,7 @@
         @forelse ($open as $quiz)
             @php($result = $results->get($quiz->quiz_id))
             <li wire:key="quiz-{{ $quiz->quiz_id }}">
-                <a href="{{ route('member.quizzes.show', $quiz) }}" class="flex h-full flex-col rounded-2xl border-2 border-line bg-white p-5 transition hover:border-ink">
+                <a wire:navigate href="{{ route('member.quizzes.show', $quiz) }}" class="flex h-full flex-col rounded-2xl border-2 border-line bg-white p-5 transition hover:border-ink">
                     <span class="flex flex-wrap gap-2 text-sm font-extrabold">
                         <span class="rounded-full bg-brand px-2.5 py-0.5">{{ $quiz->isPractice() ? __('Practice') : __('Earns points') }}</span>
                         @if ($quiz->time_limit_minutes)<span class="rounded-full bg-mist px-2.5 py-0.5">{{ __(':minutes min', ['minutes' => $quiz->time_limit_minutes]) }}</span>@endif
@@ -30,7 +30,7 @@
                 @php($result = $results->get($quiz->quiz_id))
                 <li class="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
                     <span class="font-bold">{{ $quiz->title }}</span>
-                    <a href="{{ route('member.quizzes.result', $result) }}" class="link">{{ __(':percent% · see result', ['percent' => (int) $result->percent]) }}</a>
+                    <a wire:navigate href="{{ route('member.quizzes.result', $result) }}" class="link">{{ __(':percent% · see result', ['percent' => (int) $result->percent]) }}</a>
                 </li>
             @endforeach
         </ul>

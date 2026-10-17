@@ -215,4 +215,16 @@ class LearningContentWorkflowTest extends TestCase
         $this->actingAs($member, 'sanctum')->getJson('/api/v1/content?search=receipts')->assertJsonCount(1, 'data');
         $this->actingAs($member, 'sanctum')->getJson('/api/v1/content/'.$forAll->content_id)->assertOk()->assertJsonPath('data.content.version', 1);
     }
+
+    public function test_content_list_shows_working_titles_by_status(): void
+    {
+        $author = $this->author();
+        $this->draft($author, ['title' => 'Draft about customs']);
+        Content::factory()->create(['title' => 'Live lesson on PAYE']);
+
+        $this->actingAs($author)->get(route('admin.learning.index', ['lang' => 'en']))
+            ->assertOk()
+            ->assertSee('Draft about customs')
+            ->assertSee('Live lesson on PAYE');
+    }
 }

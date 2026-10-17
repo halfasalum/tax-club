@@ -89,7 +89,7 @@
             </p>
         @endif
 
-        <nav class="flex-1 overflow-y-auto px-3 py-4" aria-label="{{ __('Sections') }}">
+        <nav class="flex-1 overflow-y-auto px-3 py-4" aria-label="{{ __('Sections') }}" wire:scroll>
             @foreach ($sections as $heading => $items)
                 <div @class(['mt-6' => ! $loop->first])>
                     @if ($heading)
@@ -99,7 +99,7 @@
                         @foreach ($items as $item)
                             @php($active = request()->routeIs(...(array) ($item['match'] ?? $item['route'])))
                             <li>
-                                <a href="{{ route($item['route']) }}" @if ($active) aria-current="page" @endif
+                                <a href="{{ route($item['route']) }}" wire:navigate.hover @if ($active) aria-current="page" @endif
                                    @class([
                                        'group relative flex items-center gap-3 rounded-xl px-3 py-2.5 font-bold transition-colors',
                                        'bg-brand text-ink shadow-[0_6px_20px_-8px_rgb(249_229_15/0.7)]' => $active,
@@ -120,11 +120,11 @@
 
         <div class="border-t border-white/10 p-3">
             @if ($inAdmin)
-                <a href="{{ route('member.dashboard') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 font-bold text-white/75 hover:bg-white/10 hover:text-white">
+                <a wire:navigate href="{{ route('member.dashboard') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 font-bold text-white/75 hover:bg-white/10 hover:text-white">
                     <x-nav-icon name="switch" class="text-brand/80" />{{ __('Member view') }}
                 </a>
             @elseif ($user->canAccessAdmin())
-                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 font-bold text-white/75 hover:bg-white/10 hover:text-white">
+                <a wire:navigate href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 rounded-xl px-3 py-2.5 font-bold text-white/75 hover:bg-white/10 hover:text-white">
                     <x-nav-icon name="switch" class="text-brand/80" />{{ __('Administration') }}
                 </a>
             @endif
@@ -162,21 +162,21 @@
                 <button type="button" x-on:click="menu = true" class="grid size-11 place-items-center rounded-xl border-2 border-line hover:border-ink lg:hidden" aria-label="{{ __('Open menu') }}" :aria-expanded="menu.toString()">
                     <svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
                 </button>
-                <a href="{{ route($inAdmin ? 'admin.dashboard' : 'member.dashboard') }}" class="flex items-center gap-2 lg:hidden">
+                <a href="{{ route($inAdmin ? 'admin.dashboard' : 'member.dashboard') }}" wire:navigate class="flex items-center gap-2 lg:hidden">
                     <img src="{{ asset('images/tra-logo.webp') }}" alt="" width="208" height="242" class="h-8 w-auto">
                     <span class="font-black">Tax Club</span>
                 </a>
                 <p class="hidden truncate text-lg font-black lg:block">{{ $title ?? '' }}</p>
 
                 <div class="ml-auto flex items-center gap-2">
-                    <a href="{{ route('member.notifications') }}" class="relative grid size-11 place-items-center rounded-xl hover:bg-mist" title="{{ __('Notifications') }}">
+                    <a wire:navigate href="{{ route('member.notifications') }}" class="relative grid size-11 place-items-center rounded-xl hover:bg-mist" title="{{ __('Notifications') }}">
                         <x-nav-icon name="bell" class="size-6" />
                         <span class="sr-only">{{ trans_choice('{0} Notifications|{1} Notifications, :count unread|[2,*] Notifications, :count unread', $unread, ['count' => $unread]) }}</span>
                         @if ($unread > 0)
                             <span class="absolute right-1 top-1 grid min-w-5 place-items-center rounded-full bg-danger px-1 text-xs font-black text-white" aria-hidden="true">{{ $unread > 9 ? '9+' : $unread }}</span>
                         @endif
                     </a>
-                    <a href="{{ route('member.profile') }}" class="lg:hidden" aria-label="{{ __('My profile') }}">
+                    <a wire:navigate href="{{ route('member.profile') }}" class="lg:hidden" aria-label="{{ __('My profile') }}">
                         <span class="grid size-10 place-items-center rounded-full bg-brand font-black text-ink" aria-hidden="true">{{ $initials }}</span>
                     </a>
                 </div>

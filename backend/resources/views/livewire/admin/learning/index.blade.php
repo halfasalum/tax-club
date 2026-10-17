@@ -19,12 +19,12 @@
             <p class="mt-2 max-w-[65ch] text-lg text-slate">{{ __('Write lessons, send them for review, and publish approved versions. Members always see the latest published version.') }}</p>
         </div>
         <div class="flex flex-wrap gap-2">
-            <a href="{{ route('admin.learning.modules') }}" class="btn-ghost">{{ __('Modules') }}</a>
+            <a wire:navigate href="{{ route('admin.learning.modules') }}" class="btn-ghost">{{ __('Modules') }}</a>
             @if ($canManageCategories)
-                <a href="{{ route('admin.learning.categories') }}" class="btn-ghost">{{ __('Categories') }}</a>
+                <a wire:navigate href="{{ route('admin.learning.categories') }}" class="btn-ghost">{{ __('Categories') }}</a>
             @endif
             @if ($canCreate)
-                <a href="{{ route('admin.learning.create') }}" class="btn-brand">{{ __('New lesson') }}</a>
+                <a wire:navigate href="{{ route('admin.learning.create') }}" class="btn-brand">{{ __('New lesson') }}</a>
             @endif
         </div>
     </div>
@@ -73,7 +73,7 @@
                     @php($revision = $item->versions->first())
                     <tr wire:key="content-{{ $item->content_id }}" class="hover:bg-brand-wash/50">
                         <td class="px-4 py-3">
-                            <a href="{{ route('admin.learning.show', $item) }}" class="font-black hover:underline">{{ $revision?->field('title') ?? $item->title }}</a>
+                            <a wire:navigate href="{{ route('admin.learning.show', $item) }}" class="font-black hover:underline">{{ $revision?->field('title') ?? $item->title }}</a>
                             <span class="block text-sm text-slate"><span class="font-receipt">{{ $item->code }}</span> · {{ $types[$item->content_type] ?? $item->content_type }}</span>
                         </td>
                         <td class="px-4 py-3">{{ $item->category?->name() ?? '—' }}</td>

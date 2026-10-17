@@ -11,7 +11,7 @@
     ];
 @endphp
 <div>
-    <a href="{{ route('admin.quizzes.index') }}" class="link">← {{ __('Quizzes') }}</a>
+    <a wire:navigate href="{{ route('admin.quizzes.index') }}" class="link">← {{ __('Quizzes') }}</a>
     <div class="mt-4 flex flex-wrap items-start justify-between gap-4">
         <div>
             <p class="font-receipt text-slate">{{ $quiz->code }}</p>
@@ -25,7 +25,7 @@
         </div>
         <div class="flex flex-wrap gap-2">
             @if ($can['edit'] && $editable)
-                <a href="{{ route('admin.quizzes.edit', $quiz) }}" class="btn-ghost">{{ __('Edit questions') }}</a>
+                <a wire:navigate href="{{ route('admin.quizzes.edit', $quiz) }}" class="btn-ghost">{{ __('Edit questions') }}</a>
             @endif
             @if ($can['edit'] && ! $editable && ! $hasAttempts && $quiz->editorial_status === Quiz::APPROVED)
                 <button type="button" wire:click="reopen" wire:confirm="{{ __('Take this quiz back to draft? It will need review again.') }}" class="btn-ghost">{{ __('Make changes') }}</button>

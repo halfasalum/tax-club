@@ -4,10 +4,10 @@
 @endphp
 <div class="max-w-3xl">
     <nav aria-label="{{ __('Breadcrumb') }}" class="text-sm font-bold">
-        <a href="{{ route('admin.institutions.index') }}" class="link">{{ __('Institutions') }}</a>
+        <a wire:navigate href="{{ route('admin.institutions.index') }}" class="link">{{ __('Institutions') }}</a>
         @if ($institution)
             <span aria-hidden="true"> / </span>
-            <a href="{{ route('admin.institutions.show', $institution) }}" class="link">{{ $institution->name }}</a>
+            <a wire:navigate href="{{ route('admin.institutions.show', $institution) }}" class="link">{{ $institution->name }}</a>
         @endif
     </nav>
     <h1 class="mt-4 text-3xl font-black tracking-tight sm:text-4xl">{{ $institution ? __('Edit institution') : __('Register institution') }}</h1>

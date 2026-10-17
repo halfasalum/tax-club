@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Models\Quiz;
+use App\Models\QuizAnswer;
 use App\Models\QuizAttempt;
+use App\Models\QuizQuestion;
 use App\Models\QuizUserResponse;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class QuizController extends BaseController
 {
@@ -49,11 +52,11 @@ class QuizController extends BaseController
     public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'title'       => 'required|string|max:300',
-            'content_id'  => 'nullable|uuid|exists:content,content_id',
+            'title' => 'required|string|max:300',
+            'content_id' => 'nullable|uuid|exists:content,content_id',
             'description' => 'nullable|string',
             'total_marks' => 'required|integer|min:1',
-            'is_active'   => 'sometimes|boolean',
+            'is_active' => 'sometimes|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -78,10 +81,10 @@ class QuizController extends BaseController
         }
 
         $validator = Validator::make($request->all(), [
-            'title'       => 'sometimes|string|max:300',
+            'title' => 'sometimes|string|max:300',
             'description' => 'nullable|string',
             'total_marks' => 'sometimes|integer|min:1',
-            'is_active'   => 'sometimes|boolean',
+            'is_active' => 'sometimes|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -137,16 +140,16 @@ class QuizController extends BaseController
         }
 
         $attempt = QuizAttempt::create([
-            'user_id'   => $request->user()->user_id,
-            'quiz_id'   => $quiz->quiz_id,
-            'score'     => $request->score,
+            'user_id' => $request->user()->user_id,
+            'quiz_id' => $quiz->quiz_id,
+            'score' => $request->score,
             'max_score' => $quiz->total_marks,
         ]);
 
         return $this->success([
-            'attempt'          => $attempt,
+            'attempt' => $attempt,
             'score_percentage' => $attempt->score_percentage,
-            'passed'           => $attempt->isPassed(),
+            'passed' => $attempt->isPassed(),
         ], 'Quiz attempt recorded.', 201);
     }
 
@@ -163,12 +166,12 @@ class QuizController extends BaseController
             return $this->error('Quiz not found.', 404);
         }
 
-        $user    = $request->user();
+        $user = $request->user();
         $isAdmin = $user->hasAnyRole(['admin', 'super_admin', 'educator']);
 
         $query = QuizAttempt::with('user:user_id,full_name,membership_id')
             ->where('quiz_id', $id)
-            ->when(! $isAdmin, fn($q) => $q->where('user_id', $user->user_id))
+            ->when(! $isAdmin, fn ($q) => $q->where('user_id', $user->user_id))
             ->orderBy('score', 'desc');
 
         return $this->paginated($query->paginate($request->per_page ?? 20));
@@ -186,19 +189,19 @@ class QuizController extends BaseController
             return $this->error('Quiz not found.', 404);
         }
 
-        $leaderboard = QuizAttempt::with('user:user_id,full_name,membership_id')
+        $leaderboard = QuizAttempt::with('user:user_id,full_name,institution_id', 'user.institution:institution_id,name')
             ->where('quiz_id', $id)
             ->orderBy('score', 'desc')
             ->orderBy('attempted_at', 'asc') // earlier attempt wins tie
             ->limit(20)
             ->get()
-            ->map(fn($attempt, $index) => [
-                'rank'             => $index + 1,
-                'user'             => $attempt->user,
-                'score'            => $attempt->score,
-                'max_score'        => $attempt->max_score,
+            ->map(fn ($attempt, $index) => [
+                'rank' => $index + 1,
+                'user' => self::leaderboardMember($attempt->user),
+                'score' => $attempt->score,
+                'max_score' => $attempt->max_score,
                 'score_percentage' => $attempt->score_percentage,
-                'attempted_at'     => $attempt->attempted_at,
+                'attempted_at' => $attempt->attempted_at,
             ]);
 
         return $this->success($leaderboard);
@@ -218,7 +221,6 @@ class QuizController extends BaseController
         return $this->paginated($attempts);
     }
 
-
     /**
      * GET /api/v1/quizzes/{id}/questions
      * Get quiz questions with answers (for taking quiz)
@@ -229,7 +231,7 @@ class QuizController extends BaseController
             $q->orderBy('order_index');
         }])->find($id);
 
-        if (!$quiz || !$quiz->is_active) {
+        if (! $quiz || ! $quiz->is_active) {
             return $this->error('Quiz not found.', 404);
         }
 
@@ -266,7 +268,7 @@ class QuizController extends BaseController
     {
         $quiz = Quiz::with('questions.answers')->find($id);
 
-        if (!$quiz || !$quiz->is_active) {
+        if (! $quiz || ! $quiz->is_active) {
             return $this->error('Quiz not available.', 404);
         }
 
@@ -301,7 +303,7 @@ class QuizController extends BaseController
             foreach ($quiz->questions as $question) {
                 $userAnswer = $answers->firstWhere('question_id', $question->question_id);
 
-                if (!$userAnswer) {
+                if (! $userAnswer) {
                     continue;
                 }
 
@@ -328,7 +330,7 @@ class QuizController extends BaseController
                 $totalPointsEarned += $pointsEarned;
 
                 $responses[] = [
-                    'response_id' => (string) \Illuminate\Support\Str::uuid(),
+                    'response_id' => (string) Str::uuid(),
                     'question_id' => $question->question_id,
                     'answer_id' => $userAnswer['answer_id'] ?? null,
                     'answer_text' => $userAnswer['answer_text'] ?? null,
@@ -345,7 +347,7 @@ class QuizController extends BaseController
 
             // Create attempt record
             $attempt = QuizAttempt::create([
-                'attempt_id' => (string) \Illuminate\Support\Str::uuid(),
+                'attempt_id' => (string) Str::uuid(),
                 'user_id' => $user->user_id,
                 'quiz_id' => $quiz->quiz_id,
                 'score' => $totalScore,
@@ -406,7 +408,8 @@ class QuizController extends BaseController
             ], 'Quiz submitted successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return $this->error('Failed to submit quiz: ' . $e->getMessage(), 500);
+
+            return $this->error('Failed to submit quiz: '.$e->getMessage(), 500);
         }
     }
 
@@ -418,7 +421,7 @@ class QuizController extends BaseController
     {
         $quiz = Quiz::find($id);
 
-        if (!$quiz) {
+        if (! $quiz) {
             return $this->error('Quiz not found.', 404);
         }
 
@@ -460,7 +463,7 @@ class QuizController extends BaseController
             ->where('user_id', $request->user()->user_id)
             ->first();
 
-        if (!$attempt) {
+        if (! $attempt) {
             return $this->error('Attempt not found.', 404);
         }
 
@@ -496,7 +499,9 @@ class QuizController extends BaseController
      */
     public function globalLeaderboard(Request $request): JsonResponse
     {
-        $users = User::select('user_id', 'full_name', 'membership_id', 'total_points')
+        $users = User::select('user_id', 'full_name', 'institution_id', 'total_points')
+            ->with('institution:institution_id,name')
+            ->where('account_status', User::STATUS_ACTIVE)
             ->where('total_points', '>', 0)
             ->orderBy('total_points', 'desc')
             ->paginate($request->per_page ?? 20);
@@ -504,9 +509,7 @@ class QuizController extends BaseController
         $leaderboard = $users->map(function ($user, $index) use ($users) {
             return [
                 'rank' => $users->firstItem() + $index,
-                'user_id' => $user->user_id,
-                'full_name' => $user->full_name,
-                'membership_id' => $user->membership_id,
+                ...self::leaderboardMember($user),
                 'total_points' => $user->total_points,
             ];
         });
@@ -530,7 +533,7 @@ class QuizController extends BaseController
     {
         $quiz = Quiz::find($id);
 
-        if (!$quiz) {
+        if (! $quiz) {
             return $this->error('Quiz not found.', 404);
         }
 
@@ -549,7 +552,7 @@ class QuizController extends BaseController
         $maxOrder = $quiz->questions()->max('order_index') ?? -1;
 
         $question = $quiz->questions()->create([
-            'question_id' => (string) \Illuminate\Support\Str::uuid(),
+            'question_id' => (string) Str::uuid(),
             'question_text' => $request->question_text,
             'question_type' => $request->question_type,
             'points' => $request->points,
@@ -566,9 +569,9 @@ class QuizController extends BaseController
      */
     public function updateQuestion(Request $request, string $questionId): JsonResponse
     {
-        $question = \App\Models\QuizQuestion::find($questionId);
+        $question = QuizQuestion::find($questionId);
 
-        if (!$question) {
+        if (! $question) {
             return $this->error('Question not found.', 404);
         }
 
@@ -601,7 +604,7 @@ class QuizController extends BaseController
             $q->orderBy('order_index');
         }])->find($id);
 
-        if (!$quiz) {
+        if (! $quiz) {
             return $this->error('Quiz not found.', 404);
         }
 
@@ -639,9 +642,9 @@ class QuizController extends BaseController
      */
     public function deleteQuestion(string $questionId): JsonResponse
     {
-        $question = \App\Models\QuizQuestion::with('answers')->find($questionId);
+        $question = QuizQuestion::with('answers')->find($questionId);
 
-        if (!$question) {
+        if (! $question) {
             return $this->error('Question not found.', 404);
         }
 
@@ -661,9 +664,9 @@ class QuizController extends BaseController
      */
     public function addAnswer(Request $request, string $questionId): JsonResponse
     {
-        $question = \App\Models\QuizQuestion::find($questionId);
+        $question = QuizQuestion::find($questionId);
 
-        if (!$question) {
+        if (! $question) {
             return $this->error('Question not found.', 404);
         }
 
@@ -680,7 +683,7 @@ class QuizController extends BaseController
         $maxOrder = $question->answers()->max('order_index') ?? -1;
 
         $answer = $question->answers()->create([
-            'answer_id' => (string) \Illuminate\Support\Str::uuid(),
+            'answer_id' => (string) Str::uuid(),
             'answer_text' => $request->answer_text,
             'is_correct' => $request->is_correct,
             'order_index' => $maxOrder + 1,
@@ -695,9 +698,9 @@ class QuizController extends BaseController
      */
     public function updateAnswer(Request $request, string $answerId): JsonResponse
     {
-        $answer = \App\Models\QuizAnswer::find($answerId);
+        $answer = QuizAnswer::find($answerId);
 
-        if (!$answer) {
+        if (! $answer) {
             return $this->error('Answer not found.', 404);
         }
 
@@ -721,9 +724,9 @@ class QuizController extends BaseController
      */
     public function deleteAnswer(string $answerId): JsonResponse
     {
-        $answer = \App\Models\QuizAnswer::find($answerId);
+        $answer = QuizAnswer::find($answerId);
 
-        if (!$answer) {
+        if (! $answer) {
             return $this->error('Answer not found.', 404);
         }
 
@@ -749,7 +752,7 @@ class QuizController extends BaseController
         }
 
         foreach ($request->questions as $item) {
-            \App\Models\QuizQuestion::where('question_id', $item['question_id'])
+            QuizQuestion::where('question_id', $item['question_id'])
                 ->update(['order_index' => $item['order_index']]);
         }
 
@@ -764,15 +767,30 @@ class QuizController extends BaseController
     {
         $quiz = Quiz::find($id);
 
-        if (!$quiz) {
+        if (! $quiz) {
             return $this->error('Quiz not found.', 404);
         }
 
-        $quiz->is_active = !$quiz->is_active;
+        $quiz->is_active = ! $quiz->is_active;
         $quiz->save();
 
         $state = $quiz->is_active ? 'activated' : 'deactivated';
 
         return $this->success($quiz, "Quiz {$state} successfully.");
+    }
+
+    /**
+     * What other members may see on a leaderboard: first name, last initial
+     * and institution. No membership numbers or contact details (GAM-REQ10).
+     *
+     * @return array{user_id: ?string, display_name: string, institution: ?string}
+     */
+    private static function leaderboardMember(?User $user): array
+    {
+        return [
+            'user_id' => $user?->user_id,
+            'display_name' => $user?->publicName() ?? '',
+            'institution' => $user?->institution?->name,
+        ];
     }
 }

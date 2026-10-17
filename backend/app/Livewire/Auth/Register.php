@@ -32,6 +32,18 @@ class Register extends Component
 
     public bool $accepted_terms = false;
 
+    public string $date_of_birth = '';
+
+    public string $gender = '';
+
+    public string $guardian_name = '';
+
+    public string $guardian_phone = '';
+
+    public string $guardian_relationship = 'parent';
+
+    public bool $guardian_consent = false;
+
     public ?string $reference = null;
 
     /**
@@ -60,20 +72,36 @@ class Register extends Component
     }
 
     /**
-     * Check contact details as soon as the student leaves each field.
+     * Whether the date of birth entered makes the applicant a minor, which
+     * shows the guardian section.
+     */
+    #[Computed]
+    public function isMinor(): bool
+    {
+        return MemberRegistration::isMinorDateOfBirth($this->date_of_birth);
+    }
+
+    /**
+     * Check each field as soon as the student leaves it.
      */
     public function updated(string $property): void
     {
-        if (! in_array($property, ['full_name', 'phone', 'email'], true)) {
+        if (! in_array($property, ['full_name', 'phone', 'email', 'date_of_birth', 'guardian_name', 'guardian_phone'], true)) {
             return;
         }
 
-        if ($property !== 'full_name') {
+        if (in_array($property, ['phone', 'email', 'guardian_phone'], true)) {
             $this->{$property} = MemberRegistration::normalizeInput([$property => $this->{$property}])[$property];
         }
 
-        if (filled($this->{$property}) || $property !== 'email') {
-            $this->validateOnly($property, MemberRegistration::rules());
+        unset($this->isMinor);
+
+        if (filled($this->{$property}) || ! in_array($property, ['email', 'guardian_name', 'guardian_phone'], true)) {
+            $rules = MemberRegistration::rules($this->all());
+
+            if (isset($rules[$property])) {
+                $this->validateOnly($property, $rules);
+            }
         }
     }
 
@@ -82,12 +110,7 @@ class Register extends Component
      */
     protected function messages(): array
     {
-        return [
-            'phone.regex' => __('Enter a Tanzanian mobile number, for example 0712 345 678.'),
-            'phone.unique' => __('This phone number is already registered. Sign in or recover your account.'),
-            'email.unique' => __('This email is already registered. Sign in or recover your account.'),
-            'accepted_terms.accepted' => __('You must accept the terms to register.'),
-        ];
+        return MemberRegistration::messages();
     }
 
     public function updatedUserType(): void
@@ -119,11 +142,12 @@ class Register extends Component
             ]);
         }
 
-        $normalized = MemberRegistration::normalizeInput(['phone' => $this->phone, 'email' => $this->email]);
+        $normalized = MemberRegistration::normalizeInput(['phone' => $this->phone, 'email' => $this->email, 'guardian_phone' => $this->guardian_phone]);
         $this->phone = $normalized['phone'];
         $this->email = $normalized['email'];
+        $this->guardian_phone = $normalized['guardian_phone'];
 
-        $validated = $this->validate(MemberRegistration::rules() + ['accepted_terms' => ['accepted']]);
+        $validated = $this->validate(MemberRegistration::rules($this->all()) + ['accepted_terms' => ['accepted']]);
 
         $user = MemberRegistration::register($validated);
         RateLimiter::hit($throttleKey, 3600);

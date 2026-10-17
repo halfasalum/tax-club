@@ -40,6 +40,25 @@
                     @error('full_name')<p class="{{ $errorText }}" role="alert">{{ $message }}</p>@enderror
                 </div>
 
+                <div class="grid gap-5 sm:grid-cols-[3fr_2fr]">
+                    <div>
+                        <label for="date_of_birth" class="block font-extrabold">{{ __('Date of birth') }}</label>
+                        <input wire:model.live.blur="date_of_birth" id="date_of_birth" type="date" autocomplete="bday"
+                               max="{{ now()->subYears(\App\Support\MemberRegistration::MIN_AGE)->toDateString() }}"
+                               min="{{ now()->subYears(\App\Support\MemberRegistration::MAX_AGE + 1)->addDay()->toDateString() }}"
+                               @class(['field', 'field-error' => $errors->has('date_of_birth')])>
+                        @error('date_of_birth')<p class="{{ $errorText }}" role="alert">{{ $message }}</p>@enderror
+                    </div>
+                    <div>
+                        <label for="gender" class="block font-extrabold">{{ __('Gender') }} <span class="font-semibold text-slate">({{ __('optional') }})</span></label>
+                        <select wire:model="gender" id="gender" class="field">
+                            <option value="">{{ __('Prefer not to say') }}</option>
+                            <option value="female">{{ __('Female') }}</option>
+                            <option value="male">{{ __('Male') }}</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div>
                     <label for="phone" class="block font-extrabold">{{ __('Mobile number') }}</label>
                     <input wire:model.live.blur="phone" id="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="0712 345 678" aria-describedby="phone-help" @class(['field', 'field-error' => $errors->has('phone')])>
@@ -106,6 +125,42 @@
                 </div>
             </fieldset>
 
+            @if ($this->isMinor)
+                <fieldset class="space-y-5 rounded-2xl border-2 border-ink bg-brand-wash p-5" wire:key="guardian-section">
+                    <legend class="rounded-lg bg-ink px-3 py-1 text-sm font-black text-brand">{{ __('Parent or guardian') }}</legend>
+                    <p class="text-ink-soft">{{ __('Because you are under 18, we need your parent or guardian’s details. Your patron will check that they agree before approving your membership.') }}</p>
+
+                    <div>
+                        <label for="guardian_name" class="block font-extrabold">{{ __('Parent or guardian’s full name') }}</label>
+                        <input wire:model.live.blur="guardian_name" id="guardian_name" type="text" @class(['field', 'field-error' => $errors->has('guardian_name')])>
+                        @error('guardian_name')<p class="{{ $errorText }}" role="alert">{{ $message }}</p>@enderror
+                    </div>
+                    <div class="grid gap-5 sm:grid-cols-2">
+                        <div>
+                            <label for="guardian_phone" class="block font-extrabold">{{ __('Their mobile number') }}</label>
+                            <input wire:model.live.blur="guardian_phone" id="guardian_phone" type="tel" inputmode="tel" placeholder="0712 345 678" @class(['field', 'field-error' => $errors->has('guardian_phone')])>
+                            @error('guardian_phone')<p class="{{ $errorText }}" role="alert">{{ $message }}</p>@enderror
+                        </div>
+                        <div>
+                            <label for="guardian_relationship" class="block font-extrabold">{{ __('They are my') }}</label>
+                            <select wire:model="guardian_relationship" id="guardian_relationship" class="field">
+                                <option value="parent">{{ __('Parent') }}</option>
+                                <option value="guardian">{{ __('Guardian') }}</option>
+                                <option value="other">{{ __('Other relative') }}</option>
+                            </select>
+                            @error('guardian_relationship')<p class="{{ $errorText }}" role="alert">{{ $message }}</p>@enderror
+                        </div>
+                    </div>
+                    <div>
+                        <label class="flex cursor-pointer items-start gap-3 rounded-xl bg-white p-4">
+                            <input type="checkbox" wire:model="guardian_consent" class="mt-1 size-5 shrink-0 accent-ink">
+                            <span class="leading-relaxed">{{ __('My parent or guardian knows about Tax Club and agrees that I can join.') }}</span>
+                        </label>
+                        @error('guardian_consent')<p class="{{ $errorText }}" role="alert">{{ $message }}</p>@enderror
+                    </div>
+                </fieldset>
+            @endif
+
             <fieldset class="space-y-5" x-data="{ show: false }">
                 <legend class="text-sm font-black text-slate">{{ __('Create a password') }}</legend>
 
@@ -133,7 +188,7 @@
             <div>
                 <label class="flex cursor-pointer items-start gap-3 rounded-xl bg-mist p-4">
                     <input type="checkbox" wire:model="accepted_terms" class="mt-1 size-5 shrink-0 accent-ink">
-                    <span class="leading-relaxed">{{ __('I agree that TRA may use my details to manage my Tax Club membership. If I am under 18, my parent or guardian knows I am registering.') }}</span>
+                    <span class="leading-relaxed">{{ __('I agree that TRA may use my details to manage my Tax Club membership.') }}</span>
                 </label>
                 @error('accepted_terms')<p class="{{ $errorText }}" role="alert">{{ $message }}</p>@enderror
             </div>

@@ -21,6 +21,7 @@ class MemberRegistrationTest extends TestCase
         Livewire::test(Register::class)
             ->set('full_name', 'Asha Mohamed')
             ->set('phone', '0712 345 678')
+            ->set('date_of_birth', now()->subYears(19)->toDateString())
             ->set('user_type', 'secondary')
             ->call('selectInstitution', $institution->institution_id)
             ->set('password', 'secret-pass-1')
@@ -104,6 +105,7 @@ class MemberRegistrationTest extends TestCase
         $this->postJson('/api/v1/auth/register', [
             'full_name' => 'Juma Ally',
             'phone' => '0754000111',
+            'date_of_birth' => now()->subYears(20)->toDateString(),
             'password' => 'secret-pass-1',
             'password_confirmation' => 'secret-pass-1',
             'user_type' => 'college',

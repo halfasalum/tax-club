@@ -36,7 +36,25 @@ class UserFactory extends Factory
             'registration_reference' => 'REG-'.now()->format('Y').'-'.Str::upper(Str::random(6)),
             'is_verified' => true,
             'account_status' => User::STATUS_ACTIVE,
+            'date_of_birth' => now()->subYears(20)->toDateString(),
+            'age_band' => User::AGE_ADULT,
+            'preferred_locale' => 'en',
         ];
+    }
+
+    /**
+     * A member under 18 with guardian details.
+     */
+    public function minor(): static
+    {
+        return $this->state(fn () => [
+            'date_of_birth' => now()->subYears(15)->toDateString(),
+            'age_band' => User::AGE_MINOR,
+            'guardian_name' => 'Mzazi '.fake()->lastName(),
+            'guardian_phone' => '+2557'.fake()->numerify('########'),
+            'guardian_relationship' => 'parent',
+            'guardian_consent_at' => now(),
+        ]);
     }
 
     /**

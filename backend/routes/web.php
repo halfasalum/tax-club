@@ -10,6 +10,7 @@ use App\Livewire\Admin\Institutions\Import as InstitutionImport;
 use App\Livewire\Admin\Institutions\Index as InstitutionIndex;
 use App\Livewire\Admin\Institutions\Show as InstitutionShow;
 use App\Livewire\Admin\Registrations as AdminRegistrations;
+use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Member\Dashboard as MemberDashboard;
@@ -49,6 +50,7 @@ Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', Login::class)->name('login');
     Route::get('/register', Register::class)->name('register');
+    Route::get('/forgot-password', ForgotPassword::class)->name('password.request');
 });
 
 Route::post('/logout', function (Request $request) {

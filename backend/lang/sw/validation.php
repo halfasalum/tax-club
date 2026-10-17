@@ -47,5 +47,13 @@ return [
         'clubStatusReason' => 'sababu',
         'endReason' => 'sababu',
         'file' => 'faili',
+        'date_of_birth' => 'tarehe ya kuzaliwa',
+        'gender' => 'jinsia',
+        'guardian_name' => 'jina la mzazi au mlezi',
+        'guardian_phone' => 'namba ya simu ya mzazi au mlezi',
+        'guardian_relationship' => 'uhusiano',
+        'guardian_consent' => 'ridhaa ya mzazi au mlezi',
+        'code' => 'namba ya uthibitisho',
+        'password_confirmation' => 'uthibitisho wa nenosiri',
     ],
 ];

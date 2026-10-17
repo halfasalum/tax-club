@@ -42,14 +42,13 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('auth')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
+    Route::post('recover', [AuthController::class, 'recover'])->middleware('throttle:10,15');
+    Route::post('recover/reset', [AuthController::class, 'resetPassword'])->middleware('throttle:10,15');
 });
 
 // Institutions list is public — needed during registration dropdown
 Route::get('institutions', [InstitutionController::class, 'index']);
 Route::get('institutions/{id}', [InstitutionController::class, 'show']);
-
-// Global Leaderboard
-Route::get('/leaderboard', [QuizController::class, 'globalLeaderboard']);
 
 // ──────────────────────────────────────────────────────────────
 //  AUTHENTICATED ROUTES (auth:sanctum)
@@ -64,6 +63,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('verify', [AuthController::class, 'verify']);
         Route::post('change-password', [AuthController::class, 'changePassword']);
     });
+
+    // ── Leaderboard (members only; names are shortened for privacy) ──
+    Route::get('leaderboard', [QuizController::class, 'globalLeaderboard']);
 
     // ── Dashboard ─────────────────────────────────────────────
     Route::get('dashboard', [DashboardController::class, 'index']);

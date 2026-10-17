@@ -2,6 +2,10 @@
     <h1 class="text-3xl font-black tracking-tight">{{ __('Welcome back') }}</h1>
     <p class="mt-2 text-lg text-slate">{{ __('Use the phone number or email you registered with.') }}</p>
 
+    @if (session('status'))
+        <p class="mt-6 rounded-xl bg-savanna px-4 py-3 font-extrabold text-white" role="status">{{ session('status') }}</p>
+    @endif
+
     <form wire:submit="login" class="mt-8 space-y-6" novalidate>
         <div>
             <label for="identifier" class="block font-extrabold">{{ __('Phone number or email') }}</label>
@@ -23,6 +27,7 @@
                 </button>
             </div>
             @error('password')<p class="mt-2 font-semibold text-danger" role="alert">{{ $message }}</p>@enderror
+            <p class="mt-3 text-right"><a href="{{ route('password.request') }}" class="link">{{ __('Forgot your password?') }}</a></p>
         </div>
 
         <button type="submit" class="btn-primary w-full text-lg" wire:loading.attr="disabled">

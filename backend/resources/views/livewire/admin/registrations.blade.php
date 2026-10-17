@@ -81,7 +81,12 @@
                             <div class="flex min-w-0 gap-4">
                                 <span class="grid size-12 shrink-0 place-items-center rounded-full bg-brand text-lg font-black" aria-hidden="true">{{ mb_substr($registration->full_name, 0, 1) }}</span>
                                 <div class="min-w-0">
-                                    <p class="text-lg font-black">{{ $registration->full_name }}</p>
+                                    <p class="flex flex-wrap items-center gap-2 text-lg font-black">
+                                        {{ $registration->full_name }}
+                                        @if ($registration->isMinor())
+                                            <span class="rounded-full bg-ink px-2.5 py-0.5 text-xs font-extrabold text-brand">{{ __('Under 18') }}</span>
+                                        @endif
+                                    </p>
                                     <p class="font-semibold text-ink-soft">{{ collect([$registration->institution?->name ?? __('No institution'), $registration->institution?->region])->filter()->implode(', ') }}</p>
                                     <p class="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-slate">
                                         <span class="font-receipt font-semibold text-ink">{{ $registration->registration_reference }}</span>
@@ -89,6 +94,18 @@
                                         <span>{{ $registration->phone }}</span>
                                         <span>{{ __('submitted :date', ['date' => $registration->created_at?->translatedFormat('j M Y H:i')]) }}</span>
                                     </p>
+                                    @if ($registration->date_of_birth)
+                                        <p class="mt-1 text-slate">{{ __('Born :date (age :age)', ['date' => $registration->date_of_birth->translatedFormat('j M Y'), 'age' => $registration->date_of_birth->age]) }}</p>
+                                    @endif
+                                    @if ($registration->isMinor() && $registration->guardian_name)
+                                        <div class="mt-3 rounded-xl bg-brand-wash px-4 py-3">
+                                            <p class="font-extrabold">{{ __('Parent or guardian') }}</p>
+                                            <p>{{ $registration->guardian_name }} ({{ __(ucfirst($registration->guardian_relationship ?? 'guardian')) }}), {{ $registration->guardian_phone }}</p>
+                                            @if ($registration->guardian_consent_confirmed_at)
+                                                <p class="mt-1 text-sm text-slate">{{ __('Consent confirmed :date', ['date' => $registration->guardian_consent_confirmed_at->translatedFormat('j M Y')]) }}</p>
+                                            @endif
+                                        </div>
+                                    @endif
                                     @if ($registration->status_reason)
                                         <p class="mt-3 rounded-xl bg-mist px-4 py-2"><span class="font-extrabold">{{ __('Reason') }}:</span> {{ $registration->status_reason }}</p>
                                     @endif
@@ -96,6 +113,14 @@
                             </div>
 
                             @if ($canVerify && $registration->account_status === 'pending_verification' && $rejectingUserId !== $registration->user_id)
+                                <div class="flex flex-col items-end gap-3">
+                                @if ($registration->isMinor())
+                                    <label class="flex max-w-xs cursor-pointer items-start gap-2 rounded-xl border-2 border-ink bg-brand-wash px-3 py-2 text-sm font-semibold">
+                                        <input type="checkbox" wire:model="guardianConfirmed.{{ $registration->user_id }}" class="mt-0.5 size-4 shrink-0 accent-ink">
+                                        {{ __('I have confirmed that the parent or guardian agrees') }}
+                                    </label>
+                                    @error('guardian.'.$registration->user_id)<p class="max-w-xs text-right text-sm font-semibold text-danger" role="alert">{{ $message }}</p>@enderror
+                                @endif
                                 <div class="flex gap-2">
                                     <button type="button" wire:click="approve('{{ $registration->user_id }}')" wire:loading.attr="disabled" wire:target="approve('{{ $registration->user_id }}')"
                                             class="btn bg-savanna px-5 text-white hover:brightness-110">
@@ -105,6 +130,7 @@
                                             class="btn border-2 border-line px-5 hover:border-danger hover:text-danger">
                                         {{ __('Reject') }}<span class="sr-only">: {{ $registration->full_name }}</span>
                                     </button>
+                                </div>
                                 </div>
                             @endif
                         </div>

@@ -30,6 +30,7 @@ php artisan serve
 |---|---|
 | `/`, `/en` | Public website in Kiswahili and English |
 | `/register`, `/login` | Member registration and sign-in |
+| `/forgot-password` | Password reset with a 6-digit SMS code |
 | `/app` | Member portal |
 | `/admin` | Administration Portal: registration queue, institutions and Tax Clubs |
 | `/admin/institutions` | Register or import institutions, set up Tax Clubs, assign patrons |
@@ -37,6 +38,29 @@ php artisan serve
 | `/api/v1/...` | Mobile API |
 
 Outside `local`/`testing`, seeding requires `SUPERADMIN_PASSWORD` to be set.
+
+## SMS (Beem) and background jobs
+
+SMS messages (registration received, approved or rejected, patron assigned, password reset code, password changed) are sent through [Beem](https://beem.africa) and recorded in the `sms_messages` table with their status and Beem `request_id`.
+
+```dotenv
+SMS_DRIVER=beem            # "log" (default) writes messages to the log and sms_messages instead of sending
+BEEM_API_KEY=...
+BEEM_SECRET_KEY=...
+BEEM_SENDER_ID=INFO        # use your approved sender ID from the Beem dashboard
+QUEUE_CONNECTION=database
+```
+
+- SMS go through the queue, so a worker must be running: `php artisan queue:work`, or `composer run dev` locally. Failed sends are retried twice (after 1 and 5 minutes). A failed SMS never blocks the action that triggered it.
+- SMS text uses the member's language (the language they registered in).
+- Set `APP_URL` to the public address, because sign-in links in SMS are built from it.
+- Run the scheduler every minute in production (`* * * * * php artisan schedule:run`). It moves members to the adult age band on their 18th birthday (`members:refresh-age-bands`, daily at 00:15).
+
+## Registration rules
+
+- Members must be 11–35 years old (date of birth is required). Gender is optional.
+- Applicants under 18 must give a parent or guardian's name and phone and confirm that the guardian agrees. The patron must tick "I have confirmed that the parent or guardian agrees" before approving. Who confirmed it, and when, is recorded.
+- Leaderboards are visible to signed-in members only and show first name plus last initial (e.g. "Asha M.").
 
 ## Roles and access
 

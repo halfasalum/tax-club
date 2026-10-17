@@ -4,10 +4,12 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Models\User;
 use App\Support\MemberRegistration;
+use App\Support\PasswordRecovery;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use InvalidArgumentException;
 
 class AuthController extends BaseController
 {
@@ -18,7 +20,8 @@ class AuthController extends BaseController
      */
     public function register(Request $request): JsonResponse
     {
-        $validator = Validator::make(MemberRegistration::normalizeInput($request->all()), MemberRegistration::rules());
+        $input = MemberRegistration::normalizeInput($request->all());
+        $validator = Validator::make($input, MemberRegistration::rules($input), MemberRegistration::messages());
 
         if ($validator->fails()) {
             return $this->error('Validation failed.', 422, $validator->errors());
@@ -74,6 +77,53 @@ class AuthController extends BaseController
             'token' => $token,
             'permissions' => $user->allControls(),
         ], 'Login successful.');
+    }
+
+    /**
+     * POST /api/v1/auth/recover
+     * Send a password reset code by SMS. The answer is the same whether or
+     * not the account exists.
+     */
+    public function recover(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), ['identifier' => 'required|string|max:150']);
+
+        if ($validator->fails()) {
+            return $this->error('Validation failed.', 422, $validator->errors());
+        }
+
+        try {
+            PasswordRecovery::requestCode($request->identifier, $request->ip());
+        } catch (InvalidArgumentException $exception) {
+            return $this->error($exception->getMessage(), 429);
+        }
+
+        return $this->success(['expires_in_minutes' => PasswordRecovery::CODE_MINUTES], 'If the account exists, a reset code has been sent by SMS.');
+    }
+
+    /**
+     * POST /api/v1/auth/recover/reset
+     * Set a new password with the SMS code. Signs out all devices.
+     */
+    public function resetPassword(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'identifier' => 'required|string|max:150',
+            'code' => ['required', 'string', 'regex:/^\d{6}$/'],
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->error('Validation failed.', 422, $validator->errors());
+        }
+
+        try {
+            PasswordRecovery::reset($request->identifier, $request->code, $request->password);
+        } catch (InvalidArgumentException $exception) {
+            return $this->error($exception->getMessage(), 422);
+        }
+
+        return $this->success(null, 'Password changed. Please sign in again.');
     }
 
     /**

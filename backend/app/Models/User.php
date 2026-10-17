@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Support\MemberRegistration;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,10 +11,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasLocalePreference
 {
     use HasApiTokens, HasFactory, HasUuids, Notifiable;
 
@@ -37,6 +39,13 @@ class User extends Authenticatable
 
     public const STATUS_DEACTIVATED = 'deactivated';
 
+    public const AGE_MINOR = 'minor';
+
+    public const AGE_ADULT = 'adult';
+
+    /** Age at which a member is no longer treated as a minor (decision D-04). */
+    public const ADULT_AGE = 18;
+
     protected $fillable = [
         'full_name',
         'email',
@@ -51,6 +60,16 @@ class User extends Authenticatable
         'status_reason',
         'verified_by',
         'verified_at',
+        'date_of_birth',
+        'gender',
+        'age_band',
+        'preferred_locale',
+        'guardian_name',
+        'guardian_phone',
+        'guardian_relationship',
+        'guardian_consent_at',
+        'guardian_consent_confirmed_by',
+        'guardian_consent_confirmed_at',
     ];
 
     protected $hidden = [
@@ -63,6 +82,9 @@ class User extends Authenticatable
         'created_at' => 'datetime',
         'last_login' => 'datetime',
         'verified_at' => 'datetime',
+        'date_of_birth' => 'date',
+        'guardian_consent_at' => 'datetime',
+        'guardian_consent_confirmed_at' => 'datetime',
     ];
 
     /**
@@ -71,6 +93,48 @@ class User extends Authenticatable
     public function getAuthPassword(): string
     {
         return $this->password_hash;
+    }
+
+    // ─── Age and privacy ──────────────────────────────────────────
+
+    public static function ageBandFor(?\DateTimeInterface $dateOfBirth): ?string
+    {
+        if (! $dateOfBirth) {
+            return null;
+        }
+
+        return Carbon::instance($dateOfBirth)->age < self::ADULT_AGE ? self::AGE_MINOR : self::AGE_ADULT;
+    }
+
+    public function isMinor(): bool
+    {
+        return $this->age_band === self::AGE_MINOR;
+    }
+
+    /**
+     * Name safe to show to other members: first name and last initial
+     * (PRO-REQ03, GAM-REQ10). Full names stay with officers.
+     */
+    public function publicName(): string
+    {
+        $parts = preg_split('/\s+/', trim((string) $this->full_name)) ?: [];
+        $first = $parts[0] ?? '';
+        $last = count($parts) > 1 ? end($parts) : '';
+
+        return trim($first.($last !== '' ? ' '.mb_substr($last, 0, 1).'.' : ''));
+    }
+
+    /**
+     * Phone number for SMS notifications.
+     */
+    public function routeNotificationForSms(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function preferredLocale(): string
+    {
+        return $this->preferred_locale ?: config('app.locale');
     }
 
     // ─── Account Status ───────────────────────────────────────────

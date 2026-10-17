@@ -40,6 +40,13 @@ class Registrations extends Component
 
     public ?string $statusMessage = null;
 
+    /**
+     * Guardian-consent confirmations ticked by the officer, keyed by user ID.
+     *
+     * @var array<string, bool>
+     */
+    public array $guardianConfirmed = [];
+
     public function updated(string $property): void
     {
         if (in_array($property, ['status', 'search', 'institution', 'category'], true)) {
@@ -102,8 +109,16 @@ class Registrations extends Component
     {
         $this->authorizeVerification();
 
+        $applicant = $this->findInScope($userId);
+
+        if ($applicant->isMinor() && empty($this->guardianConfirmed[$userId])) {
+            $this->addError('guardian.'.$userId, __('Confirm that the parent or guardian agrees before approving a member under 18.'));
+
+            return;
+        }
+
         try {
-            MemberRegistration::approve($this->findInScope($userId), auth()->user());
+            MemberRegistration::approve($applicant, auth()->user(), guardianConsentConfirmed: $applicant->isMinor());
         } catch (InvalidArgumentException) {
             $this->addError('decision', __('This registration was already decided by another officer.'));
             unset($this->registrations);

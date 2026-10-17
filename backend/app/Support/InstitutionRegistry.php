@@ -7,6 +7,7 @@ use App\Models\Institution;
 use App\Models\Role;
 use App\Models\TaxClub;
 use App\Models\User;
+use App\Notifications\PatronAssigned;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -163,7 +164,7 @@ final class InstitutionRegistry
             throw new InvalidArgumentException(__(':name is already a patron of this Tax Club.', ['name' => $patron->full_name]));
         }
 
-        return DB::transaction(function () use ($club, $data, $officer, $phone, $patron, &$temporaryPassword) {
+        $result = DB::transaction(function () use ($club, $data, $officer, $phone, $patron, &$temporaryPassword) {
             if (! $patron) {
                 if (blank($data['full_name'] ?? null)) {
                     throw new InvalidArgumentException(__('No account uses this phone number. Enter the patron’s full name to create one.'));
@@ -197,6 +198,10 @@ final class InstitutionRegistry
 
             return [$assignment, $temporaryPassword];
         });
+
+        Notify::send($result[0]->user, new PatronAssigned($club->name, $result[1]));
+
+        return $result;
     }
 
     /**

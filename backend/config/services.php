@@ -28,6 +28,23 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    /*
+    | SMS delivery. "log" writes messages to the log (development and tests);
+    | "beem" sends through Beem Africa (https://beem.africa). The sender ID
+    | must be approved on the Beem vendor dashboard; "INFO" works for testing.
+    */
+    'sms' => [
+        'driver' => env('SMS_DRIVER', 'log'),
+    ],
+
+    'beem' => [
+        'api_key' => env('BEEM_API_KEY'),
+        'secret_key' => env('BEEM_SECRET_KEY'),
+        'sender_id' => env('BEEM_SENDER_ID', 'INFO'),
+        'url' => env('BEEM_SMS_URL', 'https://apisms.beem.africa/v1/send'),
+        'timeout' => (int) env('BEEM_TIMEOUT', 15),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),

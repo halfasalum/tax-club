@@ -34,7 +34,7 @@
     </div>
 
     <dl class="relative mt-6 grid grid-cols-2 gap-4">
-        <div class="col-span-2 sm:col-span-1">
+        <div class="col-span-2">
             <dt class="text-xs font-extrabold text-ink-soft">{{ __('Membership no.') }}</dt>
             <dd class="mt-0.5 whitespace-nowrap font-receipt text-lg font-semibold">{{ $member->membership_id ?? '—' }}</dd>
         </div>

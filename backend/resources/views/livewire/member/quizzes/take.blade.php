@@ -1,6 +1,6 @@
 @php use App\Models\QuizQuestion; @endphp
 <div class="mx-auto max-w-2xl pb-24">
-    <div class="fixed inset-x-0 bottom-0 z-40 border-t-4 border-brand bg-ink px-4 py-3 text-white print:hidden">
+    <div class="fixed inset-x-0 bottom-0 z-20 lg:left-72 border-t-4 border-brand bg-ink px-4 py-3 text-white print:hidden">
         <div class="mx-auto flex max-w-2xl items-center justify-between gap-3">
             <p class="font-black">{{ __(':answered of :total answered', ['answered' => $answered, 'total' => $questions->count()]) }}</p>
             @if ($secondsLeft !== null)

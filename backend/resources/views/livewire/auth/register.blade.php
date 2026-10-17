@@ -36,13 +36,13 @@
 
                 <div>
                     <label for="full_name" class="block font-extrabold">{{ __('Full name') }}</label>
-                    <input wire:model.blur="full_name" id="full_name" type="text" autocomplete="name" @class(['field', 'field-error' => $errors->has('full_name')])>
+                    <input wire:model.live.blur="full_name" id="full_name" type="text" autocomplete="name" @class(['field', 'field-error' => $errors->has('full_name')])>
                     @error('full_name')<p class="{{ $errorText }}" role="alert">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
                     <label for="phone" class="block font-extrabold">{{ __('Mobile number') }}</label>
-                    <input wire:model.blur="phone" id="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="0712 345 678" aria-describedby="phone-help" @class(['field', 'field-error' => $errors->has('phone')])>
+                    <input wire:model.live.blur="phone" id="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="0712 345 678" aria-describedby="phone-help" @class(['field', 'field-error' => $errors->has('phone')])>
                     @error('phone')
                         <p class="{{ $errorText }}" role="alert">{{ $message }}</p>
                     @else
@@ -52,7 +52,7 @@
 
                 <div>
                     <label for="email" class="block font-extrabold">{{ __('Email') }} <span class="font-semibold text-slate">({{ __('optional') }})</span></label>
-                    <input wire:model.blur="email" id="email" type="email" autocomplete="email" @class(['field', 'field-error' => $errors->has('email')])>
+                    <input wire:model.live.blur="email" id="email" type="email" autocomplete="email" @class(['field', 'field-error' => $errors->has('email')])>
                     @error('email')<p class="{{ $errorText }}" role="alert">{{ $message }}</p>@enderror
                 </div>
             </fieldset>

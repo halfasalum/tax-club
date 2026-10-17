@@ -12,5 +12,8 @@ abstract class TestCase extends BaseTestCase
 
         // Built assets are not committed; pages render without the Vite manifest.
         $this->withoutVite();
+
+        // Component tests assert English copy; public routes set their own locale from the URL.
+        app()->setLocale('en');
     }
 }

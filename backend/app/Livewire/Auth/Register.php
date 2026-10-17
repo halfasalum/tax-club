@@ -45,6 +45,7 @@ class Register extends Component
         }
 
         return Institution::query()
+            ->active()
             ->where('type', $this->user_type)
             ->where('name', 'like', '%'.trim($this->institution_search).'%')
             ->orderBy('name')

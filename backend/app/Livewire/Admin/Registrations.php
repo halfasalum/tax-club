@@ -62,6 +62,7 @@ class Registrations extends Component
                     ->orWhere('registration_reference', 'like', "%{$search}%");
             }))
             ->when($this->institution !== '', fn ($query) => $query->where('institution_id', $this->institution))
+            ->when($this->scope() !== null, fn ($query) => $query->whereIn('institution_id', $this->scope()))
             ->when($this->category !== '', fn ($query) => $query->where('user_type', $this->category))
             ->orderBy('created_at')
             ->paginate(20);
@@ -73,7 +74,28 @@ class Registrations extends Component
     #[Computed]
     public function institutions(): Collection
     {
-        return Institution::orderBy('name')->get(['institution_id', 'name']);
+        return Institution::query()
+            ->when($this->scope() !== null, fn ($query) => $query->whereIn('institution_id', $this->scope()))
+            ->orderBy('name')
+            ->get(['institution_id', 'name']);
+    }
+
+    /**
+     * Institutions this officer may act on; null means all (patrons are limited
+     * to the institutions of the clubs they look after).
+     *
+     * @return list<string>|null
+     */
+    private function scope(): ?array
+    {
+        return once(fn () => auth()->user()->verifiableInstitutionIds());
+    }
+
+    private function findInScope(string $userId): User
+    {
+        return User::query()
+            ->when($this->scope() !== null, fn ($query) => $query->whereIn('institution_id', $this->scope()))
+            ->findOrFail($userId);
     }
 
     public function approve(string $userId): void
@@ -81,7 +103,7 @@ class Registrations extends Component
         $this->authorizeVerification();
 
         try {
-            MemberRegistration::approve(User::findOrFail($userId), auth()->user());
+            MemberRegistration::approve($this->findInScope($userId), auth()->user());
         } catch (InvalidArgumentException) {
             $this->addError('decision', __('This registration was already decided by another officer.'));
             unset($this->registrations);
@@ -112,7 +134,7 @@ class Registrations extends Component
         $this->validate(['rejectionReason' => ['required', 'string', 'min:5', 'max:500']], [], ['rejectionReason' => __('reason')]);
 
         try {
-            MemberRegistration::reject(User::findOrFail($this->rejectingUserId), auth()->user(), $this->rejectionReason);
+            MemberRegistration::reject($this->findInScope($this->rejectingUserId), auth()->user(), $this->rejectionReason);
         } catch (InvalidArgumentException) {
             $this->addError('decision', __('This registration was already decided by another officer.'));
         }
@@ -131,6 +153,7 @@ class Registrations extends Component
     {
         return view('livewire.admin.registrations', [
             'canVerify' => auth()->user()->hasControl('verify_registration'),
+            'scopedInstitutions' => $this->scope(),
         ])->title(__('Registrations'));
     }
 }

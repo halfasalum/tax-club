@@ -98,6 +98,33 @@ class User extends Authenticatable
     }
 
     /**
+     * Institutions whose registrations this user may see and decide.
+     * Null means every institution; patrons are limited to the institutions
+     * of the Tax Clubs they currently look after.
+     *
+     * @return list<string>|null
+     */
+    public function verifiableInstitutionIds(): ?array
+    {
+        if ($this->hasControl('view_all_registrations')) {
+            return null;
+        }
+
+        return ClubPatron::current()
+            ->where('club_patrons.user_id', $this->user_id)
+            ->join('tax_clubs', 'tax_clubs.tax_club_id', '=', 'club_patrons.tax_club_id')
+            ->pluck('tax_clubs.institution_id')
+            ->unique()
+            ->values()
+            ->all();
+    }
+
+    public function patronAssignments(): HasMany
+    {
+        return $this->hasMany(ClubPatron::class, 'user_id', 'user_id');
+    }
+
+    /**
      * Whether the user holds any administration permission.
      */
     public function canAccessAdmin(): bool

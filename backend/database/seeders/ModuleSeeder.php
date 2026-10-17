@@ -16,17 +16,18 @@ class ModuleSeeder extends Seeder
      */
     private array $modules = [
         [
-            'name'        => 'Registrations',
+            'name' => 'Registrations',
             'description' => 'Verify membership registrations submitted by students.',
-            'controls'    => [
+            'controls' => [
                 ['name' => 'View Registrations',  'description' => 'View the registration verification queue.'],
                 ['name' => 'Verify Registration', 'description' => 'Approve or reject a submitted registration.'],
+                ['name' => 'View All Registrations', 'description' => 'See registrations from every institution, not only the clubs the user is patron of.'],
             ],
         ],
         [
-            'name'        => 'Users',
+            'name' => 'Users',
             'description' => 'Manage system users and their accounts.',
-            'controls'    => [
+            'controls' => [
                 ['name' => 'View Users',   'description' => 'View and list all users.'],
                 ['name' => 'Add User',     'description' => 'Create a new user manually.'],
                 ['name' => 'Edit User',    'description' => 'Update user profile information.'],
@@ -35,9 +36,9 @@ class ModuleSeeder extends Seeder
             ],
         ],
         [
-            'name'        => 'Roles',
+            'name' => 'Roles',
             'description' => 'Manage roles and their assigned permissions.',
-            'controls'    => [
+            'controls' => [
                 ['name' => 'View Roles',   'description' => 'View and list all roles.'],
                 ['name' => 'Add Role',     'description' => 'Create a new role.'],
                 ['name' => 'Edit Role',    'description' => 'Update a role and its controls.'],
@@ -45,9 +46,9 @@ class ModuleSeeder extends Seeder
             ],
         ],
         [
-            'name'        => 'Modules',
+            'name' => 'Modules',
             'description' => 'Manage system modules and their access controls.',
-            'controls'    => [
+            'controls' => [
                 ['name' => 'View Modules',   'description' => 'View and list all modules.'],
                 ['name' => 'Add Module',     'description' => 'Create a new module.'],
                 ['name' => 'Edit Module',    'description' => 'Update a module or its controls.'],
@@ -55,27 +56,32 @@ class ModuleSeeder extends Seeder
             ],
         ],
         [
-            'name'        => 'Institutions',
+            'name' => 'Institutions',
             'description' => 'Manage registered schools, colleges and universities.',
-            'controls'    => [
+            'controls' => [
                 ['name' => 'Add Institution',    'description' => 'Register a new institution.'],
                 ['name' => 'Edit Institution',   'description' => 'Update institution details.'],
                 ['name' => 'Delete Institution', 'description' => 'Remove an institution.'],
+                ['name' => 'View Institutions', 'description' => 'Search and view institutions and their Tax Clubs.'],
+                ['name' => 'Change Institution Status', 'description' => 'Activate or deactivate an institution.'],
+                ['name' => 'Manage Tax Clubs', 'description' => 'Establish Tax Clubs and change their status.'],
+                ['name' => 'Assign Patron', 'description' => 'Assign or end Tax Club patrons.'],
+                ['name' => 'Import Institutions', 'description' => 'Import institutions from a CSV file.'],
             ],
         ],
         [
-            'name'        => 'Content',
+            'name' => 'Content',
             'description' => 'Manage learning content — videos, articles, infographics.',
-            'controls'    => [
+            'controls' => [
                 ['name' => 'Upload Content', 'description' => 'Upload or create new content.'],
                 ['name' => 'Edit Content',   'description' => 'Update existing content.'],
                 ['name' => 'Delete Content', 'description' => 'Remove content from the system.'],
             ],
         ],
         [
-            'name'        => 'Quizzes',
+            'name' => 'Quizzes',
             'description' => 'Manage quizzes and view attempt results.',
-            'controls'    => [
+            'controls' => [
                 ['name' => 'Create Quiz',  'description' => 'Create a new quiz.'],
                 ['name' => 'Edit Quiz',    'description' => 'Update quiz details.'],
                 ['name' => 'Delete Quiz',  'description' => 'Delete a quiz.'],
@@ -83,26 +89,26 @@ class ModuleSeeder extends Seeder
             ],
         ],
         [
-            'name'        => 'Opportunities',
+            'name' => 'Opportunities',
             'description' => 'Manage job listings, internships, and volunteer opportunities.',
-            'controls'    => [
+            'controls' => [
                 ['name' => 'Add Opportunity',    'description' => 'Post a new opportunity listing.'],
                 ['name' => 'Edit Opportunity',   'description' => 'Update an opportunity listing.'],
                 ['name' => 'Delete Opportunity', 'description' => 'Remove an opportunity listing.'],
             ],
         ],
         [
-            'name'        => 'Forum',
+            'name' => 'Forum',
             'description' => 'Manage community forum posts and discussions.',
-            'controls'    => [
+            'controls' => [
                 ['name' => 'Create Forum Post',  'description' => 'Start a new forum discussion thread.'],
                 ['name' => 'Delete Forum Post',  'description' => 'Remove any forum post or reply.'],
             ],
         ],
         [
-            'name'        => 'Events',
+            'name' => 'Events',
             'description' => 'Manage TRA Tax Club events and registrations.',
-            'controls'    => [
+            'controls' => [
                 ['name' => 'Add Event',              'description' => 'Create a new event.'],
                 ['name' => 'Edit Event',             'description' => 'Update event details.'],
                 ['name' => 'Delete Event',           'description' => 'Delete an event.'],
@@ -119,13 +125,13 @@ class ModuleSeeder extends Seeder
             $moduleId = (string) Str::uuid();
 
             DB::table('modules')->insertOrIgnore([
-                'module_id'   => $moduleId,
-                'name'        => $moduleData['name'],
-                'slug'        => Str::slug($moduleData['name'], '_'),
+                'module_id' => $moduleId,
+                'name' => $moduleData['name'],
+                'slug' => Str::slug($moduleData['name'], '_'),
                 'description' => $moduleData['description'],
-                'is_active'   => true,
-                'created_at'  => $now,
-                'updated_at'  => $now,
+                'is_active' => true,
+                'created_at' => $now,
+                'updated_at' => $now,
             ]);
 
             // Re-fetch in case insertOrIgnore skipped (already exists)
@@ -135,14 +141,14 @@ class ModuleSeeder extends Seeder
                 $slug = Str::slug($control['name'], '_');
 
                 DB::table('module_controls')->insertOrIgnore([
-                    'control_id'  => (string) Str::uuid(),
-                    'name'        => $control['name'],
-                    'slug'        => $slug,
-                    'module_id'   => $module->module_id,
+                    'control_id' => (string) Str::uuid(),
+                    'name' => $control['name'],
+                    'slug' => $slug,
+                    'module_id' => $module->module_id,
                     'description' => $control['description'],
-                    'is_active'   => true,
-                    'created_at'  => $now,
-                    'updated_at'  => $now,
+                    'is_active' => true,
+                    'created_at' => $now,
+                    'updated_at' => $now,
                 ]);
             }
         }

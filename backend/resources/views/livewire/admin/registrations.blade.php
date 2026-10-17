@@ -13,6 +13,11 @@
 <div>
     <h1 class="text-3xl font-black tracking-tight sm:text-4xl">{{ __('Registrations') }}</h1>
     <p class="mt-2 max-w-[65ch] text-lg text-slate">{{ __('Confirm that each student is a member of the Tax Club at their institution. Approved members can sign in and receive a membership number.') }}</p>
+    @if ($scopedInstitutions !== null)
+        <p class="mt-4 flex w-fit rounded-xl bg-brand-wash px-4 py-2 font-semibold">
+            {{ $scopedInstitutions === [] ? __('You are not a patron of any active Tax Club, so there are no registrations for you to confirm.') : __('You see registrations for the institutions where you are a patron.') }}
+        </p>
+    @endif
 
     <div class="mt-6 inline-flex flex-wrap gap-1 rounded-2xl bg-white p-1.5 shadow-sm" role="tablist" aria-label="{{ __('Status') }}">
         @foreach ($statuses as $value => $label)

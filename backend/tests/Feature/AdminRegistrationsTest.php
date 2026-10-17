@@ -4,38 +4,15 @@ namespace Tests\Feature;
 
 use App\Livewire\Admin\Registrations;
 use App\Livewire\Auth\Login;
-use App\Models\Role;
 use App\Models\User;
-use Database\Seeders\ModuleSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Livewire\Livewire;
+use Tests\Concerns\CreatesOfficers;
 use Tests\TestCase;
 
 class AdminRegistrationsTest extends TestCase
 {
-    use RefreshDatabase;
-
-    private function officerWith(array $controlSlugs): User
-    {
-        $this->seed(ModuleSeeder::class);
-
-        $role = Role::create([
-            'role_id' => (string) Str::uuid(),
-            'name' => 'Coordinator '.Str::random(4),
-            'slug' => 'coordinator_'.Str::lower(Str::random(4)),
-            'is_active' => true,
-        ]);
-
-        $controls = DB::table('module_controls')->whereIn('slug', $controlSlugs)->pluck('control_id');
-        $role->controls()->attach($controls->all());
-
-        $officer = User::factory()->create();
-        $officer->roles()->attach($role->role_id, ['assigned_at' => now()]);
-
-        return $officer;
-    }
+    use CreatesOfficers, RefreshDatabase;
 
     public function test_members_without_admin_permissions_are_sent_to_their_dashboard(): void
     {
@@ -51,7 +28,7 @@ class AdminRegistrationsTest extends TestCase
 
     public function test_officer_approves_a_registration_and_a_membership_number_is_issued(): void
     {
-        $officer = $this->officerWith(['view_registrations', 'verify_registration']);
+        $officer = $this->officerWith(['view_registrations', 'verify_registration', 'view_all_registrations']);
         $applicant = User::factory()->pending()->create();
 
         $this->actingAs($officer)->get('/admin/registrations')->assertOk()->assertSee($applicant->full_name);
@@ -71,7 +48,7 @@ class AdminRegistrationsTest extends TestCase
 
     public function test_rejection_requires_a_reason_and_records_it(): void
     {
-        $officer = $this->officerWith(['view_registrations', 'verify_registration']);
+        $officer = $this->officerWith(['view_registrations', 'verify_registration', 'view_all_registrations']);
         $applicant = User::factory()->pending()->create();
 
         $component = Livewire::actingAs($officer)
@@ -89,7 +66,7 @@ class AdminRegistrationsTest extends TestCase
 
     public function test_viewing_the_queue_does_not_grant_approval(): void
     {
-        $officer = $this->officerWith(['view_registrations']);
+        $officer = $this->officerWith(['view_registrations', 'view_all_registrations']);
         $applicant = User::factory()->pending()->create();
 
         Livewire::actingAs($officer)
@@ -102,7 +79,7 @@ class AdminRegistrationsTest extends TestCase
 
     public function test_approving_an_already_decided_registration_shows_an_error(): void
     {
-        $officer = $this->officerWith(['view_registrations', 'verify_registration']);
+        $officer = $this->officerWith(['view_registrations', 'verify_registration', 'view_all_registrations']);
         $applicant = User::factory()->create();
 
         Livewire::actingAs($officer)

@@ -16,15 +16,18 @@ class Dashboard extends Component
 {
     public function render(): mixed
     {
+        $scope = auth()->user()->verifiableInstitutionIds();
+        $registrations = fn () => User::query()->when($scope !== null, fn ($query) => $query->whereIn('institution_id', $scope));
+
         return view('livewire.admin.dashboard', [
-            'pendingRegistrations' => User::where('account_status', User::STATUS_PENDING_VERIFICATION)->count(),
+            'pendingRegistrations' => $registrations()->where('account_status', User::STATUS_PENDING_VERIFICATION)->count(),
             'activeMembers' => User::where('account_status', User::STATUS_ACTIVE)->count(),
             'institutions' => Institution::count(),
             'publishedContent' => Content::where('is_active', true)->count(),
             'upcomingEvents' => Event::upcoming()->count(),
             'openOpportunities' => Opportunity::open()->count(),
             'quizAttempts' => QuizAttempt::count(),
-            'recentRegistrations' => User::with('institution:institution_id,name')
+            'recentRegistrations' => $registrations()->with('institution:institution_id,name')
                 ->whereNotNull('registration_reference')
                 ->latest('created_at')
                 ->limit(6)

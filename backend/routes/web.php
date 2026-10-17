@@ -5,6 +5,10 @@ use App\Http\Controllers\Web\LearnController;
 use App\Http\Controllers\Web\PageController;
 use App\Http\Controllers\Web\SitemapController;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
+use App\Livewire\Admin\Institutions\Form as InstitutionForm;
+use App\Livewire\Admin\Institutions\Import as InstitutionImport;
+use App\Livewire\Admin\Institutions\Index as InstitutionIndex;
+use App\Livewire\Admin\Institutions\Show as InstitutionShow;
 use App\Livewire\Admin\Registrations as AdminRegistrations;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
@@ -69,5 +73,27 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/registrations', AdminRegistrations::class)
             ->middleware('permission:view_registrations')
             ->name('registrations');
+
+        Route::prefix('institutions')->name('institutions.')->group(function (): void {
+            Route::get('/', InstitutionIndex::class)->middleware('permission:view_institutions')->name('index');
+            Route::get('/new', InstitutionForm::class)->middleware('permission:add_institution')->name('create');
+            Route::get('/import', InstitutionImport::class)->middleware('permission:import_institutions')->name('import');
+            Route::get('/import/template.csv', function () {
+                $rows = [
+                    ['name', 'category', 'region', 'district', 'contact_name', 'contact_phone', 'contact_email'],
+                    ['Azania Secondary School', 'secondary', 'Dar es Salaam', 'Ilala', 'Head of School', '0712345678', 'azania@example.go.tz'],
+                ];
+
+                return response()->streamDownload(function () use ($rows): void {
+                    $out = fopen('php://output', 'w');
+                    foreach ($rows as $row) {
+                        fputcsv($out, $row);
+                    }
+                    fclose($out);
+                }, 'institutions-template.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
+            })->middleware('permission:import_institutions')->name('template');
+            Route::get('/{institution}', InstitutionShow::class)->middleware('permission:view_institutions')->name('show');
+            Route::get('/{institution}/edit', InstitutionForm::class)->middleware('permission:edit_institution')->name('edit');
+        });
     });
 });

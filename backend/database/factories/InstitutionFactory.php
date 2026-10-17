@@ -20,6 +20,13 @@ class InstitutionFactory extends Factory
             'type' => 'secondary',
             'region' => fake()->randomElement(['Dar es Salaam', 'Arusha', 'Mwanza', 'Dodoma', 'Mbeya']),
             'district' => fake()->city(),
+            'code' => 'TST-S-'.fake()->unique()->numerify('####'),
+            'status' => Institution::STATUS_ACTIVE,
         ];
+    }
+
+    public function inactive(): static
+    {
+        return $this->state(fn () => ['status' => Institution::STATUS_INACTIVE, 'status_reason' => 'Closed']);
     }
 }

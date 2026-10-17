@@ -7,6 +7,7 @@
         ? array_values(array_filter([
             ['route' => 'admin.dashboard', 'label' => __('Overview')],
             $user->hasControl('view_registrations') ? ['route' => 'admin.registrations', 'label' => __('Registrations')] : null,
+            $user->hasControl('view_institutions') ? ['route' => 'admin.institutions.index', 'match' => 'admin.institutions.*', 'label' => __('Institutions')] : null,
         ]))
         : [
             ['route' => 'member.dashboard', 'label' => __('My Tax Club')],
@@ -52,7 +53,7 @@
 
         <nav class="mx-auto flex max-w-7xl gap-1 overflow-x-auto px-4 sm:px-6" aria-label="{{ __('Sections') }}">
             @foreach ($navigation as $item)
-                @php($active = request()->routeIs($item['route']))
+                @php($active = request()->routeIs($item['match'] ?? $item['route']))
                 <a href="{{ route($item['route']) }}" @if ($active) aria-current="page" @endif
                    @class(['whitespace-nowrap rounded-t-xl px-5 py-3 font-extrabold transition-colors', 'bg-brand text-ink' => $active, 'text-white/75 hover:bg-white/10 hover:text-white' => ! $active])>{{ $item['label'] }}</a>
             @endforeach

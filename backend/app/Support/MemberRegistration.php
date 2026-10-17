@@ -2,11 +2,13 @@
 
 namespace App\Support;
 
+use App\Models\Institution;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use InvalidArgumentException;
 
 /**
@@ -31,7 +33,7 @@ final class MemberRegistration
             'email' => ['nullable', 'email', 'max:150', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'user_type' => ['required', 'in:secondary,college,university'],
-            'institution_id' => ['required', 'uuid', 'exists:institutions,institution_id'],
+            'institution_id' => ['required', 'uuid', Rule::exists('institutions', 'institution_id')->where('status', Institution::STATUS_ACTIVE)],
         ];
     }
 
@@ -44,7 +46,7 @@ final class MemberRegistration
      */
     public static function normalizeInput(array $input): array
     {
-        $phone = preg_replace('/[\s-]+/', '', (string) ($input['phone'] ?? ''));
+        $phone = self::compactPhone($input['phone'] ?? '');
 
         if (preg_match('/^(\+?255|0)[67]\d{8}$/', $phone)) {
             $input['phone'] = self::normalizePhone($phone);
@@ -55,6 +57,14 @@ final class MemberRegistration
         }
 
         return $input;
+    }
+
+    /**
+     * Remove the spaces and dashes people type in phone numbers.
+     */
+    public static function compactPhone(?string $phone): string
+    {
+        return preg_replace('/[\s-]+/', '', (string) $phone);
     }
 
     /**

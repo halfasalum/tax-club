@@ -20,12 +20,16 @@ use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Member\Card as MemberCard;
 use App\Livewire\Member\Dashboard as MemberDashboard;
+use App\Livewire\Member\Profile as MemberProfilePage;
 use App\Livewire\Membership\Verify as VerifyMembership;
+use App\Models\User;
 use App\Support\Audit;
+use App\Support\MemberProfile;
 use App\Support\MembershipStatistics;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -82,6 +86,15 @@ Route::get('/verify/{token?}', VerifyMembership::class)
     ->middleware('throttle:60,1')
     ->name('membership.verify');
 
+// Profile photos are private: the member and officers who look after them (PRO-REQ03).
+Route::get('/members/{member}/photo', function (Request $request, User $member) {
+    abort_unless($member->photo_path && MemberProfile::canSeePhoto($request->user(), $member), 404);
+
+    return Storage::disk(MemberProfile::PHOTO_DISK)->response($member->photo_path, null, [
+        'Cache-Control' => 'private, max-age=86400',
+    ]);
+})->middleware(['auth:sanctum', 'active'])->name('members.photo');
+
 /*
 |--------------------------------------------------------------------------
 | Member portal and Administration Portal (not indexed)
@@ -91,6 +104,7 @@ Route::get('/verify/{token?}', VerifyMembership::class)
 Route::middleware(['auth', 'active'])->group(function (): void {
     Route::get('/app', MemberDashboard::class)->name('member.dashboard');
     Route::get('/app/card', MemberCard::class)->name('member.card');
+    Route::get('/app/profile', MemberProfilePage::class)->name('member.profile');
 
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function (): void {
         Route::get('/', AdminDashboard::class)->name('dashboard');

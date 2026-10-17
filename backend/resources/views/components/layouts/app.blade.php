@@ -16,6 +16,7 @@
         : [
             ['route' => 'member.dashboard', 'label' => __('My Tax Club')],
             ['route' => 'member.card', 'label' => __('My card')],
+            ['route' => 'member.profile', 'label' => __('My profile')],
         ];
     $initials = collect(explode(' ', trim($user->full_name)))->filter()->take(2)->map(fn ($part) => mb_substr($part, 0, 1))->implode('');
 @endphp

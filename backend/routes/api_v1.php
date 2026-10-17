@@ -30,6 +30,7 @@ use App\Http\Controllers\API\V1\InstitutionController;
 use App\Http\Controllers\API\V1\MembershipController;
 use App\Http\Controllers\API\V1\ModuleController;
 use App\Http\Controllers\API\V1\OpportunityController;
+use App\Http\Controllers\API\V1\ProfileController;
 use App\Http\Controllers\API\V1\QuizController;
 use App\Http\Controllers\API\V1\RoleController;
 use App\Http\Controllers\API\V1\UserController;
@@ -70,6 +71,17 @@ Route::middleware(['auth:sanctum', 'active'])->group(function () {
 
     // ── Leaderboard (members only; names are shortened for privacy) ──
     Route::get('leaderboard', [QuizController::class, 'globalLeaderboard']);
+
+    // Profile (PRO-REQ01-03, REG-REQ07)
+    Route::get('profile', [ProfileController::class, 'show']);
+    Route::put('profile', [ProfileController::class, 'update']);
+    Route::post('profile/photo', [ProfileController::class, 'updatePhoto'])->middleware('throttle:10,60');
+    Route::delete('profile/photo', [ProfileController::class, 'deletePhoto']);
+    Route::post('profile/phone', [ProfileController::class, 'requestPhoneChange'])->middleware('throttle:5,15');
+    Route::post('profile/phone/confirm', [ProfileController::class, 'confirmPhoneChange'])->middleware('throttle:10,15');
+    Route::post('profile/alumni-request', [ProfileController::class, 'requestAlumni']);
+    Route::delete('profile/alumni-request', [ProfileController::class, 'cancelAlumniRequest']);
+    Route::get('members/{id}', [ProfileController::class, 'member'])->whereUuid('id');
 
     // Digital membership card
     Route::get('membership/card', [MembershipController::class, 'card']);

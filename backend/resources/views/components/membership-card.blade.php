@@ -22,7 +22,11 @@
     </div>
 
     <div class="relative mt-6 flex items-center gap-4">
-        <span class="grid size-16 shrink-0 place-items-center rounded-2xl border-2 border-ink bg-white text-2xl font-black" aria-hidden="true">{{ $initials }}</span>
+        @if ($member->photo_path && \App\Support\MemberProfile::canSeePhoto(auth()->user(), $member))
+            <img src="{{ route('members.photo', ['member' => $member, 'v' => md5($member->photo_path)]) }}" alt="" width="80" height="80" class="size-20 shrink-0 rounded-2xl border-2 border-ink object-cover">
+        @else
+            <span class="grid size-16 shrink-0 place-items-center rounded-2xl border-2 border-ink bg-white text-2xl font-black" aria-hidden="true">{{ $initials }}</span>
+        @endif
         <div class="min-w-0">
             <p class="text-2xl font-black leading-tight">{{ $member->full_name }}</p>
             <p class="mt-1 font-bold text-ink-soft">{{ $member->institution?->name }}</p>

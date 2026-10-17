@@ -16,7 +16,11 @@
     <a href="{{ route('admin.members.index') }}" class="link">← {{ __('Members') }}</a>
 
     <div class="mt-4 flex flex-wrap items-start justify-between gap-4">
-        <div>
+        <div class="flex items-start gap-4">
+            @if ($member->photo_path)
+                <img src="{{ route('members.photo', ['member' => $member, 'v' => md5($member->photo_path)]) }}" alt="" width="96" height="96" class="size-24 rounded-2xl border-4 border-ink object-cover">
+            @endif
+            <div>
             <h1 class="text-3xl font-black tracking-tight sm:text-4xl">{{ $member->full_name }}</h1>
             <p class="mt-2 flex flex-wrap items-center gap-2 text-lg">
                 <span @class(['rounded-full px-3 py-1 text-sm font-extrabold', $statusTone])>{{ MemberAccounts::statusLabel($member->account_status) }}</span>
@@ -26,6 +30,7 @@
             @if ($member->status_reason && ! $member->isActive())
                 <p class="mt-2 text-slate">{{ __('Reason') }}: {{ $member->status_reason }}</p>
             @endif
+            </div>
         </div>
         @if ($can['audit'])
             <a href="{{ route('admin.audit', ['subject' => $member->user_id]) }}" class="btn-ghost">{{ __('Audit log') }}</a>

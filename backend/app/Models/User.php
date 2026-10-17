@@ -73,6 +73,7 @@ class User extends Authenticatable implements HasLocalePreference
         'gender',
         'age_band',
         'preferred_locale',
+        'photo_path',
         'guardian_name',
         'guardian_phone',
         'guardian_relationship',
@@ -85,6 +86,7 @@ class User extends Authenticatable implements HasLocalePreference
         'password_hash',
         'remember_token',
         'card_token',
+        'photo_path',
     ];
 
     protected $casts = [

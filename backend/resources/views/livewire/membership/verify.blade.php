@@ -31,6 +31,9 @@
                 @endif
             </p>
 
+            @if ($outcome['details']['photo_url'] ?? null)
+                <img src="{{ $outcome['details']['photo_url'] }}" alt="{{ __('Photo of the member') }}" width="128" height="128" class="mt-5 size-32 rounded-2xl border-4 border-ink object-cover">
+            @endif
             @if ($outcome['display_name'])
                 <dl class="mt-5 grid gap-4 sm:grid-cols-2">
                     <div>

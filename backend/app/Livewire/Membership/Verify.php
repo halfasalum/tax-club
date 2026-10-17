@@ -3,6 +3,7 @@
 namespace App\Livewire\Membership;
 
 use App\Models\MembershipVerification;
+use App\Support\MemberProfile;
 use App\Support\MembershipCard;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
@@ -74,6 +75,9 @@ class Verify extends Component
                 'region' => $member->institution?->region,
                 'member_since' => $member->membership_issued_at?->translatedFormat('j M Y'),
                 'is_minor' => $member->isMinor(),
+                'photo_url' => $member->photo_path && MemberProfile::canSeePhoto(auth()->user(), $member)
+                    ? route('members.photo', ['member' => $member, 'v' => md5($member->photo_path)])
+                    : null,
             ] : null,
         ];
     }

@@ -33,9 +33,16 @@ php artisan serve
 | `/forgot-password` | Password reset with a 6-digit SMS code |
 | `/app` | Member portal |
 | `/app/card` | Digital membership card with QR code (print or save as PDF) |
+| `/app/profile` | Profile: photo, contact details, SMS language, phone and password change, alumni request |
+| `/app/notifications` | In-app notification inbox |
 | `/verify`, `/verify/{token}` | Check a membership card by QR scan or number (public, rate-limited) |
 | `/admin` | Administration Portal: registration queue, institutions and Tax Clubs |
 | `/admin/institutions` | Register or import institutions, set up Tax Clubs, assign patrons |
+| `/admin/members` | Search members, suspend / deactivate / reactivate, alumni requests and bulk move to alumni |
+| `/admin/statistics` | Members by region, institution and category, with CSV download |
+| `/admin/coordinators` | Assign TRA coordinators to regions |
+| `/admin/notifications`, `/admin/sms` | Message wording and channels; SMS delivery with retry |
+| `/admin/audit` | Audit log of changes and sign-ins |
 | `/sitemap.xml`, `/robots.txt` | SEO |
 | `/api/v1/...` | Mobile API |
 
@@ -73,10 +80,29 @@ QUEUE_CONNECTION=database
 
 ## Roles and access
 
-- **Super Admin** gets every permission automatically (re-run `php artisan db:seed --class=SuperAdminRoleSeeder` after upgrades so new permissions are granted).
-- **Patron** is assigned from an institution's page. Patrons confirm registrations **for their own institution only**.
-- **TRA officers** who confirm registrations for every institution need the `view_all_registrations` permission ("View All Registrations") on their role. Without it they are treated like patrons.
-- After pulling new code, run `php artisan migrate` and `php artisan db:seed --class=ModuleSeeder` (adds new permissions such as Verify Membership) and `php artisan db:seed --class=PatronRoleSeeder`.
+| Role | Sees | Can |
+|---|---|---|
+| **Super Admin** | Everything | Everything (re-run `SuperAdminRoleSeeder` after upgrades so new permissions are granted) |
+| **Coordinator** (assigned at `/admin/coordinators`) | Institutions, registrations, members and statistics **in their regions** | Confirm registrations, suspend/reactivate members, approve alumni, check cards with full details |
+| **Patron** (assigned on an institution's page) | Registrations and members **of their own institution** | Confirm registrations, approve alumni |
+| **National officer** | Every region, if their role has **View All Registrations** (nationwide access) | Whatever their role allows |
+
+Permissions are grouped by module in `database/seeders/ModuleSeeder.php` (Members, Notifications and Audit were added in Release 1).
+
+**Sign-in security**
+- Anyone with an administration permission confirms sign-in with a 6-digit SMS code (`STAFF_TWO_FACTOR=true`). **Give every staff account a phone number**: staff without one are let in, and the skip is written to the audit log.
+- Mobile app tokens expire after 30 days (`SANCTUM_EXPIRATION`, minutes). Suspended or deactivated accounts lose access on their next request.
+- Every change to members, institutions, Tax Clubs, patrons, coordinators and notification settings is kept in an append-only audit log, together with sign-ins and failed sign-ins.
+
+**After pulling new code**
+
+```bash
+composer install
+php artisan migrate
+php artisan db:seed --class=ModuleSeeder          # new permissions
+php artisan db:seed --class=SuperAdminRoleSeeder  # grants them to Super Admin
+php artisan db:seed --class=PatronRoleSeeder      # Patron and Coordinator roles
+```
 
 ## Tests
 

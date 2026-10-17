@@ -38,6 +38,7 @@ class DatabaseSeeder extends Seeder
             ModuleSeeder::class,
             SuperAdminRoleSeeder::class,
             PatronRoleSeeder::class,
+            ContentCategorySeeder::class,
             SuperUserSeeder::class,
         ]);
 

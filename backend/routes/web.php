@@ -11,6 +11,10 @@ use App\Livewire\Admin\Institutions\Form as InstitutionForm;
 use App\Livewire\Admin\Institutions\Import as InstitutionImport;
 use App\Livewire\Admin\Institutions\Index as InstitutionIndex;
 use App\Livewire\Admin\Institutions\Show as InstitutionShow;
+use App\Livewire\Admin\Learning\Categories as LearningCategories;
+use App\Livewire\Admin\Learning\Form as LearningForm;
+use App\Livewire\Admin\Learning\Index as LearningIndex;
+use App\Livewire\Admin\Learning\Show as LearningShow;
 use App\Livewire\Admin\Members\Index as MemberIndex;
 use App\Livewire\Admin\Members\Show as MemberShow;
 use App\Livewire\Admin\NotificationSettings as AdminNotificationSettings;
@@ -139,6 +143,16 @@ Route::middleware(['auth', 'active'])->group(function (): void {
         })->middleware('permission:view_statistics')->name('statistics.export');
         Route::get('/notifications', AdminNotificationSettings::class)->middleware('permission:manage_notification_templates')->name('notifications');
         Route::get('/sms', AdminSmsLog::class)->middleware('permission:view_sms_log')->name('sms');
+        Route::prefix('learning')->name('learning.')->group(function (): void {
+            $authors = 'permission:upload_content,edit_content,review_content,publish_content';
+            Route::get('/', LearningIndex::class)->middleware($authors)->name('index');
+            Route::get('/new', LearningForm::class)->middleware('permission:upload_content')->name('create');
+            Route::get('/categories', LearningCategories::class)->middleware('permission:manage_content_categories')->name('categories');
+            Route::get('/modules', fn () => abort(404))->middleware($authors)->name('modules');
+            Route::get('/{content}', LearningShow::class)->middleware($authors)->name('show');
+            Route::get('/{content}/edit', LearningForm::class)->middleware('permission:upload_content,edit_content')->name('edit');
+        });
+
         Route::get('/audit', AdminAuditLog::class)->middleware('permission:view_audit_log')->name('audit');
 
         Route::prefix('institutions')->name('institutions.')->group(function (): void {

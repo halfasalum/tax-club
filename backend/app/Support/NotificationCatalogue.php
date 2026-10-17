@@ -6,6 +6,7 @@ use App\Notifications\AccountDeactivated;
 use App\Notifications\AccountReactivated;
 use App\Notifications\AccountSuspended;
 use App\Notifications\AlumniStatusGranted;
+use App\Notifications\ContentReviewed;
 use App\Notifications\CoordinatorAssigned;
 use App\Notifications\PasswordChanged;
 use App\Notifications\PasswordResetCode;
@@ -34,6 +35,7 @@ final class NotificationCatalogue
         AlumniStatusGranted::class,
         PatronAssigned::class,
         CoordinatorAssigned::class,
+        ContentReviewed::class,
         PasswordChanged::class,
         PasswordResetCode::class,
         StaffLoginCode::class,
@@ -51,6 +53,9 @@ final class NotificationCatalogue
         'region' => 'Mwanza',
         'code' => '482913',
         'minutes' => '10',
+        'title' => 'VAT in daily life',
+        'decision' => 'approved',
+        'note' => '',
     ];
 
     /**

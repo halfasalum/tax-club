@@ -73,6 +73,24 @@ abstract class TaxClubNotification extends Notification implements ShouldQueue
         return false;
     }
 
+    /**
+     * Whether SMS is on before an administrator changes it. Routine updates
+     * can default to the inbox only to save SMS costs.
+     */
+    public static function smsByDefault(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Optional category members can switch off (NOT-REQ05); null means the
+     * notification is about their account and always delivered.
+     */
+    public static function preferenceCategory(): ?string
+    {
+        return null;
+    }
+
     public static function template(): ?NotificationTemplate
     {
         return NotificationTemplate::find(static::key());
@@ -90,7 +108,7 @@ abstract class TaxClubNotification extends Notification implements ShouldQueue
             $channels[] = 'database';
         }
 
-        if (static::required() || ($template?->sms_enabled ?? true)) {
+        if (static::required() || ($template?->sms_enabled ?? static::smsByDefault())) {
             $channels[] = SmsChannel::class;
         }
 

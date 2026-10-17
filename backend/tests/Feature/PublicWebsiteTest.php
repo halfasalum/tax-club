@@ -51,7 +51,7 @@ class PublicWebsiteTest extends TestCase
     public function test_members_only_and_unpublished_lessons_are_not_public(): void
     {
         $membersOnly = Content::factory()->membersOnly()->create();
-        $scheduled = Content::factory()->create(['published_at' => now()->addWeek()]);
+        $scheduled = Content::factory()->scheduled()->create();
 
         $this->get('/learn/'.$membersOnly->slug)->assertNotFound();
         $this->get('/learn/'.$scheduled->slug)->assertNotFound();

@@ -90,6 +90,14 @@ class ModuleSeeder extends Seeder
             ],
         ],
         [
+            'name' => 'Gamification',
+            'description' => 'Points rules, badges and leaderboards.',
+            'controls' => [
+                ['name' => 'Manage Gamification', 'description' => 'Change point values, badges and leaderboard settings.'],
+                ['name' => 'Adjust Points', 'description' => 'Add or remove a member\'s points with a reason.'],
+            ],
+        ],
+        [
             'name' => 'Audit',
             'description' => 'Review the record of changes and sign-ins.',
             'controls' => [
@@ -103,6 +111,9 @@ class ModuleSeeder extends Seeder
                 ['name' => 'Upload Content', 'description' => 'Upload or create new content.'],
                 ['name' => 'Edit Content',   'description' => 'Update existing content.'],
                 ['name' => 'Delete Content', 'description' => 'Remove content from the system.'],
+                ['name' => 'Review Content', 'description' => 'Approve, return or reject submitted learning content.'],
+                ['name' => 'Publish Content', 'description' => 'Publish, schedule, unpublish and archive approved content and modules.'],
+                ['name' => 'Manage Content Categories', 'description' => 'Create and edit learning categories.'],
             ],
         ],
         [
@@ -113,6 +124,8 @@ class ModuleSeeder extends Seeder
                 ['name' => 'Edit Quiz',    'description' => 'Update quiz details.'],
                 ['name' => 'Delete Quiz',  'description' => 'Delete a quiz.'],
                 ['name' => 'View Results', 'description' => 'View all user quiz attempts and scores.'],
+                ['name' => 'Review Quiz', 'description' => 'Approve, return or reject submitted quizzes.'],
+                ['name' => 'Publish Quiz', 'description' => 'Publish, schedule and close approved quizzes.'],
             ],
         ],
         [

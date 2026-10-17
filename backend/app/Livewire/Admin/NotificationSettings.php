@@ -33,7 +33,7 @@ class NotificationSettings extends Component
         $this->editing = $key;
         $this->bodySw = $template?->body_sw ?? NotificationCatalogue::defaultText($class, 'sw');
         $this->bodyEn = $template?->body_en ?? NotificationCatalogue::defaultText($class, 'en');
-        $this->smsEnabled = $class::required() || ($template?->sms_enabled ?? true);
+        $this->smsEnabled = $class::required() || ($template?->sms_enabled ?? $class::smsByDefault());
         $this->inboxEnabled = $template?->inbox_enabled ?? true;
         $this->resetErrorBag();
     }

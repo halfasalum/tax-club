@@ -254,6 +254,8 @@ Route::middleware(['auth:sanctum', 'active'])->group(function () {
         Route::delete('/{id}', [ContentController::class, 'destroy'])
             ->middleware('permission:delete_content');
 
+        Route::post('/{id}/submit', [ContentController::class, 'submit'])
+            ->middleware('permission:upload_content,edit_content');
         Route::patch('/{id}/toggle', [ContentController::class, 'toggle'])
             ->middleware('permission:edit_content');
     });

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Auditable;
 use App\Support\MemberRegistration;
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -17,7 +18,10 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements HasLocalePreference
 {
-    use HasApiTokens, HasFactory, HasUuids, Notifiable;
+    use Auditable, HasApiTokens, HasFactory, HasUuids, Notifiable;
+
+    /** @var list<string> */
+    protected array $auditIgnore = ['last_login', 'total_points', 'points_earned_this_month'];
 
     protected $table = 'users';
 

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin\Institutions;
 
+use App\Models\AuditLog;
 use App\Models\ClubPatron;
 use App\Models\Institution;
 use App\Models\TaxClub;
@@ -205,6 +206,14 @@ class Show extends Component
         return view('livewire.admin.institutions.show', [
             'clubs' => $clubs,
             'history' => $this->institution->statusHistory()->with('officer:user_id,full_name')->limit(10)->get(),
+            'changes' => AuditLog::query()
+                ->where('auditable_type', 'institution')
+                ->where('auditable_id', $this->institution->institution_id)
+                ->where('action', 'institution.updated')
+                ->with('actor:user_id,full_name')
+                ->latest('id')
+                ->limit(10)
+                ->get(),
             'memberCounts' => [
                 'active' => $this->institution->users()->where('account_status', User::STATUS_ACTIVE)->where('user_type', '!=', 'staff')->count(),
                 'pending' => $this->institution->users()->where('account_status', User::STATUS_PENDING_VERIFICATION)->count(),
@@ -215,6 +224,7 @@ class Show extends Component
                 'status' => $user->hasControl('change_institution_status'),
                 'clubs' => $user->hasControl('manage_tax_clubs'),
                 'patrons' => $user->hasControl('assign_patron'),
+                'audit' => $user->hasControl('view_audit_log'),
             ],
         ])->title($this->institution->name);
     }

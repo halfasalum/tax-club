@@ -226,6 +226,29 @@
                     @endforelse
                 </ol>
             </section>
+
+            @if ($changes->isNotEmpty())
+                <section aria-labelledby="changes-heading" class="rounded-3xl border-2 border-line bg-white p-6 sm:p-8">
+                    <div class="flex flex-wrap items-end justify-between gap-3">
+                        <h2 id="changes-heading" class="text-2xl font-black">{{ __('Detail changes') }}</h2>
+                        @if ($can['audit'])
+                            <a href="{{ route('admin.audit', ['subject' => $institution->institution_id]) }}" class="link">{{ __('Full audit log') }}</a>
+                        @endif
+                    </div>
+                    <ul class="mt-4 divide-y divide-line">
+                        @foreach ($changes as $record)
+                            <li class="py-3">
+                                <p class="font-extrabold">{{ $record->actor?->full_name ?? __('System') }} <span class="font-semibold text-slate">{{ $record->created_at->translatedFormat('j M Y H:i') }}</span></p>
+                                <ul class="mt-1 text-sm">
+                                    @foreach ($record->changedFields() as $field)
+                                        <li><span class="font-bold">{{ str_replace('_', ' ', $field) }}</span>: <span class="text-danger line-through">{{ $record->before[$field] ?? '—' }}</span> → <span class="text-savanna">{{ $record->after[$field] ?? '—' }}</span></li>
+                                    @endforeach
+                                </ul>
+                            </li>
+                        @endforeach
+                    </ul>
+                </section>
+            @endif
         </div>
 
         <aside class="space-y-6">

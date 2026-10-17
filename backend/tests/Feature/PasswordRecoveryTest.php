@@ -91,7 +91,7 @@ class PasswordRecoveryTest extends TestCase
             $this->assertTrue(true);
         }
 
-        DB::table('password_reset_codes')->update(['expires_at' => now()->subMinute()]);
+        DB::table('one_time_codes')->update(['expires_at' => now()->subMinute()]);
 
         $this->expectException(\InvalidArgumentException::class);
         PasswordRecovery::reset('0712345678', $second, 'brand-new-pass');

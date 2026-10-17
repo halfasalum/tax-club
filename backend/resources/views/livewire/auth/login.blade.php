@@ -6,6 +6,26 @@
         <p class="mt-6 rounded-xl bg-savanna px-4 py-3 font-extrabold text-white" role="status">{{ session('status') }}</p>
     @endif
 
+    @if ($awaitingCode)
+        <p class="mt-6 rounded-xl bg-brand-wash p-4 text-lg font-bold" role="status">{{ __('Staff accounts need a second step. We sent a 6-digit code by SMS to the phone number on your account.') }}</p>
+
+        <form wire:submit="confirmCode" class="mt-8 space-y-6" novalidate>
+            <div>
+                <label for="code" class="block font-extrabold">{{ __('Code from the SMS') }}</label>
+                <input wire:model="code" id="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" autofocus
+                       @class(['field font-receipt text-2xl tracking-[0.4em]', 'field-error' => $errors->has('code')])>
+                @error('code')<p class="mt-2 font-semibold text-danger" role="alert">{{ $message }}</p>@enderror
+            </div>
+            <button type="submit" class="btn-primary w-full text-lg" wire:loading.attr="disabled">
+                <span wire:loading.remove wire:target="confirmCode">{{ __('Confirm and sign in') }}</span>
+                <span wire:loading wire:target="confirmCode">{{ __('Signing in…') }}</span>
+            </button>
+        </form>
+        <p class="mt-6 text-slate">
+            {{ __('No SMS after a few minutes?') }}
+            <button type="button" wire:click="startOver" class="link">{{ __('Start again') }}</button>
+        </p>
+    @else
     <form wire:submit="login" class="mt-8 space-y-6" novalidate>
         <div>
             <label for="identifier" class="block font-extrabold">{{ __('Phone number or email') }}</label>
@@ -35,6 +55,7 @@
             <span wire:loading wire:target="login">{{ __('Signing in…') }}</span>
         </button>
     </form>
+    @endif
 
     <div class="mt-8 rounded-2xl bg-brand-wash p-5">
         <p class="font-extrabold">{{ __('New to Tax Club?') }}</p>

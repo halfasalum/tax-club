@@ -4,6 +4,7 @@ use App\Http\Controllers\Web\EventController;
 use App\Http\Controllers\Web\LearnController;
 use App\Http\Controllers\Web\PageController;
 use App\Http\Controllers\Web\SitemapController;
+use App\Livewire\Admin\AuditLog as AdminAuditLog;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Admin\Institutions\Form as InstitutionForm;
 use App\Livewire\Admin\Institutions\Import as InstitutionImport;
@@ -16,6 +17,7 @@ use App\Livewire\Auth\Register;
 use App\Livewire\Member\Card as MemberCard;
 use App\Livewire\Member\Dashboard as MemberDashboard;
 use App\Livewire\Membership\Verify as VerifyMembership;
+use App\Support\Audit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -56,6 +58,7 @@ Route::middleware('guest')->group(function (): void {
 });
 
 Route::post('/logout', function (Request $request) {
+    Audit::record('auth.logout', $request->user(), after: ['channel' => 'web']);
     Auth::guard('web')->logout();
     $request->session()->invalidate();
     $request->session()->regenerateToken();
@@ -80,7 +83,7 @@ Route::get('/verify/{token?}', VerifyMembership::class)
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('auth')->group(function (): void {
+Route::middleware(['auth', 'active'])->group(function (): void {
     Route::get('/app', MemberDashboard::class)->name('member.dashboard');
     Route::get('/app/card', MemberCard::class)->name('member.card');
 
@@ -89,6 +92,8 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/registrations', AdminRegistrations::class)
             ->middleware('permission:view_registrations')
             ->name('registrations');
+
+        Route::get('/audit', AdminAuditLog::class)->middleware('permission:view_audit_log')->name('audit');
 
         Route::prefix('institutions')->name('institutions.')->group(function (): void {
             Route::get('/', InstitutionIndex::class)->middleware('permission:view_institutions')->name('index');

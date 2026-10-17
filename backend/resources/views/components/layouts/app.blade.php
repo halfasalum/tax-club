@@ -8,6 +8,7 @@
             ['route' => 'admin.dashboard', 'label' => __('Overview')],
             $user->hasControl('view_registrations') ? ['route' => 'admin.registrations', 'label' => __('Registrations')] : null,
             $user->hasControl('view_institutions') ? ['route' => 'admin.institutions.index', 'match' => 'admin.institutions.*', 'label' => __('Institutions')] : null,
+            $user->hasControl('view_audit_log') ? ['route' => 'admin.audit', 'label' => __('Audit log')] : null,
         ]))
         : [
             ['route' => 'member.dashboard', 'label' => __('My Tax Club')],

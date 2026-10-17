@@ -3,10 +3,14 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Models\User;
+use App\Support\Audit;
 use App\Support\MemberRegistration;
 use App\Support\PasswordRecovery;
+use App\Support\StaffSignIn;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use InvalidArgumentException;
@@ -56,6 +60,8 @@ class AuthController extends BaseController
         $user = User::findByLoginIdentifier($request->identifier);
 
         if (! $user || ! Hash::check($request->password, $user->password_hash)) {
+            StaffSignIn::recordFailure($request->identifier, $user, 'api');
+
             return $this->error('Invalid credentials.', 401);
         }
 
@@ -63,9 +69,63 @@ class AuthController extends BaseController
             return $this->error(MemberRegistration::blockedLoginMessage($user), 403);
         }
 
-        // Update last login timestamp
-        $user->last_login = now();
-        $user->save();
+        if (StaffSignIn::required($user)) {
+            try {
+                StaffSignIn::sendCode($user, $request->ip());
+            } catch (InvalidArgumentException $exception) {
+                return $this->error($exception->getMessage(), 429);
+            }
+
+            return $this->success([
+                'two_factor_required' => true,
+                'challenge' => Crypt::encryptString(json_encode([
+                    'user_id' => $user->user_id,
+                    'expires_at' => now()->addMinutes(StaffSignIn::CODE_MINUTES)->timestamp,
+                ])),
+                'expires_in_minutes' => StaffSignIn::CODE_MINUTES,
+            ], 'Enter the code sent by SMS to finish signing in.');
+        }
+
+        return $this->issueToken($user, twoFactor: false);
+    }
+
+    /**
+     * POST /api/v1/auth/login/verify
+     * Second step for staff accounts: the challenge from login plus the SMS code.
+     */
+    public function verifyLogin(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'challenge' => 'required|string',
+            'code' => 'required|digits:6',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->error('Validation failed.', 422, $validator->errors());
+        }
+
+        try {
+            $challenge = json_decode(Crypt::decryptString($request->challenge), true);
+        } catch (DecryptException) {
+            $challenge = null;
+        }
+
+        $user = $challenge && $challenge['expires_at'] > now()->timestamp ? User::find($challenge['user_id']) : null;
+
+        if (! $user || ! $user->isActive()) {
+            return $this->error('Your sign-in code has expired. Sign in again.', 401);
+        }
+
+        if (! StaffSignIn::confirm($user, $request->code)) {
+            return $this->error('The code is incorrect or has expired.', 422);
+        }
+
+        return $this->issueToken($user, twoFactor: true);
+    }
+
+    private function issueToken(User $user, bool $twoFactor): JsonResponse
+    {
+        StaffSignIn::recordLogin($user, 'api', $twoFactor);
 
         // Revoke previous tokens (single session) — remove this line for multi-device
         $user->tokens()->delete();
@@ -75,6 +135,7 @@ class AuthController extends BaseController
         return $this->success([
             'user' => $this->formatUser($user->load('roles')),
             'token' => $token,
+            'expires_at' => config('sanctum.expiration') ? now()->addMinutes((int) config('sanctum.expiration'))->toIso8601String() : null,
             'permissions' => $user->allControls(),
         ], 'Login successful.');
     }
@@ -133,6 +194,7 @@ class AuthController extends BaseController
     public function logout(Request $request): JsonResponse
     {
         $request->user()->currentAccessToken()->delete();
+        Audit::record('auth.logout', $request->user(), after: ['channel' => 'api']);
 
         return $this->success(null, 'Logged out successfully.');
     }

@@ -42,7 +42,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
-    Route::post('login', [AuthController::class, 'login']);
+    Route::post('login', [AuthController::class, 'login'])->middleware('throttle:10,1');
+    Route::post('login/verify', [AuthController::class, 'verifyLogin'])->middleware('throttle:10,1');
     Route::post('recover', [AuthController::class, 'recover'])->middleware('throttle:10,15');
     Route::post('recover/reset', [AuthController::class, 'resetPassword'])->middleware('throttle:10,15');
 });
@@ -57,7 +58,7 @@ Route::get('institutions/{id}', [InstitutionController::class, 'show']);
 //  AUTHENTICATED ROUTES (auth:sanctum)
 // ──────────────────────────────────────────────────────────────
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'active'])->group(function () {
 
     // ── Auth ──────────────────────────────────────────────────
     Route::prefix('auth')->group(function () {

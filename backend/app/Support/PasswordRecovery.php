@@ -18,7 +18,7 @@ final class PasswordRecovery
 {
     public const CODE_MINUTES = 10;
 
-    public const MAX_ATTEMPTS = 5;
+    public const MAX_ATTEMPTS = OneTimeCode::MAX_ATTEMPTS;
 
     /** Codes that may be requested per account in 15 minutes. */
     public const MAX_REQUESTS = 3;
@@ -52,24 +52,8 @@ final class PasswordRecovery
             return;
         }
 
-        $code = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-
-        DB::transaction(function () use ($user, $code, $ip) {
-            DB::table('password_reset_codes')
-                ->where('user_id', $user->user_id)
-                ->whereNull('used_at')
-                ->whereNull('revoked_at')
-                ->update(['revoked_at' => now(), 'updated_at' => now()]);
-
-            DB::table('password_reset_codes')->insert([
-                'user_id' => $user->user_id,
-                'code_hash' => Hash::make($code),
-                'expires_at' => now()->addMinutes(self::CODE_MINUTES),
-                'requested_ip' => $ip,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        });
+        $code = OneTimeCode::issue($user, OneTimeCode::PASSWORD_RESET, self::CODE_MINUTES, $ip);
+        Audit::record('auth.password_reset_requested', $user, actor: $user);
 
         Notify::send($user, new PasswordResetCode($code, self::CODE_MINUTES));
     }
@@ -86,31 +70,17 @@ final class PasswordRecovery
             throw $invalid;
         }
 
-        $record = DB::table('password_reset_codes')
-            ->where('user_id', $user->user_id)
-            ->whereNull('used_at')
-            ->whereNull('revoked_at')
-            ->where('expires_at', '>', now())
-            ->latest('id')
-            ->first();
-
-        if (! $record || $record->attempts >= self::MAX_ATTEMPTS) {
+        if (OneTimeCode::consume($user, OneTimeCode::PASSWORD_RESET, $code) === null) {
             throw $invalid;
         }
 
-        DB::table('password_reset_codes')->where('id', $record->id)->increment('attempts');
-
-        if (! Hash::check(preg_replace('/\D/', '', $code), $record->code_hash)) {
-            throw $invalid;
-        }
-
-        DB::transaction(function () use ($user, $record, $password) {
+        DB::transaction(function () use ($user, $password) {
             $user->forceFill(['password_hash' => Hash::make($password)])->save();
-            DB::table('password_reset_codes')->where('id', $record->id)->update(['used_at' => now(), 'updated_at' => now()]);
             $user->tokens()->delete();
             DB::table('sessions')->where('user_id', $user->user_id)->delete();
         });
 
+        Audit::record('auth.password_reset', $user, actor: $user);
         Notify::send($user, new PasswordChanged);
 
         return $user;

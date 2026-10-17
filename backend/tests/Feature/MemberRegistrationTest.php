@@ -123,7 +123,7 @@ class MemberRegistrationTest extends TestCase
     {
         $user = User::factory()->pending()->create();
 
-        $this->actingAs($user, 'sanctum')->postJson('/api/v1/auth/verify')->assertStatus(410);
+        $this->actingAs($user, 'sanctum')->postJson('/api/v1/auth/verify')->assertForbidden();
 
         $this->assertSame(User::STATUS_PENDING_VERIFICATION, $user->fresh()->account_status);
     }

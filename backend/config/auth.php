@@ -6,6 +6,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Staff sign-in code
+    |--------------------------------------------------------------------------
+    | Users with any administration permission confirm sign-in with a code
+    | sent by SMS (decision D-08). Staff without a phone number are let in
+    | and the skip is audited, so add phone numbers to staff accounts.
+    */
+
+    'staff_two_factor' => env('STAFF_TWO_FACTOR', true),
+
+    /*
+    |--------------------------------------------------------------------------
     | Authentication Defaults
     |--------------------------------------------------------------------------
     |

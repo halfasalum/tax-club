@@ -9,3 +9,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('members:refresh-age-bands')->dailyAt('00:15');
+Schedule::command('sanctum:prune-expired --hours=24')->daily();

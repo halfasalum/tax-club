@@ -68,6 +68,32 @@ class ModuleSeeder extends Seeder
                 ['name' => 'Manage Tax Clubs', 'description' => 'Establish Tax Clubs and change their status.'],
                 ['name' => 'Assign Patron', 'description' => 'Assign or end Tax Club patrons.'],
                 ['name' => 'Import Institutions', 'description' => 'Import institutions from a CSV file.'],
+                ['name' => 'Assign Coordinator', 'description' => 'Assign or end TRA Tax Club coordinators for regions.'],
+                ['name' => 'View Statistics', 'description' => 'See membership statistics and download reports.'],
+            ],
+        ],
+        [
+            'name' => 'Members',
+            'description' => 'Look after member accounts and their membership status.',
+            'controls' => [
+                ['name' => 'View Members', 'description' => 'Search and view members within the user\'s scope.'],
+                ['name' => 'Change Member Status', 'description' => 'Suspend, deactivate or reactivate member accounts.'],
+                ['name' => 'Manage Alumni', 'description' => 'Approve alumni requests and move graduating members to alumni.'],
+            ],
+        ],
+        [
+            'name' => 'Notifications',
+            'description' => 'Configure notifications and follow SMS delivery.',
+            'controls' => [
+                ['name' => 'Manage Notification Templates', 'description' => 'Edit message wording and turn channels on or off.'],
+                ['name' => 'View SMS Log', 'description' => 'See SMS delivery status and retry failed messages.'],
+            ],
+        ],
+        [
+            'name' => 'Audit',
+            'description' => 'Review the record of changes and sign-ins.',
+            'controls' => [
+                ['name' => 'View Audit Log', 'description' => 'See who changed what, and sign-in activity.'],
             ],
         ],
         [

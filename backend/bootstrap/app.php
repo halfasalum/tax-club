@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\AddSecurityHeaders;
 use App\Http\Middleware\CheckPermission;
+use App\Http\Middleware\EnsureAccountActive;
 use App\Http\Middleware\EnsureCanAccessAdmin;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
@@ -27,6 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission' => CheckPermission::class,
             'locale' => SetLocale::class,
             'admin' => EnsureCanAccessAdmin::class,
+            'active' => EnsureAccountActive::class,
         ]);
 
         $middleware->web(append: [

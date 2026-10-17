@@ -7,7 +7,9 @@
         ? array_values(array_filter([
             ['route' => 'admin.dashboard', 'label' => __('Overview')],
             $user->hasControl('view_registrations') ? ['route' => 'admin.registrations', 'label' => __('Registrations')] : null,
+            $user->hasControl('view_members') ? ['route' => 'admin.members.index', 'match' => 'admin.members.*', 'label' => __('Members')] : null,
             $user->hasControl('view_institutions') ? ['route' => 'admin.institutions.index', 'match' => 'admin.institutions.*', 'label' => __('Institutions')] : null,
+            $user->hasControl('assign_coordinator') ? ['route' => 'admin.coordinators', 'label' => __('Coordinators')] : null,
             $user->hasControl('view_audit_log') ? ['route' => 'admin.audit', 'label' => __('Audit log')] : null,
         ]))
         : [

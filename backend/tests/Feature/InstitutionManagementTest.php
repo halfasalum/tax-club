@@ -27,7 +27,7 @@ class InstitutionManagementTest extends TestCase
     {
         return $this->officerWith([
             'view_institutions', 'add_institution', 'edit_institution', 'change_institution_status',
-            'manage_tax_clubs', 'assign_patron', 'import_institutions',
+            'manage_tax_clubs', 'assign_patron', 'import_institutions', 'view_all_registrations',
         ]);
     }
 
@@ -248,7 +248,7 @@ class InstitutionManagementTest extends TestCase
     public function test_pages_require_permissions(): void
     {
         $institution = Institution::factory()->create();
-        $viewer = $this->officerWith(['view_institutions']);
+        $viewer = $this->officerWith(['view_institutions', 'view_all_registrations']);
 
         $this->actingAs($viewer)->get(route('admin.institutions.index'))->assertOk();
         $this->actingAs($viewer)->get(route('admin.institutions.show', $institution))->assertOk();

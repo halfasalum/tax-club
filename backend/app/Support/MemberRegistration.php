@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use App\Models\Institution;
+use App\Models\MemberStatusChange;
 use App\Models\Role;
 use App\Models\User;
 use App\Notifications\RegistrationApproved;
@@ -32,6 +33,9 @@ final class MemberRegistration
     /** @var list<string> */
     public const GUARDIAN_RELATIONSHIPS = ['parent', 'guardian', 'other'];
 
+    /** Tanzanian mobile number: 07…, 06…, 2557… or +2557…. */
+    public const PHONE_PATTERN = '/^(\+?255|0)[67]\d{8}$/';
+
     /**
      * Validation rules shared by every registration channel. Guardian details
      * are required only when the date of birth makes the applicant a minor.
@@ -43,7 +47,7 @@ final class MemberRegistration
     {
         $rules = [
             'full_name' => ['required', 'string', 'min:3', 'max:150'],
-            'phone' => ['required', 'string', 'regex:/^(\+?255|0)[67]\d{8}$/', 'unique:users,phone'],
+            'phone' => ['required', 'string', 'regex:'.self::PHONE_PATTERN, 'unique:users,phone'],
             'email' => ['nullable', 'email', 'max:150', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'user_type' => ['required', 'in:secondary,college,university'],
@@ -59,7 +63,7 @@ final class MemberRegistration
         if (self::isMinorDateOfBirth($input['date_of_birth'] ?? null)) {
             $rules += [
                 'guardian_name' => ['required', 'string', 'min:3', 'max:150'],
-                'guardian_phone' => ['required', 'string', 'regex:/^(\+?255|0)[67]\d{8}$/'],
+                'guardian_phone' => ['required', 'string', 'regex:'.self::PHONE_PATTERN],
                 'guardian_relationship' => ['required', Rule::in(self::GUARDIAN_RELATIONSHIPS)],
                 'guardian_consent' => ['accepted'],
             ];
@@ -212,9 +216,11 @@ final class MemberRegistration
             'verified_by' => $officer->user_id,
             'verified_at' => now(),
             'status_reason' => null,
+            'status_changed_at' => now(),
         ])->save();
 
         MembershipCard::issue($user);
+        MemberAccounts::recordChange($user, MemberStatusChange::FIELD_STATUS, User::STATUS_PENDING_VERIFICATION, User::STATUS_ACTIVE, null, $officer);
 
         Notify::send($user, new RegistrationApproved);
     }
@@ -235,8 +241,10 @@ final class MemberRegistration
             'verified_by' => $officer->user_id,
             'verified_at' => now(),
             'status_reason' => trim($reason),
+            'status_changed_at' => now(),
         ])->save();
 
+        MemberAccounts::recordChange($user, MemberStatusChange::FIELD_STATUS, User::STATUS_PENDING_VERIFICATION, User::STATUS_REJECTED, trim($reason), $officer);
         Notify::send($user, new RegistrationRejected);
     }
 
@@ -251,6 +259,7 @@ final class MemberRegistration
                 : __('Your account is waiting for confirmation by your patron or TRA coordinator.'),
             User::STATUS_REJECTED => __('Your registration was not approved. Contact your Tax Club patron for help.'),
             User::STATUS_SUSPENDED => __('Your account is suspended. Contact your Tax Club patron or TRA coordinator.'),
+            User::STATUS_DEACTIVATED => __('Your account has been deactivated. Contact your Tax Club patron or TRA coordinator.'),
             default => __('Your account cannot be used to sign in.'),
         };
     }

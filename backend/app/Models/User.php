@@ -60,6 +60,9 @@ class User extends Authenticatable implements HasLocalePreference
         'membership_id',
         'card_token',
         'membership_issued_at',
+        'alumni_requested_at',
+        'alumni_since',
+        'status_changed_at',
         'registration_reference',
         'is_verified',
         'account_status',
@@ -93,6 +96,9 @@ class User extends Authenticatable implements HasLocalePreference
         'guardian_consent_at' => 'datetime',
         'guardian_consent_confirmed_at' => 'datetime',
         'membership_issued_at' => 'datetime',
+        'alumni_requested_at' => 'datetime',
+        'alumni_since' => 'datetime',
+        'status_changed_at' => 'datetime',
     ];
 
     /**
@@ -170,25 +176,62 @@ class User extends Authenticatable implements HasLocalePreference
     }
 
     /**
-     * Institutions whose registrations this user may see and decide.
-     * Null means every institution; patrons are limited to the institutions
-     * of the Tax Clubs they currently look after.
+     * Institutions whose registrations and members this user may see and
+     * look after (decision D-09). Null means every institution (national
+     * officers with view_all_registrations). Patrons get the institutions of
+     * the clubs they currently serve; coordinators every institution in
+     * their current regions.
      *
      * @return list<string>|null
      */
-    public function verifiableInstitutionIds(): ?array
+    public function institutionScope(): ?array
     {
         if ($this->hasControl('view_all_registrations')) {
             return null;
         }
 
-        return ClubPatron::current()
+        $patronOf = ClubPatron::current()
             ->where('club_patrons.user_id', $this->user_id)
             ->join('tax_clubs', 'tax_clubs.tax_club_id', '=', 'club_patrons.tax_club_id')
-            ->pluck('tax_clubs.institution_id')
-            ->unique()
-            ->values()
-            ->all();
+            ->pluck('tax_clubs.institution_id');
+
+        $regions = $this->coordinatorRegions();
+        $inRegions = $regions === [] ? collect() : Institution::whereIn('region', $regions)->pluck('institution_id');
+
+        return $patronOf->merge($inRegions)->unique()->values()->all();
+    }
+
+    /**
+     * @return list<string>|null
+     */
+    public function verifiableInstitutionIds(): ?array
+    {
+        return $this->institutionScope();
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function coordinatorRegions(): array
+    {
+        return CoordinatorAssignment::current()->where('user_id', $this->user_id)->pluck('region')->unique()->values()->all();
+    }
+
+    public function canLookAfter(self $member): bool
+    {
+        $scope = $this->institutionScope();
+
+        return $scope === null || in_array($member->institution_id, $scope, true);
+    }
+
+    public function statusHistory(): HasMany
+    {
+        return $this->hasMany(MemberStatusChange::class, 'user_id', 'user_id')->latest('changed_at')->latest('id');
+    }
+
+    public function coordinatorAssignments(): HasMany
+    {
+        return $this->hasMany(CoordinatorAssignment::class, 'user_id', 'user_id');
     }
 
     public function patronAssignments(): HasMany

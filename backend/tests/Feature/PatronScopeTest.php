@@ -59,7 +59,7 @@ class PatronScopeTest extends TestCase
         Livewire::actingAs($patron)
             ->test(Registrations::class)
             ->assertDontSee('Asha Own')
-            ->assertSee('You are not a patron of any active Tax Club');
+            ->assertSee('You are not a patron or coordinator yet');
     }
 
     public function test_tra_officer_with_view_all_permission_sees_every_institution(): void

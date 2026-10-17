@@ -272,6 +272,19 @@
                 @endif
             </div>
 
+            <div class="rounded-2xl border-2 border-line bg-white p-5">
+                <h2 class="font-black">{{ __('Regional coordinators') }}</h2>
+                @forelse ($coordinators as $coordinator)
+                    <p class="mt-2 font-semibold">{{ $coordinator->full_name }} <span class="block font-normal text-slate">{{ $coordinator->phone }}</span></p>
+                @empty
+                    <p class="mt-2 text-slate">{{ __('No coordinator for :region yet.', ['region' => $institution->region]) }}</p>
+                @endforelse
+            </div>
+
+            @if ($can['members'])
+                <a href="{{ route('admin.members.index', ['institution' => $institution->institution_id]) }}" class="btn-ghost w-full">{{ __('See members') }}</a>
+            @endif
+
             @if ($can['status'])
                 <div class="rounded-2xl border-2 border-line bg-white p-5">
                     <h2 class="font-black">{{ $isActive ? __('Deactivate institution') : __('Reactivate institution') }}</h2>

@@ -15,7 +15,7 @@
     <p class="mt-2 max-w-[65ch] text-lg text-slate">{{ __('Confirm that each student is a member of the Tax Club at their institution. Approved members can sign in and receive a membership number.') }}</p>
     @if ($scopedInstitutions !== null)
         <p class="mt-4 flex w-fit rounded-xl bg-brand-wash px-4 py-2 font-semibold">
-            {{ $scopedInstitutions === [] ? __('You are not a patron of any active Tax Club, so there are no registrations for you to confirm.') : __('You see registrations for the institutions where you are a patron.') }}
+            {{ $scopedInstitutions === [] ? __('You are not a patron or coordinator yet, so there are no registrations for you to confirm.') : __('You see registrations for the institutions you look after as patron or coordinator.') }}
         </p>
     @endif
 

@@ -62,6 +62,7 @@ class Index extends Component
             ->when($this->type !== '', fn ($query) => $query->where('type', $this->type))
             ->when($this->region !== '', fn ($query) => $query->where('region', $this->region))
             ->when($this->status !== '', fn ($query) => $query->where('status', $this->status))
+            ->when(($scope = auth()->user()->institutionScope()) !== null, fn ($query) => $query->whereIn('institution_id', $scope))
             ->orderBy('name')
             ->paginate(20);
     }

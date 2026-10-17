@@ -5,11 +5,14 @@ use App\Http\Controllers\Web\LearnController;
 use App\Http\Controllers\Web\PageController;
 use App\Http\Controllers\Web\SitemapController;
 use App\Livewire\Admin\AuditLog as AdminAuditLog;
+use App\Livewire\Admin\Coordinators as AdminCoordinators;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Admin\Institutions\Form as InstitutionForm;
 use App\Livewire\Admin\Institutions\Import as InstitutionImport;
 use App\Livewire\Admin\Institutions\Index as InstitutionIndex;
 use App\Livewire\Admin\Institutions\Show as InstitutionShow;
+use App\Livewire\Admin\Members\Index as MemberIndex;
+use App\Livewire\Admin\Members\Show as MemberShow;
 use App\Livewire\Admin\Registrations as AdminRegistrations;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
@@ -93,6 +96,9 @@ Route::middleware(['auth', 'active'])->group(function (): void {
             ->middleware('permission:view_registrations')
             ->name('registrations');
 
+        Route::get('/members', MemberIndex::class)->middleware('permission:view_members')->name('members.index');
+        Route::get('/members/{member}', MemberShow::class)->middleware('permission:view_members')->name('members.show');
+        Route::get('/coordinators', AdminCoordinators::class)->middleware('permission:assign_coordinator')->name('coordinators');
         Route::get('/audit', AdminAuditLog::class)->middleware('permission:view_audit_log')->name('audit');
 
         Route::prefix('institutions')->name('institutions.')->group(function (): void {

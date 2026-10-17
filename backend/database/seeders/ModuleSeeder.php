@@ -21,7 +21,7 @@ class ModuleSeeder extends Seeder
             'controls' => [
                 ['name' => 'View Registrations',  'description' => 'View the registration verification queue.'],
                 ['name' => 'Verify Registration', 'description' => 'Approve or reject a submitted registration.'],
-                ['name' => 'View All Registrations', 'description' => 'See registrations from every institution, not only the clubs the user is patron of.'],
+                ['name' => 'View All Registrations', 'description' => 'Nationwide access: registrations, members and institutions in every region, not only those the user looks after as patron or coordinator.'],
                 ['name' => 'Verify Membership', 'description' => 'See full member details when checking a membership card.'],
             ],
         ],

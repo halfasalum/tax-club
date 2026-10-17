@@ -4,12 +4,10 @@ namespace App\Support;
 
 use App\Models\ClubPatron;
 use App\Models\Institution;
-use App\Models\Role;
 use App\Models\TaxClub;
 use App\Models\User;
 use App\Notifications\PatronAssigned;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -156,38 +154,20 @@ final class InstitutionRegistry
             throw new InvalidArgumentException(__('Patrons can only be assigned to an active Tax Club.'));
         }
 
-        $phone = MemberRegistration::normalizePhone($data['phone']);
-        $patron = User::where('phone', $phone)->first();
-        $temporaryPassword = null;
+        $existing = User::where('phone', MemberRegistration::normalizePhone($data['phone']))->first();
 
-        if ($patron && $club->currentPatrons()->where('user_id', $patron->user_id)->exists()) {
-            throw new InvalidArgumentException(__(':name is already a patron of this Tax Club.', ['name' => $patron->full_name]));
+        if ($existing && $club->currentPatrons()->where('user_id', $existing->user_id)->exists()) {
+            throw new InvalidArgumentException(__(':name is already a patron of this Tax Club.', ['name' => $existing->full_name]));
         }
 
-        $result = DB::transaction(function () use ($club, $data, $officer, $phone, $patron, &$temporaryPassword) {
-            if (! $patron) {
-                if (blank($data['full_name'] ?? null)) {
-                    throw new InvalidArgumentException(__('No account uses this phone number. Enter the patron’s full name to create one.'));
-                }
+        $result = DB::transaction(function () use ($club, $data, $officer) {
+            [$patron, $temporaryPassword] = StaffAccounts::findOrCreate(
+                $data,
+                $club->institution_id,
+                __('No account uses this phone number. Enter the patron’s full name to create one.'),
+            );
 
-                $temporaryPassword = Str::password(12, symbols: false);
-                $patron = User::create([
-                    'full_name' => trim($data['full_name']),
-                    'phone' => $phone,
-                    'email' => filled($data['email'] ?? null) ? Str::lower(trim($data['email'])) : null,
-                    'password_hash' => Hash::make($temporaryPassword),
-                    'user_type' => 'staff',
-                    'institution_id' => $club->institution_id,
-                    'is_verified' => true,
-                    'account_status' => User::STATUS_ACTIVE,
-                ]);
-            }
-
-            if ($role = Role::where('slug', 'patron')->where('is_active', true)->first()) {
-                $patron->roles()->syncWithoutDetaching([
-                    $role->role_id => ['assigned_by' => $officer?->user_id, 'assigned_at' => now()],
-                ]);
-            }
+            StaffAccounts::grantRole($patron, 'patron', $officer);
 
             $assignment = ClubPatron::create([
                 'tax_club_id' => $club->tax_club_id,
@@ -222,8 +202,8 @@ final class InstitutionRegistry
         // Patrons keep the role only while they still look after a club.
         $stillPatron = ClubPatron::current()->where('user_id', $assignment->user_id)->where('id', '!=', $assignment->id)->exists();
 
-        if (! $stillPatron && ($role = Role::where('slug', 'patron')->first())) {
-            $assignment->user->roles()->detach($role->role_id);
+        if (! $stillPatron) {
+            StaffAccounts::revokeRole($assignment->user, 'patron', $officer);
         }
     }
 

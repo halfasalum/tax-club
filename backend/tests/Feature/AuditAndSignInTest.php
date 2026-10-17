@@ -127,8 +127,6 @@ class AuditAndSignInTest extends TestCase
 
     public function test_audit_log_page_needs_permission_and_filters_by_area(): void
     {
-        $this->actingAs($this->officerWith(['view_registrations']))->get('/admin/audit')->assertForbidden();
-
         $officer = $this->officerWith(['view_audit_log']);
         Institution::factory()->create(['name' => 'Kibaha Secondary']);
         AuditLog::create(['action' => 'auth.login_failed']);
@@ -139,5 +137,7 @@ class AuditAndSignInTest extends TestCase
             ->set('area', 'institutions')
             ->assertDontSee('Failed sign-in')
             ->assertSee('Kibaha Secondary');
+
+        $this->actingAs($this->officerWith(['view_registrations']))->get('/admin/audit')->assertForbidden();
     }
 }

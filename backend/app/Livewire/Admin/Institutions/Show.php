@@ -7,6 +7,7 @@ use App\Models\ClubPatron;
 use App\Models\Institution;
 use App\Models\TaxClub;
 use App\Models\User;
+use App\Support\Coordinators;
 use App\Support\InstitutionRegistry;
 use App\Support\MemberRegistration;
 use InvalidArgumentException;
@@ -53,6 +54,8 @@ class Show extends Component
 
     public function mount(Institution $institution): void
     {
+        abort_unless(auth()->user()->institutionScope() === null || in_array($institution->institution_id, auth()->user()->institutionScope(), true), 404);
+
         $this->institution = $institution;
         $this->clubName = $institution->name.' Tax Club';
         $this->patronStartsOn = now()->toDateString();
@@ -117,7 +120,7 @@ class Show extends Component
         $this->patronPhone = MemberRegistration::compactPhone($this->patronPhone);
 
         $this->validate([
-            'patronPhone' => ['required', 'string', 'regex:/^(\+?255|0)[67]\d{8}$/'],
+            'patronPhone' => ['required', 'string', 'regex:'.MemberRegistration::PHONE_PATTERN],
             'patronName' => ['nullable', 'string', 'min:3', 'max:150'],
             'patronEmail' => ['nullable', 'email', 'max:150'],
             'patronStartsOn' => ['required', 'date'],
@@ -205,6 +208,7 @@ class Show extends Component
 
         return view('livewire.admin.institutions.show', [
             'clubs' => $clubs,
+            'coordinators' => Coordinators::forRegion($this->institution->region),
             'history' => $this->institution->statusHistory()->with('officer:user_id,full_name')->limit(10)->get(),
             'changes' => AuditLog::query()
                 ->where('auditable_type', 'institution')
@@ -225,6 +229,7 @@ class Show extends Component
                 'clubs' => $user->hasControl('manage_tax_clubs'),
                 'patrons' => $user->hasControl('assign_patron'),
                 'audit' => $user->hasControl('view_audit_log'),
+                'members' => $user->hasControl('view_members'),
             ],
         ])->title($this->institution->name);
     }

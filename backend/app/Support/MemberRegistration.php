@@ -212,8 +212,9 @@ final class MemberRegistration
             'verified_by' => $officer->user_id,
             'verified_at' => now(),
             'status_reason' => null,
-            'membership_id' => $user->membership_id ?: self::newMembershipNumber(),
         ])->save();
+
+        MembershipCard::issue($user);
 
         Notify::send($user, new RegistrationApproved);
     }
@@ -261,17 +262,5 @@ final class MemberRegistration
         } while (User::where('registration_reference', $reference)->exists());
 
         return $reference;
-    }
-
-    /**
-     * Interim format until TRA approves the final one (decision D-03).
-     */
-    private static function newMembershipNumber(): string
-    {
-        do {
-            $number = 'TC-'.now()->format('y').'-'.Str::upper(Str::random(8));
-        } while (User::where('membership_id', $number)->exists());
-
-        return $number;
     }
 }

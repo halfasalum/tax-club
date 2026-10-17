@@ -54,6 +54,8 @@ class User extends Authenticatable implements HasLocalePreference
         'user_type',
         'institution_id',
         'membership_id',
+        'card_token',
+        'membership_issued_at',
         'registration_reference',
         'is_verified',
         'account_status',
@@ -75,6 +77,7 @@ class User extends Authenticatable implements HasLocalePreference
     protected $hidden = [
         'password_hash',
         'remember_token',
+        'card_token',
     ];
 
     protected $casts = [
@@ -85,6 +88,7 @@ class User extends Authenticatable implements HasLocalePreference
         'date_of_birth' => 'date',
         'guardian_consent_at' => 'datetime',
         'guardian_consent_confirmed_at' => 'datetime',
+        'membership_issued_at' => 'datetime',
     ];
 
     /**

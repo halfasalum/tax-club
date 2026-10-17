@@ -43,7 +43,7 @@ class AdminRegistrationsTest extends TestCase
         $this->assertTrue($applicant->is_verified);
         $this->assertSame($officer->user_id, $applicant->verified_by);
         $this->assertNotNull($applicant->verified_at);
-        $this->assertMatchesRegularExpression('/^TC-\d{2}-[A-Z0-9]{8}$/', $applicant->membership_id);
+        $this->assertMatchesRegularExpression('/^TC-\d{2}-[A-Z]{3}-\d{6}-\d$/', $applicant->membership_id);
     }
 
     public function test_rejection_requires_a_reason_and_records_it(): void

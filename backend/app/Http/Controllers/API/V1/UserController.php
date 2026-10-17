@@ -4,11 +4,11 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Models\Role;
 use App\Models\User;
+use App\Support\MembershipCard;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 
 class UserController extends BaseController
 {
@@ -79,10 +79,10 @@ class UserController extends BaseController
             'password_hash' => Hash::make($request->password),
             'user_type' => $request->user_type,
             'institution_id' => $request->institution_id,
-            'membership_id' => strtoupper('TRA-'.Str::random(8)),
             'is_verified' => true, // admin-created users are pre-verified
             'account_status' => User::STATUS_ACTIVE,
         ]);
+        MembershipCard::issue($user);
 
         // Assign specified roles or fall back to default
         $roleIds = $request->role_ids ?? [];

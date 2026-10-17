@@ -11,6 +11,7 @@
         ]))
         : [
             ['route' => 'member.dashboard', 'label' => __('My Tax Club')],
+            ['route' => 'member.card', 'label' => __('My card')],
         ];
     $initials = collect(explode(' ', trim($user->full_name)))->filter()->take(2)->map(fn ($part) => mb_substr($part, 0, 1))->implode('');
 @endphp
@@ -26,7 +27,7 @@
 <body class="min-h-screen bg-mist">
     <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-brand focus:px-4 focus:py-3 focus:font-extrabold focus:text-ink">{{ __('Skip to content') }}</a>
 
-    <header class="sticky top-0 z-40 border-b-4 border-brand bg-ink text-white">
+    <header class="sticky top-0 z-40 print:hidden border-b-4 border-brand bg-ink text-white">
         <div class="mx-auto flex max-w-7xl flex-wrap items-center gap-x-6 gap-y-3 px-4 py-3 sm:px-6">
             @include('partials.brand', ['inverse' => true])
             @if ($inAdmin)

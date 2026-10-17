@@ -13,7 +13,9 @@ use App\Livewire\Admin\Registrations as AdminRegistrations;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
+use App\Livewire\Member\Card as MemberCard;
 use App\Livewire\Member\Dashboard as MemberDashboard;
+use App\Livewire\Membership\Verify as VerifyMembership;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -63,12 +65,24 @@ Route::post('/logout', function (Request $request) {
 
 /*
 |--------------------------------------------------------------------------
+| Membership card verification (MEM-REQ03): the QR code on every card opens
+| /verify/{token}. Open to everyone, rate-limited and not indexed.
+*/
+
+Route::get('/verify/{token?}', VerifyMembership::class)
+    ->where('token', '[A-Za-z0-9]{32}')
+    ->middleware('throttle:60,1')
+    ->name('membership.verify');
+
+/*
+|--------------------------------------------------------------------------
 | Member portal and Administration Portal (not indexed)
 |--------------------------------------------------------------------------
 */
 
 Route::middleware('auth')->group(function (): void {
     Route::get('/app', MemberDashboard::class)->name('member.dashboard');
+    Route::get('/app/card', MemberCard::class)->name('member.card');
 
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function (): void {
         Route::get('/', AdminDashboard::class)->name('dashboard');

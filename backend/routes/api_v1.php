@@ -27,6 +27,7 @@ use App\Http\Controllers\API\V1\DashboardController;
 use App\Http\Controllers\API\V1\EventController;
 use App\Http\Controllers\API\V1\ForumPostController;
 use App\Http\Controllers\API\V1\InstitutionController;
+use App\Http\Controllers\API\V1\MembershipController;
 use App\Http\Controllers\API\V1\ModuleController;
 use App\Http\Controllers\API\V1\OpportunityController;
 use App\Http\Controllers\API\V1\QuizController;
@@ -47,6 +48,8 @@ Route::prefix('auth')->group(function () {
 });
 
 // Institutions list is public — needed during registration dropdown
+Route::post('membership/verify', [MembershipController::class, 'verify'])->middleware('throttle:20,1');
+
 Route::get('institutions', [InstitutionController::class, 'index']);
 Route::get('institutions/{id}', [InstitutionController::class, 'show']);
 
@@ -66,6 +69,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // ── Leaderboard (members only; names are shortened for privacy) ──
     Route::get('leaderboard', [QuizController::class, 'globalLeaderboard']);
+
+    // Digital membership card
+    Route::get('membership/card', [MembershipController::class, 'card']);
+    Route::post('membership/card/reissue', [MembershipController::class, 'reissue'])->middleware('throttle:5,60');
 
     // ── Dashboard ─────────────────────────────────────────────
     Route::get('dashboard', [DashboardController::class, 'index']);

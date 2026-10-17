@@ -2,46 +2,33 @@
 
 namespace App\Notifications;
 
-use App\Notifications\Channels\SmsChannel;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Notification;
-
 /**
- * Sent when a registration is rejected, with the reason (REG-REQ02 §8).
+ * Sent when a registration is rejected, with the reason (REG-REQ02).
  */
-class RegistrationRejected extends Notification implements ShouldQueue
+class RegistrationRejected extends TaxClubNotification
 {
-    use Queueable;
-
-    public int $tries = 3;
-
-    /** @var list<int> */
-    public array $backoff = [60, 300];
-
-    public function __construct()
-    {
-        $this->afterCommit();
-    }
-
-    /**
-     * @return list<class-string>
-     */
-    public function via(object $notifiable): array
-    {
-        return [SmsChannel::class];
-    }
-
-    public function smsPurpose(): string
+    public static function key(): string
     {
         return 'registration_rejected';
     }
 
-    public function toSms(object $notifiable): string
+    public static function label(): string
     {
-        return __('TRA Tax Club: Your registration :reference was not approved. Reason: :reason. Contact your Tax Club patron for help.', [
-            'reference' => $notifiable->registration_reference,
-            'reason' => $notifiable->status_reason,
-        ]);
+        return __('Registration not approved');
+    }
+
+    public static function placeholders(): array
+    {
+        return ['reference', 'reason'];
+    }
+
+    public function message(): string
+    {
+        return __('TRA Tax Club: Your registration :reference was not approved. Reason: :reason. Contact your Tax Club patron for help.');
+    }
+
+    public function replacements(object $notifiable): array
+    {
+        return ['reference' => $notifiable->registration_reference, 'reason' => $notifiable->status_reason];
     }
 }

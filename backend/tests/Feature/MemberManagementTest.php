@@ -47,7 +47,7 @@ class MemberManagementTest extends TestCase
         $this->assertSame(User::STATUS_SUSPENDED, $member->account_status);
         $this->assertSame('Repeated rude posts in the forum', $member->status_reason);
         $this->assertSame(0, $member->tokens()->count());
-        $this->assertDatabaseHas('sms_messages', ['user_id' => $member->user_id, 'purpose' => 'account_status_changed']);
+        $this->assertDatabaseHas('sms_messages', ['user_id' => $member->user_id, 'purpose' => 'account_suspended']);
 
         $page->call('startStatusChange', User::STATUS_ACTIVE)
             ->set('statusReason', 'Spoke with the patron')

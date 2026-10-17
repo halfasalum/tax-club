@@ -29,6 +29,7 @@ use App\Http\Controllers\API\V1\ForumPostController;
 use App\Http\Controllers\API\V1\InstitutionController;
 use App\Http\Controllers\API\V1\MembershipController;
 use App\Http\Controllers\API\V1\ModuleController;
+use App\Http\Controllers\API\V1\NotificationController;
 use App\Http\Controllers\API\V1\OpportunityController;
 use App\Http\Controllers\API\V1\ProfileController;
 use App\Http\Controllers\API\V1\QuizController;
@@ -82,6 +83,11 @@ Route::middleware(['auth:sanctum', 'active'])->group(function () {
     Route::post('profile/alumni-request', [ProfileController::class, 'requestAlumni']);
     Route::delete('profile/alumni-request', [ProfileController::class, 'cancelAlumniRequest']);
     Route::get('members/{id}', [ProfileController::class, 'member'])->whereUuid('id');
+
+    // Notification inbox (NOT-REQ06)
+    Route::get('notifications', [NotificationController::class, 'index']);
+    Route::post('notifications/read-all', [NotificationController::class, 'markAllRead']);
+    Route::post('notifications/{id}/read', [NotificationController::class, 'markRead'])->whereUuid('id');
 
     // Digital membership card
     Route::get('membership/card', [MembershipController::class, 'card']);

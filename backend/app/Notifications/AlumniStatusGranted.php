@@ -12,6 +12,16 @@ class AlumniStatusGranted extends TaxClubNotification
         return 'alumni_status_granted';
     }
 
+    public static function label(): string
+    {
+        return __('Became alumni');
+    }
+
+    public static function placeholders(): array
+    {
+        return ['name', 'number'];
+    }
+
     public function message(): string
     {
         return __('TRA Tax Club: Congratulations :name! You are now Tax Club alumni. Your membership number :number, points and certificates stay with you.');

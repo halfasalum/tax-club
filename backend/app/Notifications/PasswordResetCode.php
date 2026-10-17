@@ -2,46 +2,48 @@
 
 namespace App\Notifications;
 
-use App\Notifications\Channels\SmsChannel;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Notification;
-
 /**
  * One-time code for resetting a password (REG-REQ05).
  */
-class PasswordResetCode extends Notification implements ShouldQueue
+class PasswordResetCode extends TaxClubNotification
 {
-    use Queueable;
-
-    public int $tries = 3;
-
-    /** @var list<int> */
-    public array $backoff = [60, 300];
-
     public function __construct(public string $code, public int $minutes)
     {
-        $this->afterCommit();
+        parent::__construct();
     }
 
-    /**
-     * @return list<class-string>
-     */
-    public function via(object $notifiable): array
-    {
-        return [SmsChannel::class];
-    }
-
-    public function smsPurpose(): string
+    public static function key(): string
     {
         return 'password_reset_code';
     }
 
-    public function toSms(object $notifiable): string
+    public static function label(): string
     {
-        return __('TRA Tax Club: Your password reset code is :code. It expires in :minutes minutes. Never share this code with anyone.', [
-            'code' => $this->code,
-            'minutes' => $this->minutes,
-        ]);
+        return __('Password reset code');
+    }
+
+    public static function placeholders(): array
+    {
+        return ['code', 'minutes'];
+    }
+
+    public static function required(): bool
+    {
+        return true;
+    }
+
+    public static function sensitive(): bool
+    {
+        return true;
+    }
+
+    public function message(): string
+    {
+        return __('TRA Tax Club: Your password reset code is :code. It expires in :minutes minutes. Never share this code with anyone.');
+    }
+
+    public function replacements(object $notifiable): array
+    {
+        return ['code' => $this->code, 'minutes' => $this->minutes];
     }
 }

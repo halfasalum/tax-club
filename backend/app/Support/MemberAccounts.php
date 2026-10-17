@@ -74,7 +74,7 @@ final class MemberAccounts
             }
         });
 
-        Notify::send($member, new AccountStatusChanged($status, $status === User::STATUS_ACTIVE ? null : $reason));
+        Notify::send($member, AccountStatusChanged::for($status, $status === User::STATUS_ACTIVE ? null : $reason));
     }
 
     public static function recordChange(User $member, string $field, ?string $from, string $to, ?string $reason, ?User $officer): void

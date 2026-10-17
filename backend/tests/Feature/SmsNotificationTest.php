@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\SmsMessage;
 use App\Models\User;
+use App\Notifications\Channels\SmsChannel;
 use App\Notifications\RegistrationApproved;
 use App\Support\MemberRegistration;
 use App\Support\Sms\BeemSmsGateway;
@@ -102,8 +103,8 @@ class SmsNotificationTest extends TestCase
         $notification = new RegistrationApproved;
         $notification->id = '01a14919-fde6-7179-b9c4-51534d3cbf98';
 
-        $member->notifyNow($notification);
-        $member->notifyNow($notification);
+        $member->notifyNow($notification, [SmsChannel::class]);
+        $member->notifyNow($notification, [SmsChannel::class]);
 
         Http::assertSentCount(1);
         $this->assertSame(1, SmsMessage::count());

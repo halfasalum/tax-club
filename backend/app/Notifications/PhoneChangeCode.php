@@ -2,46 +2,48 @@
 
 namespace App\Notifications;
 
-use App\Notifications\Channels\SmsChannel;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Notification;
-
 /**
  * Code that confirms a new phone number (PRO-REQ02).
  */
-class PhoneChangeCode extends Notification implements ShouldQueue
+class PhoneChangeCode extends TaxClubNotification
 {
-    use Queueable;
-
-    public int $tries = 3;
-
-    /** @var list<int> */
-    public array $backoff = [60, 300];
-
     public function __construct(public string $code, public int $minutes)
     {
-        $this->afterCommit();
+        parent::__construct();
     }
 
-    /**
-     * @return list<class-string>
-     */
-    public function via(object $notifiable): array
-    {
-        return [SmsChannel::class];
-    }
-
-    public function smsPurpose(): string
+    public static function key(): string
     {
         return 'phone_change_code';
     }
 
-    public function toSms(object $notifiable): string
+    public static function label(): string
     {
-        return __('TRA Tax Club: Your code to confirm this phone number is :code. It expires in :minutes minutes.', [
-            'code' => $this->code,
-            'minutes' => $this->minutes,
-        ]);
+        return __('Phone number confirmation code');
+    }
+
+    public static function placeholders(): array
+    {
+        return ['code', 'minutes'];
+    }
+
+    public static function required(): bool
+    {
+        return true;
+    }
+
+    public static function sensitive(): bool
+    {
+        return true;
+    }
+
+    public function message(): string
+    {
+        return __('TRA Tax Club: Your code to confirm this phone number is :code. It expires in :minutes minutes.');
+    }
+
+    public function replacements(object $notifiable): array
+    {
+        return ['code' => $this->code, 'minutes' => $this->minutes];
     }
 }

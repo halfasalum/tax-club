@@ -2,52 +2,53 @@
 
 namespace App\Notifications;
 
-use App\Notifications\Channels\SmsChannel;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Notification;
-
 /**
- * Sent to a teacher who has been made patron of a Tax Club (INS-REQ05 §9).
+ * Sent to a patron when assigned to a Tax Club (INS-REQ05). A new account's
+ * one-time password goes by SMS only, never into the inbox.
  */
-class PatronAssigned extends Notification implements ShouldQueue
+class PatronAssigned extends TaxClubNotification
 {
-    use Queueable;
-
-    public int $tries = 3;
-
-    /** @var list<int> */
-    public array $backoff = [60, 300];
-
     public function __construct(public string $clubName, public ?string $temporaryPassword = null)
     {
-        $this->afterCommit();
+        parent::__construct();
     }
 
-    /**
-     * @return list<class-string>
-     */
-    public function via(object $notifiable): array
-    {
-        return [SmsChannel::class];
-    }
-
-    public function smsPurpose(): string
+    public static function key(): string
     {
         return 'patron_assigned';
     }
 
+    public static function label(): string
+    {
+        return __('Patron assigned');
+    }
+
+    public static function placeholders(): array
+    {
+        return ['club', 'url'];
+    }
+
+    public function message(): string
+    {
+        return __('TRA Tax Club: You are now the patron of :club. Sign in at :url to confirm student registrations.');
+    }
+
+    public function replacements(object $notifiable): array
+    {
+        return ['club' => $this->clubName, 'url' => route('login')];
+    }
+
     public function toSms(object $notifiable): string
     {
-        $message = __('TRA Tax Club: You are now the patron of :club. Sign in at :url to confirm student registrations.', [
-            'club' => $this->clubName,
-            'url' => route('login'),
-        ]);
+        $message = parent::toSms($notifiable);
 
-        if ($this->temporaryPassword) {
-            $message .= ' '.__('Temporary password: :password. Change it after signing in.', ['password' => $this->temporaryPassword]);
-        }
+        return $this->temporaryPassword
+            ? $message.' '.__('Temporary password: :password. Change it after signing in.', ['password' => $this->temporaryPassword])
+            : $message;
+    }
 
-        return $message;
+    public function url(object $notifiable): ?string
+    {
+        return route('admin.registrations');
     }
 }

@@ -11,6 +11,7 @@
             $user->hasControl('view_institutions') ? ['route' => 'admin.institutions.index', 'match' => 'admin.institutions.*', 'label' => __('Institutions')] : null,
             $user->hasControl('view_statistics') ? ['route' => 'admin.statistics', 'label' => __('Statistics')] : null,
             $user->hasControl('assign_coordinator') ? ['route' => 'admin.coordinators', 'label' => __('Coordinators')] : null,
+            $user->hasControl('manage_notification_templates') ? ['route' => 'admin.notifications', 'label' => __('Notifications')] : ($user->hasControl('view_sms_log') ? ['route' => 'admin.sms', 'label' => __('SMS delivery')] : null),
             $user->hasControl('view_audit_log') ? ['route' => 'admin.audit', 'label' => __('Audit log')] : null,
         ]))
         : [
@@ -49,6 +50,14 @@
                     @continue($code === app()->getLocale())
                     <a href="{{ request()->fullUrlWithQuery(['lang' => $code]) }}" lang="{{ $code }}" class="rounded-lg px-3 py-2 font-bold text-brand hover:bg-white/10">{{ $label }}</a>
                 @endforeach
+                @php($unreadNotifications = $user->unreadNotifications()->count())
+                <a href="{{ route('member.notifications') }}" class="relative grid size-10 place-items-center rounded-full hover:bg-white/10" title="{{ __('Notifications') }}">
+                    <svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2a2 2 0 0 1-.6 1.4L4 17h5m6 0v1a3 3 0 1 1-6 0v-1m6 0H9"/></svg>
+                    <span class="sr-only">{{ trans_choice('{0} Notifications|{1} Notifications, :count unread|[2,*] Notifications, :count unread', $unreadNotifications, ['count' => $unreadNotifications]) }}</span>
+                    @if ($unreadNotifications > 0)
+                        <span class="absolute -right-0.5 -top-0.5 grid min-w-5 place-items-center rounded-full bg-danger px-1 text-xs font-black text-white" aria-hidden="true">{{ $unreadNotifications > 9 ? '9+' : $unreadNotifications }}</span>
+                    @endif
+                </a>
                 <span class="grid size-10 place-items-center rounded-full bg-brand font-black text-ink" title="{{ $user->full_name }}" aria-hidden="true">{{ $initials }}</span>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf

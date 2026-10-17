@@ -13,13 +13,16 @@ use App\Livewire\Admin\Institutions\Index as InstitutionIndex;
 use App\Livewire\Admin\Institutions\Show as InstitutionShow;
 use App\Livewire\Admin\Members\Index as MemberIndex;
 use App\Livewire\Admin\Members\Show as MemberShow;
+use App\Livewire\Admin\NotificationSettings as AdminNotificationSettings;
 use App\Livewire\Admin\Registrations as AdminRegistrations;
+use App\Livewire\Admin\SmsLog as AdminSmsLog;
 use App\Livewire\Admin\Statistics as AdminStatistics;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Member\Card as MemberCard;
 use App\Livewire\Member\Dashboard as MemberDashboard;
+use App\Livewire\Member\Inbox as MemberInbox;
 use App\Livewire\Member\Profile as MemberProfilePage;
 use App\Livewire\Membership\Verify as VerifyMembership;
 use App\Models\User;
@@ -105,6 +108,7 @@ Route::middleware(['auth', 'active'])->group(function (): void {
     Route::get('/app', MemberDashboard::class)->name('member.dashboard');
     Route::get('/app/card', MemberCard::class)->name('member.card');
     Route::get('/app/profile', MemberProfilePage::class)->name('member.profile');
+    Route::get('/app/notifications', MemberInbox::class)->name('member.notifications');
 
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function (): void {
         Route::get('/', AdminDashboard::class)->name('dashboard');
@@ -133,6 +137,8 @@ Route::middleware(['auth', 'active'])->group(function (): void {
                 fclose($out);
             }, 'tax-club-statistics-'.now()->format('Y-m-d').'.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
         })->middleware('permission:view_statistics')->name('statistics.export');
+        Route::get('/notifications', AdminNotificationSettings::class)->middleware('permission:manage_notification_templates')->name('notifications');
+        Route::get('/sms', AdminSmsLog::class)->middleware('permission:view_sms_log')->name('sms');
         Route::get('/audit', AdminAuditLog::class)->middleware('permission:view_audit_log')->name('audit');
 
         Route::prefix('institutions')->name('institutions.')->group(function (): void {

@@ -6,27 +6,28 @@ use App\Models\User;
 
 /**
  * Sent when an officer suspends, deactivates or reactivates an account
- * (REG-REQ06).
+ * (REG-REQ06). One notification per new status so each wording can be
+ * edited separately.
  */
-class AccountStatusChanged extends TaxClubNotification
+abstract class AccountStatusChanged extends TaxClubNotification
 {
-    public function __construct(public string $status, public ?string $reason = null)
+    public function __construct(public ?string $reason = null)
     {
         parent::__construct();
     }
 
-    public static function key(): string
+    public static function for(string $status, ?string $reason): self
     {
-        return 'account_status_changed';
+        return match ($status) {
+            User::STATUS_ACTIVE => new AccountReactivated,
+            User::STATUS_SUSPENDED => new AccountSuspended($reason),
+            default => new AccountDeactivated($reason),
+        };
     }
 
-    public function message(): string
+    public static function placeholders(): array
     {
-        return match ($this->status) {
-            User::STATUS_ACTIVE => __('TRA Tax Club: Hi :name, your account is active again. Sign in at :url'),
-            User::STATUS_SUSPENDED => __('TRA Tax Club: Hi :name, your account has been suspended. Reason: :reason. Contact your Tax Club patron for help.'),
-            default => __('TRA Tax Club: Hi :name, your account has been deactivated. Reason: :reason. Contact your Tax Club patron for help.'),
-        };
+        return ['name', 'reason', 'url'];
     }
 
     public function replacements(object $notifiable): array

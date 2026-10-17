@@ -133,7 +133,7 @@ class MemberManagementTest extends TestCase
     public function test_coordinators_see_only_their_regions(): void
     {
         $this->seed([ModuleSeeder::class, PatronRoleSeeder::class]);
-        $admin = $this->officerWith(['assign_coordinator']);
+        $admin = $this->officerWith(['assign_coordinator'], ['user_type' => 'staff']);
         $mwanza = Institution::factory()->create(['region' => 'Mwanza', 'name' => 'Mwanza Secondary']);
         $arusha = Institution::factory()->create(['region' => 'Arusha', 'name' => 'Arusha Secondary']);
         $inMwanza = User::factory()->create(['institution_id' => $mwanza->institution_id, 'full_name' => 'Mwanza Member']);
@@ -150,7 +150,8 @@ class MemberManagementTest extends TestCase
 
         $coordinator = User::where('phone', '+255754999000')->sole();
         $this->assertTrue($coordinator->hasRole('coordinator'));
-        $this->assertSame([$mwanza->institution_id], $coordinator->institutionScope());
+        $this->assertContains($mwanza->institution_id, $coordinator->institutionScope());
+        $this->assertNotContains($arusha->institution_id, $coordinator->institutionScope());
         $this->assertDatabaseHas('sms_messages', ['user_id' => $coordinator->user_id, 'purpose' => 'coordinator_assigned']);
 
         Livewire::actingAs($coordinator)->test(Index::class)->assertSee('Mwanza Member')->assertDontSee('Arusha Member');

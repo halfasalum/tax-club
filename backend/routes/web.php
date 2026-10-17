@@ -14,6 +14,7 @@ use App\Livewire\Admin\Institutions\Show as InstitutionShow;
 use App\Livewire\Admin\Members\Index as MemberIndex;
 use App\Livewire\Admin\Members\Show as MemberShow;
 use App\Livewire\Admin\Registrations as AdminRegistrations;
+use App\Livewire\Admin\Statistics as AdminStatistics;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
@@ -21,6 +22,7 @@ use App\Livewire\Member\Card as MemberCard;
 use App\Livewire\Member\Dashboard as MemberDashboard;
 use App\Livewire\Membership\Verify as VerifyMembership;
 use App\Support\Audit;
+use App\Support\MembershipStatistics;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -99,6 +101,24 @@ Route::middleware(['auth', 'active'])->group(function (): void {
         Route::get('/members', MemberIndex::class)->middleware('permission:view_members')->name('members.index');
         Route::get('/members/{member}', MemberShow::class)->middleware('permission:view_members')->name('members.show');
         Route::get('/coordinators', AdminCoordinators::class)->middleware('permission:assign_coordinator')->name('coordinators');
+        Route::get('/statistics', AdminStatistics::class)->middleware('permission:view_statistics')->name('statistics');
+        Route::get('/statistics/export.csv', function (Request $request) {
+            $labels = MembershipStatistics::labels();
+            $rows = MembershipStatistics::perInstitution($request->user()->institutionScope(), (string) $request->query('region', ''), (string) $request->query('type', ''))
+                ->orderBy('institutions.region')
+                ->orderBy('institutions.name');
+            Audit::record('statistics.exported', after: array_filter($request->only('region', 'type')));
+
+            return response()->streamDownload(function () use ($rows, $labels): void {
+                $out = fopen('php://output', 'w');
+                fwrite($out, "\xEF\xBB\xBF");
+                fputcsv($out, [__('Code'), __('Institution'), __('Category'), __('Region'), __('District'), __('Status'), __('Active Tax Club'), ...array_values($labels)]);
+                foreach ($rows->cursor() as $row) {
+                    fputcsv($out, [$row->code, $row->name, $row->type, $row->region, $row->district, $row->status, $row->active_clubs > 0 ? __('Yes') : __('No'), ...array_map(fn ($column) => (int) $row->{$column}, array_keys($labels))]);
+                }
+                fclose($out);
+            }, 'tax-club-statistics-'.now()->format('Y-m-d').'.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
+        })->middleware('permission:view_statistics')->name('statistics.export');
         Route::get('/audit', AdminAuditLog::class)->middleware('permission:view_audit_log')->name('audit');
 
         Route::prefix('institutions')->name('institutions.')->group(function (): void {

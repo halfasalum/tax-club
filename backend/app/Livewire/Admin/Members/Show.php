@@ -3,7 +3,9 @@
 namespace App\Livewire\Admin\Members;
 
 use App\Models\MembershipVerification;
+use App\Models\PointsEntry;
 use App\Models\User;
+use App\Support\Gamification;
 use App\Support\MemberAccounts;
 use InvalidArgumentException;
 use Livewire\Attributes\Layout;
@@ -25,6 +27,10 @@ class Show extends Component
     public string $alumniReason = '';
 
     public ?string $statusMessage = null;
+
+    public ?int $pointsChange = null;
+
+    public string $pointsReason = '';
 
     public function mount(User $member): void
     {
@@ -92,6 +98,26 @@ class Show extends Component
         $this->statusMessage = __('Alumni request declined.');
     }
 
+    public function adjustPoints(): void
+    {
+        $this->authorizeControl('adjust_points');
+        $this->validate([
+            'pointsChange' => 'required|integer|between:-10000,10000|not_in:0',
+            'pointsReason' => 'required|string|min:5|max:255',
+        ], [], ['pointsChange' => __('points'), 'pointsReason' => __('reason')]);
+
+        try {
+            Gamification::adjust($this->member, (int) $this->pointsChange, $this->pointsReason, auth()->user());
+        } catch (InvalidArgumentException $exception) {
+            $this->addError('pointsChange', $exception->getMessage());
+
+            return;
+        }
+
+        $this->reset('pointsChange', 'pointsReason');
+        $this->statusMessage = __('Points updated. The member was told in their inbox.');
+    }
+
     private function authorizeControl(string $control): void
     {
         abort_unless(auth()->user()->hasControl($control), 403);
@@ -110,7 +136,9 @@ class Show extends Component
                 'status' => $user->hasControl('change_member_status'),
                 'alumni' => $user->hasControl('manage_alumni'),
                 'audit' => $user->hasControl('view_audit_log'),
+                'points' => $user->hasControl('adjust_points'),
             ],
+            'ledger' => PointsEntry::where('user_id', $this->member->user_id)->with('officer:user_id,full_name')->latest('id')->limit(10)->get(),
         ])->title($this->member->full_name);
     }
 }

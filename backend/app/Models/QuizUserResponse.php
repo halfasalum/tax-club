@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class QuizUserResponse extends Model
@@ -11,14 +11,18 @@ class QuizUserResponse extends Model
     use HasUuids;
 
     protected $table = 'quiz_user_responses';
+
     protected $primaryKey = 'response_id';
+
     public $incrementing = false;
+
     protected $keyType = 'string';
 
     protected $fillable = [
         'attempt_id',
         'question_id',
         'answer_id',
+        'selected_answer_ids',
         'answer_text',
         'is_correct',
         'points_earned',
@@ -26,6 +30,7 @@ class QuizUserResponse extends Model
 
     protected $casts = [
         'is_correct' => 'boolean',
+        'selected_answer_ids' => 'array',
         'points_earned' => 'integer',
     ];
 

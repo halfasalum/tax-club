@@ -23,7 +23,7 @@ class Dashboard extends Component
             'pendingRegistrations' => $registrations()->where('account_status', User::STATUS_PENDING_VERIFICATION)->count(),
             'activeMembers' => $registrations()->where('account_status', User::STATUS_ACTIVE)->where('user_type', '!=', 'staff')->count(),
             'institutions' => Institution::query()->when($scope !== null, fn ($query) => $query->whereIn('institution_id', $scope))->count(),
-            'publishedContent' => Content::where('is_active', true)->count(),
+            'publishedContent' => Content::live()->count(),
             'upcomingEvents' => Event::upcoming()->count(),
             'openOpportunities' => Opportunity::open()->count(),
             'quizAttempts' => QuizAttempt::count(),

@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -12,10 +12,13 @@ class QuizAttempt extends Model
     use HasUuids;
 
     protected $table = 'quiz_attempts';
+
     protected $primaryKey = 'attempt_id';
+
     public $timestamps = false;
 
     const CREATED_AT = 'attempted_at';
+
     const UPDATED_AT = null;
 
     protected $fillable = [
@@ -27,7 +30,20 @@ class QuizAttempt extends Model
         'is_best_attempt',
         'time_spent_seconds',
         'attempted_at',
+        'status',
+        'attempt_number',
+        'question_order',
+        'started_at',
+        'expires_at',
+        'submitted_at',
+        'auto_submitted',
+        'percent',
+        'passed',
     ];
+
+    public const IN_PROGRESS = 'in_progress';
+
+    public const SUBMITTED = 'submitted';
 
     protected $casts = [
         'score' => 'integer',
@@ -36,6 +52,13 @@ class QuizAttempt extends Model
         'is_best_attempt' => 'boolean',
         'time_spent_seconds' => 'integer',
         'attempted_at' => 'datetime',
+        'question_order' => 'array',
+        'started_at' => 'datetime',
+        'expires_at' => 'datetime',
+        'submitted_at' => 'datetime',
+        'auto_submitted' => 'boolean',
+        'percent' => 'float',
+        'passed' => 'boolean',
     ];
 
     public function user(): BelongsTo
@@ -55,7 +78,10 @@ class QuizAttempt extends Model
 
     public function getScorePercentageAttribute(): float
     {
-        if ($this->max_score === 0) return 0;
+        if ($this->max_score === 0) {
+            return 0;
+        }
+
         return round(($this->score / $this->max_score) * 100, 2);
     }
 

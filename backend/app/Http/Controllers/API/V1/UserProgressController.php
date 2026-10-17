@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Models\Content;
 use App\Models\UserProgress;
+use App\Support\LearningProgress;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -19,7 +20,7 @@ class UserProgressController extends BaseController
     {
         $progress = UserProgress::with('content:content_id,title,content_type')
             ->where('user_id', $request->user()->user_id)
-            ->when($request->status, fn($q) => $q->where('status', $request->status))
+            ->when($request->status, fn ($q) => $q->where('status', $request->status))
             ->orderBy('last_accessed_at', 'desc')
             ->paginate($request->per_page ?? 20);
 
@@ -35,56 +36,43 @@ class UserProgressController extends BaseController
     public function upsert(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'content_id'       => 'required|uuid|exists:content,content_id',
+            'content_id' => 'required|uuid|exists:content,content_id',
             'progress_percent' => 'required|integer|min:0|max:100',
-            'status'           => 'sometimes|in:not_started,in_progress,completed',
+            'status' => 'sometimes|in:not_started,in_progress,completed',
         ]);
 
         if ($validator->fails()) {
             return $this->error('Validation failed.', 422, $validator->errors());
         }
 
-        $userId    = $request->user()->user_id;
+        $userId = $request->user()->user_id;
         $contentId = $request->content_id;
-        $percent   = $request->progress_percent;
+        $percent = $request->progress_percent;
 
         // Auto-derive status from percent if not explicitly provided
         $status = $request->status;
         if (! $status) {
             $status = match (true) {
-                $percent === 0   => 'not_started',
+                $percent === 0 => 'not_started',
                 $percent === 100 => 'completed',
-                default          => 'in_progress',
+                default => 'in_progress',
             };
         }
 
-        $progress = UserProgress::where('user_id', $userId)
-                                ->where('content_id', $contentId)
-                                ->first();
+        $lesson = Content::live()->availableTo($request->user())->find($contentId);
 
-        $now = now();
-
-        if ($progress) {
-            $progress->progress_percent = $percent;
-            $progress->status           = $status;
-            $progress->last_accessed_at = $now;
-
-            if ($status === 'completed' && ! $progress->completed_at) {
-                $progress->completed_at = $now;
-            }
-
-            $progress->save();
-        } else {
-            $progress = UserProgress::create([
-                'user_id'          => $userId,
-                'content_id'       => $contentId,
-                'status'           => $status,
-                'progress_percent' => $percent,
-                'started_at'       => $now,
-                'completed_at'     => $status === 'completed' ? $now : null,
-                'last_accessed_at' => $now,
-            ]);
+        if (! $lesson) {
+            return $this->error('Content not available.', 404);
         }
+
+        // Completion goes through the progress service so modules, points and badges follow.
+        if ($status === 'completed') {
+            LearningProgress::complete($request->user(), $lesson);
+        } else {
+            LearningProgress::open($request->user(), $lesson)->fill(['progress_percent' => max($percent, 1)])->save();
+        }
+
+        $progress = UserProgress::where('user_id', $userId)->where('content_id', $contentId)->first();
 
         return $this->success($progress, 'Progress updated.');
     }
@@ -103,11 +91,11 @@ class UserProgressController extends BaseController
         }
 
         $progress = UserProgress::where('user_id', $request->user()->user_id)
-                                ->where('content_id', $contentId)
-                                ->first();
+            ->where('content_id', $contentId)
+            ->first();
 
         return $this->success([
-            'content'  => $content->only(['content_id', 'title', 'content_type']),
+            'content' => $content->only(['content_id', 'title', 'content_type']),
             'progress' => $progress ?? ['status' => 'not_started', 'progress_percent' => 0],
         ]);
     }
@@ -121,14 +109,14 @@ class UserProgressController extends BaseController
     {
         $userId = $request->user()->user_id;
 
-        $total     = UserProgress::where('user_id', $userId)->count();
+        $total = UserProgress::where('user_id', $userId)->count();
         $completed = UserProgress::where('user_id', $userId)->where('status', 'completed')->count();
         $inProgress = UserProgress::where('user_id', $userId)->where('status', 'in_progress')->count();
 
         return $this->success([
-            'total_started'   => $total,
-            'completed'       => $completed,
-            'in_progress'     => $inProgress,
+            'total_started' => $total,
+            'completed' => $completed,
+            'in_progress' => $inProgress,
             'completion_rate' => $total > 0 ? round(($completed / $total) * 100, 1) : 0,
         ]);
     }

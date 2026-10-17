@@ -6,6 +6,7 @@ use App\Notifications\PasswordChanged;
 use App\Support\MemberAccounts;
 use App\Support\MemberProfile;
 use App\Support\MemberRegistration;
+use App\Support\NotificationPreferences;
 use App\Support\Notify;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -46,12 +47,25 @@ class Profile extends Component
 
     public ?string $statusMessage = null;
 
+    /** @var array<string, array{sms: bool, inbox: bool}> */
+    public array $preferences = [];
+
     public function mount(): void
     {
         $member = auth()->user();
         $this->email = $member->email;
         $this->gender = $member->gender;
         $this->preferred_locale = $member->preferredLocale();
+        $this->preferences = NotificationPreferences::all($member);
+    }
+
+    public function savePreferences(): void
+    {
+        foreach ($this->preferences as $category => $channels) {
+            NotificationPreferences::set(auth()->user(), $category, (bool) ($channels['sms'] ?? false), (bool) ($channels['inbox'] ?? false));
+        }
+
+        $this->statusMessage = __('Your notification choices are saved.');
     }
 
     public function saveDetails(): void

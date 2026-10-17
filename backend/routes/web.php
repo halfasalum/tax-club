@@ -7,13 +7,22 @@ use App\Http\Controllers\Web\SitemapController;
 use App\Livewire\Admin\AuditLog as AdminAuditLog;
 use App\Livewire\Admin\Coordinators as AdminCoordinators;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
+use App\Livewire\Admin\GamificationSettings as AdminGamification;
 use App\Livewire\Admin\Institutions\Form as InstitutionForm;
 use App\Livewire\Admin\Institutions\Import as InstitutionImport;
 use App\Livewire\Admin\Institutions\Index as InstitutionIndex;
 use App\Livewire\Admin\Institutions\Show as InstitutionShow;
+use App\Livewire\Admin\Learning\Categories as LearningCategories;
+use App\Livewire\Admin\Learning\Form as LearningForm;
+use App\Livewire\Admin\Learning\Index as LearningIndex;
+use App\Livewire\Admin\Learning\Modules as LearningModules;
+use App\Livewire\Admin\Learning\Show as LearningShow;
 use App\Livewire\Admin\Members\Index as MemberIndex;
 use App\Livewire\Admin\Members\Show as MemberShow;
 use App\Livewire\Admin\NotificationSettings as AdminNotificationSettings;
+use App\Livewire\Admin\Quizzes\Builder as QuizBuilder;
+use App\Livewire\Admin\Quizzes\Index as QuizIndex;
+use App\Livewire\Admin\Quizzes\Show as QuizShow;
 use App\Livewire\Admin\Registrations as AdminRegistrations;
 use App\Livewire\Admin\SmsLog as AdminSmsLog;
 use App\Livewire\Admin\Statistics as AdminStatistics;
@@ -23,7 +32,15 @@ use App\Livewire\Auth\Register;
 use App\Livewire\Member\Card as MemberCard;
 use App\Livewire\Member\Dashboard as MemberDashboard;
 use App\Livewire\Member\Inbox as MemberInbox;
+use App\Livewire\Member\Leaderboard as MemberLeaderboard;
+use App\Livewire\Member\Learn\Index as MemberLearn;
+use App\Livewire\Member\Learn\Lesson as MemberLesson;
+use App\Livewire\Member\Learn\Module as MemberModule;
 use App\Livewire\Member\Profile as MemberProfilePage;
+use App\Livewire\Member\Quizzes\Index as MemberQuizzes;
+use App\Livewire\Member\Quizzes\Result as MemberQuizResult;
+use App\Livewire\Member\Quizzes\Show as MemberQuiz;
+use App\Livewire\Member\Quizzes\Take as MemberQuizTake;
 use App\Livewire\Membership\Verify as VerifyMembership;
 use App\Models\User;
 use App\Support\Audit;
@@ -109,6 +126,14 @@ Route::middleware(['auth', 'active'])->group(function (): void {
     Route::get('/app/card', MemberCard::class)->name('member.card');
     Route::get('/app/profile', MemberProfilePage::class)->name('member.profile');
     Route::get('/app/notifications', MemberInbox::class)->name('member.notifications');
+    Route::get('/app/learn', MemberLearn::class)->name('member.learn');
+    Route::get('/app/quizzes', MemberQuizzes::class)->name('member.quizzes');
+    Route::get('/app/points', MemberLeaderboard::class)->name('member.leaderboard');
+    Route::get('/app/quizzes/attempts/{attempt}', MemberQuizTake::class)->name('member.quizzes.take');
+    Route::get('/app/quizzes/attempts/{attempt}/result', MemberQuizResult::class)->name('member.quizzes.result');
+    Route::get('/app/quizzes/{quiz}', MemberQuiz::class)->name('member.quizzes.show');
+    Route::get('/app/learn/modules/{module:slug}', MemberModule::class)->name('member.learn.module');
+    Route::get('/app/learn/{lesson:slug}', MemberLesson::class)->name('member.learn.lesson');
 
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function (): void {
         Route::get('/', AdminDashboard::class)->name('dashboard');
@@ -139,6 +164,25 @@ Route::middleware(['auth', 'active'])->group(function (): void {
         })->middleware('permission:view_statistics')->name('statistics.export');
         Route::get('/notifications', AdminNotificationSettings::class)->middleware('permission:manage_notification_templates')->name('notifications');
         Route::get('/sms', AdminSmsLog::class)->middleware('permission:view_sms_log')->name('sms');
+        Route::prefix('learning')->name('learning.')->group(function (): void {
+            $authors = 'permission:upload_content,edit_content,review_content,publish_content';
+            Route::get('/', LearningIndex::class)->middleware($authors)->name('index');
+            Route::get('/new', LearningForm::class)->middleware('permission:upload_content')->name('create');
+            Route::get('/categories', LearningCategories::class)->middleware('permission:manage_content_categories')->name('categories');
+            Route::get('/modules', LearningModules::class)->middleware($authors)->name('modules');
+            Route::get('/{content}', LearningShow::class)->middleware($authors)->name('show');
+            Route::get('/{content}/edit', LearningForm::class)->middleware('permission:upload_content,edit_content')->name('edit');
+        });
+
+        Route::prefix('quizzes')->name('quizzes.')->group(function (): void {
+            $quizStaff = 'permission:create_quiz,edit_quiz,review_quiz,publish_quiz,view_results';
+            Route::get('/', QuizIndex::class)->middleware($quizStaff)->name('index');
+            Route::get('/new', QuizBuilder::class)->middleware('permission:create_quiz')->name('create');
+            Route::get('/{quiz}', QuizShow::class)->middleware($quizStaff)->name('show');
+            Route::get('/{quiz}/edit', QuizBuilder::class)->middleware('permission:create_quiz,edit_quiz')->name('edit');
+        });
+
+        Route::get('/gamification', AdminGamification::class)->middleware('permission:manage_gamification')->name('gamification');
         Route::get('/audit', AdminAuditLog::class)->middleware('permission:view_audit_log')->name('audit');
 
         Route::prefix('institutions')->name('institutions.')->group(function (): void {

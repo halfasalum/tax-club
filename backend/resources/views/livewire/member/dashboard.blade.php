@@ -29,7 +29,7 @@
             <section aria-labelledby="learn-heading">
                 <div class="flex flex-wrap items-end justify-between gap-3">
                     <h2 id="learn-heading" class="text-2xl font-black tracking-tight">{{ __('Continue learning') }}</h2>
-                    <a href="{{ Locales::route('learn.index') }}" class="link">{{ __('All lessons') }}</a>
+                    <a href="{{ route('member.learn') }}" class="link">{{ __('All lessons') }}</a>
                 </div>
                 @if ($lessons->isEmpty())
                     <p class="mt-4 rounded-2xl bg-white p-6 text-lg text-slate">{{ __('Lessons will appear here as soon as TRA publishes them.') }}</p>
@@ -39,9 +39,7 @@
                             <li class="flex flex-col rounded-2xl border-2 border-line bg-white p-5">
                                 <span class="self-start rounded-full bg-brand px-3 py-0.5 text-sm font-extrabold">{{ __('content_type.'.$lesson->content_type) }}</span>
                                 <span class="mt-3 flex-1 text-lg font-black leading-snug">{{ $lesson->title }}</span>
-                                @if ($lesson->is_public && $lesson->slug)
-                                    <a href="{{ Locales::route('learn.show', ['slug' => $lesson->slug]) }}" class="link mt-3 self-start">{{ __('Open') }}<span class="sr-only">: {{ $lesson->title }}</span></a>
-                                @endif
+                                <a href="{{ route('member.learn.lesson', $lesson) }}" class="link mt-3 self-start">{{ __('Open') }}<span class="sr-only">: {{ $lesson->title }}</span></a>
                             </li>
                         @endforeach
                     </ul>

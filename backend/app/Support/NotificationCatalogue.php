@@ -6,11 +6,14 @@ use App\Notifications\AccountDeactivated;
 use App\Notifications\AccountReactivated;
 use App\Notifications\AccountSuspended;
 use App\Notifications\AlumniStatusGranted;
+use App\Notifications\BadgeEarned;
+use App\Notifications\ContentReviewed;
 use App\Notifications\CoordinatorAssigned;
 use App\Notifications\PasswordChanged;
 use App\Notifications\PasswordResetCode;
 use App\Notifications\PatronAssigned;
 use App\Notifications\PhoneChangeCode;
+use App\Notifications\PointsAdjusted;
 use App\Notifications\RegistrationApproved;
 use App\Notifications\RegistrationReceived;
 use App\Notifications\RegistrationRejected;
@@ -34,6 +37,9 @@ final class NotificationCatalogue
         AlumniStatusGranted::class,
         PatronAssigned::class,
         CoordinatorAssigned::class,
+        BadgeEarned::class,
+        PointsAdjusted::class,
+        ContentReviewed::class,
         PasswordChanged::class,
         PasswordResetCode::class,
         StaffLoginCode::class,
@@ -51,6 +57,11 @@ final class NotificationCatalogue
         'region' => 'Mwanza',
         'code' => '482913',
         'minutes' => '10',
+        'title' => 'VAT in daily life',
+        'decision' => 'approved',
+        'note' => '',
+        'badge' => '🏅 Quiz champion',
+        'points' => '20',
     ];
 
     /**

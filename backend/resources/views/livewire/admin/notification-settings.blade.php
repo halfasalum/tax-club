@@ -21,7 +21,7 @@
                             @if ($item['template']?->body_sw || $item['template']?->body_en)<span class="ml-1 rounded-full bg-brand px-2 py-0.5 text-xs font-extrabold">{{ __('Custom wording') }}</span>@endif
                         </p>
                         <p class="mt-1 flex flex-wrap gap-2 text-sm font-extrabold">
-                            @php($sms = $class::required() || ($item['template']?->sms_enabled ?? true))
+                            @php($sms = $class::required() || ($item['template']?->sms_enabled ?? $class::smsByDefault()))
                             @php($inbox = ! $class::sensitive() && ($item['template']?->inbox_enabled ?? true))
                             <span @class(['rounded-full px-2.5 py-0.5', 'bg-ink text-brand' => $sms, 'bg-mist text-slate line-through' => ! $sms])>SMS</span>
                             <span @class(['rounded-full px-2.5 py-0.5', 'bg-ink text-brand' => $inbox, 'bg-mist text-slate line-through' => ! $inbox])>{{ __('Inbox') }}</span>

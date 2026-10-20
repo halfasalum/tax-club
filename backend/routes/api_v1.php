@@ -22,11 +22,12 @@
  */
 
 use App\Http\Controllers\API\V1\AuthController;
+use App\Http\Controllers\API\V1\CommunityController;
 use App\Http\Controllers\API\V1\ContentController;
 use App\Http\Controllers\API\V1\DashboardController;
+use App\Http\Controllers\API\V1\EngagementController;
 use App\Http\Controllers\API\V1\EventController;
 use App\Http\Controllers\API\V1\FeedbackController;
-use App\Http\Controllers\API\V1\ForumPostController;
 use App\Http\Controllers\API\V1\InstitutionController;
 use App\Http\Controllers\API\V1\LearningController;
 use App\Http\Controllers\API\V1\MembershipController;
@@ -55,6 +56,7 @@ Route::prefix('auth')->group(function () {
 
 // Institutions list is public — needed during registration dropdown
 Route::post('membership/verify', [MembershipController::class, 'verify'])->middleware('throttle:20,1');
+Route::post('certificates/verify', [EngagementController::class, 'verifyCertificate'])->middleware('throttle:20,1');
 
 Route::get('institutions', [InstitutionController::class, 'index']);
 Route::get('institutions/{id}', [InstitutionController::class, 'show']);
@@ -276,19 +278,30 @@ Route::middleware(['auth:sanctum', 'active'])->group(function () {
         Route::post('/{reference}/messages', [FeedbackController::class, 'message']);
     });
 
-    // ── Forum ─────────────────────────────────────────────────
-    Route::prefix('forum')->group(function () {
-        Route::get('/', [ForumPostController::class, 'index']);   // all auth users
-        Route::get('/{id}', [ForumPostController::class, 'show']);    // all auth users
-
-        Route::post('/', [ForumPostController::class, 'store'])
-            ->middleware('permission:create_forum_post');
-
-        Route::post('/{id}/reply', [ForumPostController::class, 'reply']); // all auth users
-
-        Route::put('/{id}', [ForumPostController::class, 'update']);    // own post or admin
-        Route::delete('/{id}', [ForumPostController::class, 'destroy']); // own post or admin
+    // ── Community (replaces the old open forum) ──────────────
+    Route::prefix('community')->group(function () {
+        Route::get('/spaces', [CommunityController::class, 'spaces']);
+        Route::get('/spaces/{slug}/posts', [CommunityController::class, 'posts']);
+        Route::post('/spaces/{slug}/posts', [CommunityController::class, 'store']);
+        Route::get('/posts/{postId}', [CommunityController::class, 'show']);
+        Route::post('/posts/{postId}/comments', [CommunityController::class, 'comment']);
+        Route::delete('/posts/{postId}', [CommunityController::class, 'destroy']);
     });
+    Route::post('/reports', [CommunityController::class, 'report'])->middleware('throttle:20,60');
+
+    // ── Ask TRA, competitions, achievements, alumni, mentorship ──
+    Route::get('/questions', [EngagementController::class, 'questions']);
+    Route::post('/questions', [EngagementController::class, 'ask']);
+    Route::get('/answers', [EngagementController::class, 'answers']);
+    Route::get('/competitions', [EngagementController::class, 'competitions']);
+    Route::get('/competitions/{slug}', [EngagementController::class, 'competition']);
+    Route::post('/competitions/{slug}/register', [EngagementController::class, 'registerForCompetition']);
+    Route::post('/competitions/{slug}/entry', [EngagementController::class, 'submitCompetitionEntry']);
+    Route::get('/achievements', [EngagementController::class, 'achievements']);
+    Route::get('/alumni/directory', [EngagementController::class, 'alumniDirectory']);
+    Route::get('/mentorships', [EngagementController::class, 'mentorships']);
+    Route::post('/mentorships/requests', [EngagementController::class, 'requestMentor']);
+    Route::post('/mentorships/{id}/sessions', [EngagementController::class, 'logMentorshipSession']);
 
     // ── Events ────────────────────────────────────────────────
     Route::prefix('events')->group(function () {

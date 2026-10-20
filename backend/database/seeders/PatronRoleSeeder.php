@@ -30,6 +30,7 @@ class PatronRoleSeeder extends Seeder
                 'view_registrations', 'verify_registration', 'view_institutions', 'view_members',
                 'change_member_status', 'manage_alumni', 'verify_membership', 'view_statistics',
                 'add_event', 'edit_event', 'view_event_attendees', 'check_in_attendees', 'view_feedback',
+                'manage_mentorships', 'review_mentors',
             ],
         ],
     ];

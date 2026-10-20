@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Content;
 use App\Models\Event;
+use App\Models\Question;
 use App\Support\Locales;
 use Illuminate\Http\Response;
 
@@ -19,6 +20,7 @@ class SitemapController extends Controller
             ['route' => 'home', 'parameters' => [], 'updated' => null],
             ['route' => 'learn.index', 'parameters' => [], 'updated' => null],
             ['route' => 'events.index', 'parameters' => [], 'updated' => null],
+            ['route' => 'answers.index', 'parameters' => [], 'updated' => null],
             ['route' => 'about', 'parameters' => [], 'updated' => null],
         ]);
 
@@ -26,7 +28,11 @@ class SitemapController extends Controller
             $entries->push(['route' => 'learn.show', 'parameters' => ['slug' => $lesson->slug], 'updated' => $lesson->published_at]);
         });
 
-        Event::active()->whereNotNull('slug')->select(['event_id', 'slug', 'updated_at'])->each(function (Event $event) use ($entries) {
+        Question::published()->select(['question_id', 'slug', 'published_at'])->each(function (Question $question) use ($entries) {
+            $entries->push(['route' => 'answers.show', 'parameters' => ['slug' => $question->slug], 'updated' => $question->published_at]);
+        });
+
+        Event::live()->where('is_public', true)->whereNotNull('slug')->select(['event_id', 'slug', 'updated_at'])->each(function (Event $event) use ($entries) {
             $entries->push(['route' => 'events.show', 'parameters' => ['slug' => $event->slug], 'updated' => $event->updated_at]);
         });
 

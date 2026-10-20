@@ -20,6 +20,8 @@ final class EventLabels
             'webinar' => __('Webinar'),
             'school_visit' => __('School visit'),
             'tax_day' => __('Taxpayers\' day'),
+            'career_talk' => __('Career talk'),
+            'alumni_session' => __('Alumni session'),
             'other' => __('Other'),
         ];
     }

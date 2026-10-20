@@ -4,6 +4,7 @@
     $navigation = [
         ['route' => 'learn.index', 'label' => __('Learn'), 'active' => 'learn.*'],
         ['route' => 'events.index', 'label' => __('Events'), 'active' => 'events.*'],
+        ['route' => 'answers.index', 'label' => __('Questions'), 'active' => 'answers.*'],
         ['route' => 'about', 'label' => __('About Tax Club'), 'active' => 'about'],
     ];
     $currentName = preg_replace('/^(sw|en)\./', '', (string) request()->route()?->getName());

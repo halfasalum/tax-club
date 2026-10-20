@@ -159,6 +159,50 @@ class ModuleSeeder extends Seeder
             'controls' => [
                 ['name' => 'Create Forum Post',  'description' => 'Start a new forum discussion thread.'],
                 ['name' => 'Delete Forum Post',  'description' => 'Remove any forum post or reply.'],
+                ['name' => 'Manage Community Spaces', 'description' => 'Create discussion spaces and collaboration groups, and choose their members and moderators.'],
+                ['name' => 'Moderate Community', 'description' => 'Handle reports and held posts, and hide or restore content in every space.'],
+            ],
+        ],
+        [
+            'name' => 'Safety',
+            'description' => 'Moderation, account restrictions and safety reporting.',
+            'controls' => [
+                ['name' => 'Restrict Users', 'description' => 'Warn, restrict or suspend members who break community or safeguarding rules.'],
+                ['name' => 'View Safety Reports', 'description' => 'See moderation and safeguarding statistics.'],
+                ['name' => 'Manage Safety Settings', 'description' => 'Change the content filter and automatic hiding rules.'],
+            ],
+        ],
+        [
+            'name' => 'Ask TRA',
+            'description' => 'Member tax questions, expert answers and the knowledge base.',
+            'controls' => [
+                ['name' => 'Triage Questions', 'description' => 'Categorise questions and assign them to experts.'],
+                ['name' => 'Answer Questions', 'description' => 'Write answers to questions assigned to you.'],
+                ['name' => 'Review Answers', 'description' => 'Approve, return or publish answers to the knowledge base.'],
+            ],
+        ],
+        [
+            'name' => 'Competitions',
+            'description' => 'Competitions, judging, results, rewards and certificates.',
+            'controls' => [
+                ['name' => 'Create Competition', 'description' => 'Create and edit competitions.'],
+                ['name' => 'Review Competition', 'description' => 'Approve, return or reject proposed competitions.'],
+                ['name' => 'Publish Competition', 'description' => 'Publish, schedule and cancel approved competitions.'],
+                ['name' => 'Judge Competition', 'description' => 'Score competition entries.'],
+                ['name' => 'Approve Results', 'description' => 'Approve and publish competition results.'],
+                ['name' => 'Manage Rewards', 'description' => 'Keep the list of rewards and set competition prizes.'],
+                ['name' => 'Award Rewards', 'description' => 'Give rewards to members and track their delivery.'],
+                ['name' => 'Approve Rewards', 'description' => 'Approve rewards that cost money before they are issued.'],
+                ['name' => 'Issue Certificates', 'description' => 'Issue and revoke certificates.'],
+            ],
+        ],
+        [
+            'name' => 'Alumni and Mentorship',
+            'description' => 'Alumni stories and the mentorship programme.',
+            'controls' => [
+                ['name' => 'Review Alumni Stories', 'description' => 'Approve or return stories written by alumni.'],
+                ['name' => 'Review Mentors', 'description' => 'Approve mentor applications and record background checks.'],
+                ['name' => 'Manage Mentorships', 'description' => 'Match mentors and mentees, and follow and close mentorships.'],
             ],
         ],
         [

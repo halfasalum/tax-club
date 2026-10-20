@@ -158,3 +158,16 @@ The catalogue above is the target design. Release 3 ships these endpoints; offic
 | `POST /opportunities/{id}/save` · `DELETE /opportunities/{id}/save` · `POST /opportunities/{id}/apply` (counts the click, returns where to apply) | M | OPP-REQ06/08 |
 | `POST /opportunities` · `PUT /opportunities/{id}` · `DELETE /opportunities/{id}` (unpublished drafts only) | A | OPP-REQ01 |
 | `GET /feedback` · `POST /feedback {category, subject, message, related_type?, related_id?}` · `GET /feedback/{reference}` · `POST /feedback/{reference}/messages {message}` | M | FBK-REQ01/04 |
+
+## 4. Implemented in Releases 4 and 5 (`/api/v1`, Sanctum token)
+
+| Method & path | Who | SRS |
+|---|---|---|
+| `GET /community/spaces` · `GET /community/spaces/{slug}/posts` · `POST /community/spaces/{slug}/posts {title?, body}` · `GET /community/posts/{id}` · `POST /community/posts/{id}/comments {body}` · `DELETE /community/posts/{id}` | M | COM-REQ05/06/09 |
+| `POST /reports {type: post|question|alumni_profile|alumni_story|mentorship|user, id, category, details?}` | M | SAF-REQ01, COM-REQ07 |
+| `GET /questions` · `POST /questions {subject, body, category_id?, allow_publish?}` · `GET /answers?search=&category_id=&language=` | M | COM-REQ01/04 |
+| `GET /competitions` · `GET /competitions/{slug}` (with results once published) · `POST /competitions/{slug}/register` · `POST /competitions/{slug}/entry {text|url|file}` | M | CMP-REQ03-05 |
+| `GET /achievements` (certificates and rewards) · `POST /certificates/verify {number|token}` (public) | M / public | CER-REQ01/02, RWD-REQ02 |
+| `GET /alumni/directory?search=` (adults only) · `GET /mentorships` · `POST /mentorships/requests {interests[], goals, mode?, guardian_consent?}` · `POST /mentorships/{id}/sessions {held_on, mode, topic, summary?, duration_minutes?, milestone?}` | M | ALM-REQ02, MNT-REQ02/04 |
+
+Moderation, reviewing answers, judging, results, rewards, certificates, alumni stories and mentor vetting are done in the Administration Portal. The old `/forum` endpoints were removed.

@@ -43,6 +43,18 @@ final class NotificationPreferences
                 'sms' => false,
                 'inbox' => true,
             ],
+            'community' => [
+                'label' => __('Community'),
+                'description' => __('Comments on your posts and alumni connection requests.'),
+                'sms' => false,
+                'inbox' => true,
+            ],
+            'competitions' => [
+                'label' => __('Competitions'),
+                'description' => __('Registration, reminders and results of competitions you entered.'),
+                'sms' => true,
+                'inbox' => true,
+            ],
             'announcements' => [
                 'label' => __('Announcements'),
                 'description' => __('News and announcements from TRA Tax Club.'),

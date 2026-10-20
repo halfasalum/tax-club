@@ -117,6 +117,51 @@ php artisan db:seed --class=BadgeSeeder           # "Event goer" badge
 php artisan db:seed --class=TraLearningSeeder     # bilingual lessons and quizzes from tra.go.tz
 ```
 
+## Community, safety, competitions, alumni and mentorship (Releases 4 and 5)
+
+- **Safety first** (`/admin/moderation`): members press **Report** on any post, comment, published answer, alumni profile or story.
+  - Reports about the same item are grouped into one case (`MC-YYYY-NNNNN`). Content reported by 3 people is hidden until a moderator decides.
+  - Sexual content, grooming, self-harm and violence go straight to **safeguarding officers** as urgent cases that other moderators cannot see. Cases involving under-18s are at least high priority.
+  - Moderators hide, remove or restore content. With **Restrict Users** they also warn, restrict (community, Ask TRA, mentorship or everything, for a number of days) or suspend accounts, always with a reason that is kept in an append-only record.
+  - The **content filter** holds posts with phone numbers, emails, chat-app names or blocked words for a moderator. Blocked words and the auto-hide number are set in the safety report.
+  - **Safety report** (`/admin/moderation/report`): cases by category, outcome, source and region, average time to resolve, and restrictions.
+- **Community** (`/app/community`): a national space, one space per Tax Club (patrons are its moderators), topic, event and competition spaces, and **collaboration groups** of chosen members from different institutions (`/admin/community`). Posts and comments, editing, deleting, and notifications when someone comments on your post.
+- **Ask TRA** (`/app/ask`, `/admin/questions`):
+  - Members ask tax questions and get a reference (`AQ-YYYY-NNNNN`). Officers assign each question to an expert, and a second officer approves the answer before the member gets it.
+  - When the member allowed it, an anonymised question and answer is published to the knowledge base. It is also public at `/answers` (`/en/answers`), with FAQ markup for search engines.
+- **Competitions** (`/admin/competitions`):
+  - Two kinds:
+    - **Quiz challenges**, scored from each participant's best attempt during the competition.
+    - **Submissions** (essay, link or file), scored by judges out of 100; the score is the average of the judges' scores.
+  - Each competition is reviewed before it is published. Registration can be limited by audience and number of places, and entries can be disqualified with a reason.
+  - Results are ranked (ties go to the earlier finisher) and approved by a second officer. Publishing them notifies participants, issues certificates and awards the configured prizes.
+- **Rewards** (`/admin/rewards`): a catalogue (trophies, medals, merchandise, books, visits and more), prizes per rank, and a tracker from awarded to delivered with evidence. Rewards with a cash value need a second officer's approval, and stock goes down when a reward is issued.
+- **Certificates**:
+  - Issued automatically for completed modules, attended events (when the event is closed) and competitions, or by an officer.
+  - Members print them or save them as PDF from **My achievements**.
+  - Anyone can check one at `/certificates/verify` using its QR code or number. A withdrawn certificate shows as not valid there.
+- **Alumni** (`/app/alumni`):
+  - Alumni keep a network profile and choose whether to be listed in the **directory**. The directory is open to adults only; members under 18 cannot browse it or be contacted through it.
+  - Contact details are shared only after a connection request is accepted.
+  - Alumni share **stories** and career tips, which are published after review. Events of type *Career talk* and *Alumni session* appear in the hub.
+- **Mentorship** (`/app/mentorship`, `/admin/mentorship`):
+  - **Mentors:** alumni and TRA staff apply and accept a code of conduct, and are approved by TRA. Mentoring under-18s also needs a cleared background check.
+  - **Requests and matching:** members ask for a mentor. For under-18s, a parent or guardian must agree and the patron or a coordinator confirms it. Coordinators match using suggested mentors.
+  - **Supervision:** the mentee's patron is copied on mentorships with under-18s.
+  - **Sessions and safety:** there is no private chat. Participants record each session, either side can raise a safety concern, mentorships with no session for 30 days are flagged, and closing records the outcome and the mentee's rating.
+- The old open forum API has been replaced by `/api/v1/community/*` (see `docs/04-api-specification.md` §4).
+
+**After pulling Releases 4 and 5**
+
+```bash
+composer install
+php artisan migrate
+php artisan db:seed --class=ModuleSeeder               # Safety, Ask TRA, Competitions, Alumni and Mentorship permissions
+php artisan db:seed --class=SuperAdminRoleSeeder
+php artisan db:seed --class=PatronRoleSeeder           # coordinators manage mentorships
+php artisan db:seed --class=CommunityAndRewardsSeeder  # national + club spaces, starter rewards
+```
+
 ## Speed
 
 The app itself answers most pages in 15–40 ms with under 15 database queries. If it feels slow locally, it is almost always the local PHP setup:

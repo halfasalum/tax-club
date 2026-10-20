@@ -5,11 +5,13 @@ namespace App\Listeners;
 use App\Events\LessonCompleted;
 use App\Events\ModuleCompleted;
 use App\Events\QuizAttemptSubmitted;
+use App\Support\Certificates;
 use App\Support\Gamification;
 use Illuminate\Events\Dispatcher;
 
 /**
- * Turns learning activity into points and badges (GAM-REQ08/09).
+ * Turns learning activity into points, badges and module certificates
+ * (GAM-REQ08/09, CER-REQ01).
  */
 class AwardLearningPoints
 {
@@ -21,6 +23,7 @@ class AwardLearningPoints
     public function module(ModuleCompleted $event): void
     {
         Gamification::moduleCompleted($event->member, $event->module);
+        Certificates::forModule($event->member, $event->module);
     }
 
     public function quiz(QuizAttemptSubmitted $event): void

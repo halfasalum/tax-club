@@ -19,6 +19,7 @@
         'withdrawn' => ['bg-[#fef3f2] text-danger', __('Withdrawn')],
         'sending' => ['bg-ink text-brand', __('Sending')],
         'sent' => ['bg-savanna text-white', __('Sent')],
+        'results' => ['bg-savanna text-white', __('Results out')],
     ];
     [$classes, $label] = $styles[$status] ?? ['bg-mist', $status];
 @endphp

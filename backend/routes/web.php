@@ -1,13 +1,22 @@
 <?php
 
+use App\Http\Controllers\Web\AnswersController;
+use App\Http\Controllers\Web\CertificateVerifyController;
 use App\Http\Controllers\Web\EventController;
 use App\Http\Controllers\Web\LearnController;
 use App\Http\Controllers\Web\PageController;
 use App\Http\Controllers\Web\SitemapController;
+use App\Livewire\Admin\Alumni\Stories as AlumniStories;
 use App\Livewire\Admin\AuditLog as AdminAuditLog;
 use App\Livewire\Admin\Broadcasts\Form as BroadcastForm;
 use App\Livewire\Admin\Broadcasts\Index as BroadcastIndex;
 use App\Livewire\Admin\Broadcasts\Show as BroadcastShow;
+use App\Livewire\Admin\Certificates as AdminCertificates;
+use App\Livewire\Admin\Community\Members as CommunityMembers;
+use App\Livewire\Admin\Community\Spaces as CommunitySpaces;
+use App\Livewire\Admin\Competitions\Form as CompetitionForm;
+use App\Livewire\Admin\Competitions\Index as CompetitionIndex;
+use App\Livewire\Admin\Competitions\Show as CompetitionShow;
 use App\Livewire\Admin\Coordinators as AdminCoordinators;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Admin\Events\CheckIn as EventCheckIn;
@@ -28,22 +37,44 @@ use App\Livewire\Admin\Learning\Modules as LearningModules;
 use App\Livewire\Admin\Learning\Show as LearningShow;
 use App\Livewire\Admin\Members\Index as MemberIndex;
 use App\Livewire\Admin\Members\Show as MemberShow;
+use App\Livewire\Admin\Mentorship\Index as MentorshipIndex;
+use App\Livewire\Admin\Moderation\Index as ModerationIndex;
+use App\Livewire\Admin\Moderation\Report as SafetyReport;
+use App\Livewire\Admin\Moderation\Restrictions as ModerationRestrictions;
+use App\Livewire\Admin\Moderation\Show as ModerationShow;
 use App\Livewire\Admin\NotificationSettings as AdminNotificationSettings;
 use App\Livewire\Admin\Opportunities\Form as OpportunityForm;
 use App\Livewire\Admin\Opportunities\Index as OpportunityIndex;
 use App\Livewire\Admin\Opportunities\Report as OpportunityReport;
 use App\Livewire\Admin\Opportunities\Show as OpportunityShow;
+use App\Livewire\Admin\Questions\Index as QuestionIndex;
+use App\Livewire\Admin\Questions\Show as QuestionShow;
 use App\Livewire\Admin\Quizzes\Builder as QuizBuilder;
 use App\Livewire\Admin\Quizzes\Index as QuizIndex;
 use App\Livewire\Admin\Quizzes\Show as QuizShow;
 use App\Livewire\Admin\Registrations as AdminRegistrations;
 use App\Livewire\Admin\ReminderSettings as AdminReminders;
+use App\Livewire\Admin\Rewards\Index as AdminRewards;
 use App\Livewire\Admin\SmsLog as AdminSmsLog;
 use App\Livewire\Admin\Statistics as AdminStatistics;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
+use App\Livewire\Member\Achievements\Certificate as MemberCertificate;
+use App\Livewire\Member\Achievements\Index as MemberAchievements;
+use App\Livewire\Member\Alumni\Directory as AlumniDirectory;
+use App\Livewire\Member\Alumni\Hub as AlumniHub;
+use App\Livewire\Member\Alumni\ProfileEdit as AlumniProfileEdit;
+use App\Livewire\Member\Alumni\Story as AlumniStory;
+use App\Livewire\Member\Ask\Answer as MemberAskAnswer;
+use App\Livewire\Member\Ask\Index as MemberAsk;
+use App\Livewire\Member\Ask\Show as MemberAskShow;
 use App\Livewire\Member\Card as MemberCard;
+use App\Livewire\Member\Community\Index as MemberCommunity;
+use App\Livewire\Member\Community\Post as MemberCommunityPost;
+use App\Livewire\Member\Community\Space as MemberCommunitySpace;
+use App\Livewire\Member\Competitions\Index as MemberCompetitions;
+use App\Livewire\Member\Competitions\Show as MemberCompetition;
 use App\Livewire\Member\Dashboard as MemberDashboard;
 use App\Livewire\Member\Events\Index as MemberEvents;
 use App\Livewire\Member\Events\Show as MemberEvent;
@@ -54,6 +85,8 @@ use App\Livewire\Member\Leaderboard as MemberLeaderboard;
 use App\Livewire\Member\Learn\Index as MemberLearn;
 use App\Livewire\Member\Learn\Lesson as MemberLesson;
 use App\Livewire\Member\Learn\Module as MemberModule;
+use App\Livewire\Member\Mentorship\Index as MemberMentorship;
+use App\Livewire\Member\Mentorship\Show as MentorshipShow;
 use App\Livewire\Member\Opportunities\Index as MemberOpportunities;
 use App\Livewire\Member\Opportunities\Show as MemberOpportunity;
 use App\Livewire\Member\Profile as MemberProfilePage;
@@ -62,11 +95,13 @@ use App\Livewire\Member\Quizzes\Result as MemberQuizResult;
 use App\Livewire\Member\Quizzes\Show as MemberQuiz;
 use App\Livewire\Member\Quizzes\Take as MemberQuizTake;
 use App\Livewire\Membership\Verify as VerifyMembership;
+use App\Models\CompetitionEntry;
 use App\Models\Event;
 use App\Models\EventUpdate;
 use App\Models\Opportunity;
 use App\Models\User;
 use App\Support\Audit;
+use App\Support\CompetitionDesk;
 use App\Support\EventLabels;
 use App\Support\EventManager;
 use App\Support\MemberProfile;
@@ -92,6 +127,9 @@ $publicRoutes = function (): void {
     Route::get('/learn/{slug}', [LearnController::class, 'show'])->name('learn.show');
     Route::get('/events', [EventController::class, 'index'])->name('events.index');
     Route::get('/events/{slug}', [EventController::class, 'show'])->name('events.show');
+    Route::get('/answers', [AnswersController::class, 'index'])->name('answers.index');
+    Route::get('/answers/{slug}', [AnswersController::class, 'show'])->name('answers.show');
+    Route::get('/certificates/verify/{token?}', [CertificateVerifyController::class, 'show'])->where('token', '[A-Za-z0-9]{32}')->middleware('throttle:60,1')->name('certificates.verify');
 };
 
 Route::middleware('locale:sw')->name('sw.')->group($publicRoutes);
@@ -163,6 +201,30 @@ Route::middleware(['auth', 'active'])->group(function (): void {
     Route::get('/app/events', MemberEvents::class)->name('member.events');
     Route::get('/app/events/{slug}', MemberEvent::class)->name('member.events.show');
     Route::get('/app/feedback', MemberFeedback::class)->name('member.feedback');
+    Route::get('/app/community', MemberCommunity::class)->name('member.community');
+    Route::get('/app/ask', MemberAsk::class)->name('member.ask');
+    Route::get('/app/competitions', MemberCompetitions::class)->name('member.competitions');
+    Route::get('/app/competitions/{slug}', MemberCompetition::class)->name('member.competitions.show');
+    Route::get('/app/achievements', MemberAchievements::class)->name('member.achievements');
+    Route::get('/app/alumni', AlumniHub::class)->name('member.alumni');
+    Route::get('/app/alumni/profile', AlumniProfileEdit::class)->name('member.alumni.profile');
+    Route::get('/app/alumni/directory', AlumniDirectory::class)->name('member.alumni.directory');
+    Route::get('/app/alumni/stories/{slug}', AlumniStory::class)->name('member.alumni.story');
+    Route::get('/app/mentorship', MemberMentorship::class)->name('member.mentorship');
+    Route::get('/app/mentorship/{mentorship}', MentorshipShow::class)->name('member.mentorship.show');
+    Route::get('/app/certificates/{certificate}', MemberCertificate::class)->name('member.certificates.show');
+
+    // Competition entry files: the entrant and competition staff only.
+    Route::get('/app/competitions/entries/{entry}/file', function (Request $request, CompetitionEntry $entry) {
+        $user = $request->user();
+        abort_unless($entry->submission_file && ($entry->user_id === $user->user_id || $user->hasControl('judge_competition') || $user->hasControl('approve_results') || $user->hasControl('create_competition')), 404);
+
+        return Storage::disk(CompetitionDesk::SUBMISSION_DISK)->download($entry->submission_file);
+    })->name('competitions.entry-file');
+    Route::get('/app/ask/answers/{slug}', MemberAskAnswer::class)->name('member.ask.answer');
+    Route::get('/app/ask/{reference}', MemberAskShow::class)->name('member.ask.show');
+    Route::get('/app/community/posts/{post}', MemberCommunityPost::class)->name('member.community.post');
+    Route::get('/app/community/{space:slug}', MemberCommunitySpace::class)->name('member.community.space');
     Route::get('/app/opportunities', MemberOpportunities::class)->name('member.opportunities');
     Route::get('/app/opportunities/{slug}', MemberOpportunity::class)->name('member.opportunities.show');
 
@@ -280,6 +342,30 @@ Route::middleware(['auth', 'active'])->group(function (): void {
             Route::get('/{opportunity}', OpportunityShow::class)->middleware($staff)->name('show');
             Route::get('/{opportunity}/edit', OpportunityForm::class)->middleware('permission:add_opportunity,edit_opportunity')->name('edit');
         });
+
+        Route::prefix('moderation')->name('moderation.')->group(function (): void {
+            $moderators = 'permission:moderate_community,handle_safeguarding_concerns';
+            Route::get('/', ModerationIndex::class)->middleware($moderators)->name('index');
+            Route::get('/restrictions', ModerationRestrictions::class)->middleware('permission:restrict_users')->name('restrictions');
+            Route::get('/report', SafetyReport::class)->middleware('permission:view_safety_reports,manage_safety_settings')->name('report');
+            Route::get('/{case}', ModerationShow::class)->middleware($moderators)->name('show');
+        });
+        Route::prefix('competitions')->name('competitions.')->group(function (): void {
+            $staff = 'permission:create_competition,review_competition,publish_competition,judge_competition,approve_results';
+            Route::get('/', CompetitionIndex::class)->middleware($staff)->name('index');
+            Route::get('/new', CompetitionForm::class)->middleware('permission:create_competition')->name('create');
+            Route::get('/{competition}', CompetitionShow::class)->middleware($staff)->name('show');
+            Route::get('/{competition}/edit', CompetitionForm::class)->middleware('permission:create_competition')->name('edit');
+        });
+        Route::get('/mentorship', MentorshipIndex::class)->middleware('permission:manage_mentorships,review_mentors,view_members')->name('mentorship.index');
+        Route::get('/mentorship/{mentorship}', MentorshipShow::class)->middleware('permission:manage_mentorships,view_members')->name('mentorship.show');
+        Route::get('/alumni/stories', AlumniStories::class)->middleware('permission:review_alumni_stories')->name('alumni.stories');
+        Route::get('/rewards', AdminRewards::class)->middleware('permission:manage_rewards,award_rewards,approve_rewards')->name('rewards');
+        Route::get('/certificates', AdminCertificates::class)->middleware('permission:issue_certificates')->name('certificates');
+        Route::get('/questions', QuestionIndex::class)->middleware('permission:triage_questions,answer_questions,review_answers')->name('questions.index');
+        Route::get('/questions/{question}', QuestionShow::class)->middleware('permission:triage_questions,answer_questions,review_answers')->name('questions.show');
+        Route::get('/community', CommunitySpaces::class)->middleware('permission:manage_community_spaces')->name('community.spaces');
+        Route::get('/community/{space}/members', CommunityMembers::class)->middleware('permission:manage_community_spaces')->name('community.members');
 
         Route::get('/feedback', FeedbackIndex::class)->middleware('permission:view_feedback')->name('feedback.index');
         Route::get('/feedback/{feedback}', FeedbackShow::class)->middleware('permission:view_feedback')->name('feedback.show');

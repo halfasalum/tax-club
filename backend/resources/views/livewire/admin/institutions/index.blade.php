@@ -10,10 +10,10 @@
         </div>
         <div class="flex flex-wrap gap-2">
             @if ($user->hasControl('import_institutions'))
-                <a href="{{ route('admin.institutions.import') }}" class="btn-ghost">{{ __('Import CSV') }}</a>
+                <a wire:navigate href="{{ route('admin.institutions.import') }}" class="btn-ghost">{{ __('Import CSV') }}</a>
             @endif
             @if ($user->hasControl('add_institution'))
-                <a href="{{ route('admin.institutions.create') }}" class="btn-brand">{{ __('Register institution') }}</a>
+                <a wire:navigate href="{{ route('admin.institutions.create') }}" class="btn-brand">{{ __('Register institution') }}</a>
             @endif
         </div>
     </div>
@@ -79,7 +79,7 @@
                         @foreach ($this->institutions as $institution)
                             <tr wire:key="institution-{{ $institution->institution_id }}" class="hover:bg-brand-wash/60">
                                 <td class="px-5 py-3.5">
-                                    <a href="{{ route('admin.institutions.show', $institution) }}" class="font-extrabold hover:underline hover:decoration-brand hover:decoration-[3px] hover:underline-offset-4">{{ $institution->name }}</a>
+                                    <a wire:navigate href="{{ route('admin.institutions.show', $institution) }}" class="font-extrabold hover:underline hover:decoration-brand hover:decoration-[3px] hover:underline-offset-4">{{ $institution->name }}</a>
                                     <span class="block text-sm text-slate"><span class="font-receipt">{{ $institution->code }}</span>, {{ $categories[$institution->type] ?? $institution->type }}</span>
                                 </td>
                                 <td class="px-5 py-3.5">{{ collect([$institution->district, $institution->region])->filter()->implode(', ') }}</td>

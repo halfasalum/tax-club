@@ -45,11 +45,7 @@
 
     <article class="mx-auto max-w-3xl px-4 pt-10 sm:px-6">
 
-        @if ($lesson->content_type === 'video' && $lesson->file_url)
-            <video class="w-full rounded-2xl bg-ink" controls preload="metadata" src="{{ $lesson->file_url }}"></video>
-        @elseif ($lesson->content_type === 'infographic' && $lesson->file_url)
-            <img class="w-full rounded-2xl border-2 border-line" src="{{ $lesson->file_url }}" alt="{{ $lesson->title }}" loading="lazy">
-        @endif
+        @include('learn.partials.media')
 
         <div class="prose prose-lg mt-8 max-w-none prose-headings:font-black prose-headings:text-ink prose-p:text-ink-soft prose-a:font-bold prose-a:text-ink prose-a:decoration-brand prose-a:decoration-[3px] prose-strong:text-ink prose-blockquote:border-l-brand prose-li:marker:text-ink">
             {!! $body !!}

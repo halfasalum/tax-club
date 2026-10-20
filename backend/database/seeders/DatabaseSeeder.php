@@ -38,7 +38,10 @@ class DatabaseSeeder extends Seeder
             ModuleSeeder::class,
             SuperAdminRoleSeeder::class,
             PatronRoleSeeder::class,
+            ContentCategorySeeder::class,
+            BadgeSeeder::class,
             SuperUserSeeder::class,
+            TraLearningSeeder::class,
         ]);
 
         $this->command->info('');

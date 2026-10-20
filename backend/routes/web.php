@@ -5,16 +5,39 @@ use App\Http\Controllers\Web\LearnController;
 use App\Http\Controllers\Web\PageController;
 use App\Http\Controllers\Web\SitemapController;
 use App\Livewire\Admin\AuditLog as AdminAuditLog;
+use App\Livewire\Admin\Broadcasts\Form as BroadcastForm;
+use App\Livewire\Admin\Broadcasts\Index as BroadcastIndex;
+use App\Livewire\Admin\Broadcasts\Show as BroadcastShow;
 use App\Livewire\Admin\Coordinators as AdminCoordinators;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
+use App\Livewire\Admin\Events\CheckIn as EventCheckIn;
+use App\Livewire\Admin\Events\Form as EventForm;
+use App\Livewire\Admin\Events\Index as EventIndex;
+use App\Livewire\Admin\Events\Show as EventShow;
+use App\Livewire\Admin\Feedback\Index as FeedbackIndex;
+use App\Livewire\Admin\Feedback\Show as FeedbackShow;
+use App\Livewire\Admin\GamificationSettings as AdminGamification;
 use App\Livewire\Admin\Institutions\Form as InstitutionForm;
 use App\Livewire\Admin\Institutions\Import as InstitutionImport;
 use App\Livewire\Admin\Institutions\Index as InstitutionIndex;
 use App\Livewire\Admin\Institutions\Show as InstitutionShow;
+use App\Livewire\Admin\Learning\Categories as LearningCategories;
+use App\Livewire\Admin\Learning\Form as LearningForm;
+use App\Livewire\Admin\Learning\Index as LearningIndex;
+use App\Livewire\Admin\Learning\Modules as LearningModules;
+use App\Livewire\Admin\Learning\Show as LearningShow;
 use App\Livewire\Admin\Members\Index as MemberIndex;
 use App\Livewire\Admin\Members\Show as MemberShow;
 use App\Livewire\Admin\NotificationSettings as AdminNotificationSettings;
+use App\Livewire\Admin\Opportunities\Form as OpportunityForm;
+use App\Livewire\Admin\Opportunities\Index as OpportunityIndex;
+use App\Livewire\Admin\Opportunities\Report as OpportunityReport;
+use App\Livewire\Admin\Opportunities\Show as OpportunityShow;
+use App\Livewire\Admin\Quizzes\Builder as QuizBuilder;
+use App\Livewire\Admin\Quizzes\Index as QuizIndex;
+use App\Livewire\Admin\Quizzes\Show as QuizShow;
 use App\Livewire\Admin\Registrations as AdminRegistrations;
+use App\Livewire\Admin\ReminderSettings as AdminReminders;
 use App\Livewire\Admin\SmsLog as AdminSmsLog;
 use App\Livewire\Admin\Statistics as AdminStatistics;
 use App\Livewire\Auth\ForgotPassword;
@@ -22,13 +45,33 @@ use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Member\Card as MemberCard;
 use App\Livewire\Member\Dashboard as MemberDashboard;
+use App\Livewire\Member\Events\Index as MemberEvents;
+use App\Livewire\Member\Events\Show as MemberEvent;
+use App\Livewire\Member\Feedback\Index as MemberFeedback;
+use App\Livewire\Member\Feedback\Show as MemberFeedbackCase;
 use App\Livewire\Member\Inbox as MemberInbox;
+use App\Livewire\Member\Leaderboard as MemberLeaderboard;
+use App\Livewire\Member\Learn\Index as MemberLearn;
+use App\Livewire\Member\Learn\Lesson as MemberLesson;
+use App\Livewire\Member\Learn\Module as MemberModule;
+use App\Livewire\Member\Opportunities\Index as MemberOpportunities;
+use App\Livewire\Member\Opportunities\Show as MemberOpportunity;
 use App\Livewire\Member\Profile as MemberProfilePage;
+use App\Livewire\Member\Quizzes\Index as MemberQuizzes;
+use App\Livewire\Member\Quizzes\Result as MemberQuizResult;
+use App\Livewire\Member\Quizzes\Show as MemberQuiz;
+use App\Livewire\Member\Quizzes\Take as MemberQuizTake;
 use App\Livewire\Membership\Verify as VerifyMembership;
+use App\Models\Event;
+use App\Models\EventUpdate;
+use App\Models\Opportunity;
 use App\Models\User;
 use App\Support\Audit;
+use App\Support\EventLabels;
+use App\Support\EventManager;
 use App\Support\MemberProfile;
 use App\Support\MembershipStatistics;
+use App\Support\OpportunityBoard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -109,6 +152,41 @@ Route::middleware(['auth', 'active'])->group(function (): void {
     Route::get('/app/card', MemberCard::class)->name('member.card');
     Route::get('/app/profile', MemberProfilePage::class)->name('member.profile');
     Route::get('/app/notifications', MemberInbox::class)->name('member.notifications');
+    Route::get('/app/learn', MemberLearn::class)->name('member.learn');
+    Route::get('/app/quizzes', MemberQuizzes::class)->name('member.quizzes');
+    Route::get('/app/points', MemberLeaderboard::class)->name('member.leaderboard');
+    Route::get('/app/quizzes/attempts/{attempt}', MemberQuizTake::class)->name('member.quizzes.take');
+    Route::get('/app/quizzes/attempts/{attempt}/result', MemberQuizResult::class)->name('member.quizzes.result');
+    Route::get('/app/quizzes/{quiz}', MemberQuiz::class)->name('member.quizzes.show');
+    Route::get('/app/learn/modules/{module:slug}', MemberModule::class)->name('member.learn.module');
+    Route::get('/app/learn/{lesson:slug}', MemberLesson::class)->name('member.learn.lesson');
+    Route::get('/app/events', MemberEvents::class)->name('member.events');
+    Route::get('/app/events/{slug}', MemberEvent::class)->name('member.events.show');
+    Route::get('/app/feedback', MemberFeedback::class)->name('member.feedback');
+    Route::get('/app/opportunities', MemberOpportunities::class)->name('member.opportunities');
+    Route::get('/app/opportunities/{slug}', MemberOpportunity::class)->name('member.opportunities.show');
+
+    // Counts the click, then opens the approved application channel (OPP-REQ06, OPP-REQ08).
+    Route::get('/app/opportunities/{slug}/apply', function (Request $request, string $slug) {
+        $opportunity = Opportunity::open()->where('slug', $slug)->firstOrFail();
+        abort_unless($opportunity->isVisibleTo($request->user()) && $opportunity->applyTarget(), 404);
+        OpportunityBoard::record($opportunity, $request->user(), 'apply');
+
+        return redirect()->away($opportunity->applyTarget());
+    })->middleware('throttle:30,1')->name('member.opportunities.apply');
+    Route::get('/app/feedback/{reference}', MemberFeedbackCase::class)->name('member.feedback.show');
+
+    // Event materials are private: staff, and members who may see the item (EVT-REQ07).
+    Route::get('/app/events/{event}/materials/{update}', function (Request $request, Event $event, EventUpdate $update) {
+        abort_unless($update->event_id === $event->event_id && $update->file_path, 404);
+        $user = $request->user();
+        $allowed = $user->user_type === 'staff'
+            ? $user->canAccessAdmin()
+            : $event->isVisibleTo($user) && EventManager::updatesFor($event, $user)->contains('id', $update->id);
+        abort_unless($allowed, 404);
+
+        return Storage::disk(EventUpdate::DISK)->download($update->file_path, $update->file_name);
+    })->name('events.material');
 
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function (): void {
         Route::get('/', AdminDashboard::class)->name('dashboard');
@@ -138,7 +216,75 @@ Route::middleware(['auth', 'active'])->group(function (): void {
             }, 'tax-club-statistics-'.now()->format('Y-m-d').'.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
         })->middleware('permission:view_statistics')->name('statistics.export');
         Route::get('/notifications', AdminNotificationSettings::class)->middleware('permission:manage_notification_templates')->name('notifications');
+        Route::prefix('broadcasts')->name('broadcasts.')->group(function (): void {
+            Route::get('/', BroadcastIndex::class)->middleware('permission:create_broadcast,approve_broadcast')->name('index');
+            Route::get('/new', BroadcastForm::class)->middleware('permission:create_broadcast')->name('create');
+            Route::get('/{broadcast}', BroadcastShow::class)->middleware('permission:create_broadcast,approve_broadcast')->name('show');
+            Route::get('/{broadcast}/edit', BroadcastForm::class)->middleware('permission:create_broadcast')->name('edit');
+        });
+        Route::get('/reminders', AdminReminders::class)->middleware('permission:manage_reminders')->name('reminders');
         Route::get('/sms', AdminSmsLog::class)->middleware('permission:view_sms_log')->name('sms');
+        Route::prefix('learning')->name('learning.')->group(function (): void {
+            $authors = 'permission:upload_content,edit_content,review_content,publish_content';
+            Route::get('/', LearningIndex::class)->middleware($authors)->name('index');
+            Route::get('/new', LearningForm::class)->middleware('permission:upload_content')->name('create');
+            Route::get('/categories', LearningCategories::class)->middleware('permission:manage_content_categories')->name('categories');
+            Route::get('/modules', LearningModules::class)->middleware($authors)->name('modules');
+            Route::get('/{content}', LearningShow::class)->middleware($authors)->name('show');
+            Route::get('/{content}/edit', LearningForm::class)->middleware('permission:upload_content,edit_content')->name('edit');
+        });
+
+        Route::prefix('quizzes')->name('quizzes.')->group(function (): void {
+            $quizStaff = 'permission:create_quiz,edit_quiz,review_quiz,publish_quiz,view_results';
+            Route::get('/', QuizIndex::class)->middleware($quizStaff)->name('index');
+            Route::get('/new', QuizBuilder::class)->middleware('permission:create_quiz')->name('create');
+            Route::get('/{quiz}', QuizShow::class)->middleware($quizStaff)->name('show');
+            Route::get('/{quiz}/edit', QuizBuilder::class)->middleware('permission:create_quiz,edit_quiz')->name('edit');
+        });
+
+        Route::prefix('events')->name('events.')->group(function (): void {
+            $organizers = 'permission:add_event,edit_event,review_event,publish_event,view_event_attendees,check_in_attendees';
+            Route::get('/', EventIndex::class)->middleware($organizers)->name('index');
+            Route::get('/new', EventForm::class)->middleware('permission:add_event')->name('create');
+            Route::get('/{event}', EventShow::class)->middleware($organizers)->name('show');
+            Route::get('/{event}/edit', EventForm::class)->middleware('permission:add_event,edit_event')->name('edit');
+            Route::get('/{event}/check-in', EventCheckIn::class)->middleware('permission:check_in_attendees')->name('check-in');
+            Route::get('/{event}/registrations.csv', function (Event $event) {
+                $statuses = EventLabels::registrationStatuses();
+                $methods = EventLabels::checkInMethods();
+                Audit::record('event.registrations_exported', $event);
+
+                return response()->streamDownload(function () use ($event, $statuses, $methods): void {
+                    $out = fopen('php://output', 'w');
+                    fwrite($out, "\xEF\xBB\xBF");
+                    fputcsv($out, [__('Name'), __('Membership no.'), __('Category'), __('Institution'), __('Region'), __('Status'), __('Registered'), __('Checked in'), __('Check-in method'), __('Walk-in'), __('Answer')]);
+                    foreach ($event->registrations()->with('user.institution')->orderBy('registered_at')->cursor() as $registration) {
+                        fputcsv($out, [
+                            $registration->user?->full_name, $registration->user?->membership_id, $registration->user?->user_type,
+                            $registration->user?->institution?->name, $registration->user?->institution?->region,
+                            $statuses[$registration->status] ?? $registration->status, $registration->registered_at?->format('Y-m-d H:i'),
+                            $registration->checked_in_at?->format('Y-m-d H:i'), $methods[$registration->check_in_method] ?? '',
+                            $registration->walk_in ? __('Yes') : '', $registration->answer,
+                        ]);
+                    }
+                    fclose($out);
+                }, $event->code.'-registrations.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
+            })->middleware('permission:view_event_attendees')->name('export');
+        });
+
+        Route::prefix('opportunities')->name('opportunities.')->group(function (): void {
+            $staff = 'permission:add_opportunity,edit_opportunity,review_opportunity,publish_opportunity,view_opportunity_reports';
+            Route::get('/', OpportunityIndex::class)->middleware($staff)->name('index');
+            Route::get('/new', OpportunityForm::class)->middleware('permission:add_opportunity')->name('create');
+            Route::get('/report', OpportunityReport::class)->middleware('permission:view_opportunity_reports')->name('report');
+            Route::get('/{opportunity}', OpportunityShow::class)->middleware($staff)->name('show');
+            Route::get('/{opportunity}/edit', OpportunityForm::class)->middleware('permission:add_opportunity,edit_opportunity')->name('edit');
+        });
+
+        Route::get('/feedback', FeedbackIndex::class)->middleware('permission:view_feedback')->name('feedback.index');
+        Route::get('/feedback/{feedback}', FeedbackShow::class)->middleware('permission:view_feedback')->name('feedback.show');
+
+        Route::get('/gamification', AdminGamification::class)->middleware('permission:manage_gamification')->name('gamification');
         Route::get('/audit', AdminAuditLog::class)->middleware('permission:view_audit_log')->name('audit');
 
         Route::prefix('institutions')->name('institutions.')->group(function (): void {

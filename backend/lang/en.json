@@ -2,5 +2,6 @@
     "content_type.video": "Video",
     "content_type.article": "Article",
     "content_type.infographic": "Infographic",
-    "content_type.quiz": "Quiz"
+    "content_type.quiz": "Quiz",
+    "content_type.document": "Document"
 }

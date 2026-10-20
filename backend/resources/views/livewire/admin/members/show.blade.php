@@ -13,7 +13,7 @@
     $statusTone = $member->isActive() ? 'bg-[#dcfce7] text-savanna' : ($member->account_status === User::STATUS_SUSPENDED ? 'bg-[#fef3f2] text-danger' : 'bg-mist text-slate');
 @endphp
 <div>
-    <a href="{{ route('admin.members.index') }}" class="link">← {{ __('Members') }}</a>
+    <a wire:navigate href="{{ route('admin.members.index') }}" class="link">← {{ __('Members') }}</a>
 
     <div class="mt-4 flex flex-wrap items-start justify-between gap-4">
         <div class="flex items-start gap-4">
@@ -33,7 +33,7 @@
             </div>
         </div>
         @if ($can['audit'])
-            <a href="{{ route('admin.audit', ['subject' => $member->user_id]) }}" class="btn-ghost">{{ __('Audit log') }}</a>
+            <a wire:navigate href="{{ route('admin.audit', ['subject' => $member->user_id]) }}" class="btn-ghost">{{ __('Audit log') }}</a>
         @endif
     </div>
 
@@ -150,6 +150,30 @@
                     @endif
                 </section>
             @endif
+
+            <section class="rounded-3xl border-2 border-line bg-white p-6">
+                <h2 class="text-xl font-black">{{ __('Points') }} <span class="tabular-nums">{{ number_format($member->total_points ?? 0) }}</span></h2>
+                <ul class="mt-3 divide-y divide-line text-sm">
+                    @forelse ($ledger as $entry)
+                        <li class="flex justify-between gap-3 py-2">
+                            <span class="min-w-0"><span class="block font-bold">{{ $entry->label() }}</span><span class="block truncate text-slate">{{ $entry->description }}@if ($entry->officer) · {{ $entry->officer->full_name }}@endif</span></span>
+                            <span @class(['font-black tabular-nums', 'text-savanna' => $entry->points > 0, 'text-danger' => $entry->points < 0])>{{ $entry->points > 0 ? '+' : '' }}{{ $entry->points }}</span>
+                        </li>
+                    @empty
+                        <li class="py-2 text-slate">{{ __('No points yet.') }}</li>
+                    @endforelse
+                </ul>
+                @if ($can['points'])
+                    <form wire:submit="adjustPoints" class="mt-4 space-y-2 border-t-2 border-line pt-4">
+                        <p class="font-extrabold">{{ __('Add or remove points') }}</p>
+                        <input wire:model="pointsChange" type="number" placeholder="{{ __('e.g. 20 or -10') }}" aria-label="{{ __('Points') }}" @class(['field mt-0', 'field-error' => $errors->has('pointsChange')])>
+                        @error('pointsChange')<p class="font-semibold text-danger" role="alert">{{ $message }}</p>@enderror
+                        <input wire:model="pointsReason" type="text" placeholder="{{ __('Reason (the member will see this)') }}" aria-label="{{ __('Reason') }}" @class(['field mt-0', 'field-error' => $errors->has('pointsReason')])>
+                        @error('pointsReason')<p class="font-semibold text-danger" role="alert">{{ $message }}</p>@enderror
+                        <button type="submit" class="btn-ghost w-full py-2">{{ __('Save') }}</button>
+                    </form>
+                @endif
+            </section>
 
             @if ($member->membership_id)
                 <section class="rounded-3xl border-2 border-line bg-white p-6">

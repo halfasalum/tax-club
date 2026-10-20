@@ -10,7 +10,7 @@
     @endif
     <div class="min-w-0">
         <h3 class="text-lg font-black leading-snug sm:text-xl">
-            <a href="{{ Locales::route('events.show', ['slug' => $event->slug]) }}" class="after:absolute after:inset-0 after:rounded-2xl">{{ $event->title }}</a>
+            <a href="{{ $memberLink ?? false ? route('member.events.show', $event->slug) : Locales::route('events.show', ['slug' => $event->slug]) }}" class="after:absolute after:inset-0 after:rounded-2xl">{{ $event->title }}</a>
         </h3>
         <p class="mt-1 font-semibold text-slate">
             @if ($event->starts_at){{ $event->starts_at->translatedFormat('l, j F Y · H:i') }}@endif

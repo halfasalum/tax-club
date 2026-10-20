@@ -3,794 +3,336 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Models\Quiz;
-use App\Models\QuizAnswer;
 use App\Models\QuizAttempt;
 use App\Models\QuizQuestion;
-use App\Models\QuizUserResponse;
 use App\Models\User;
+use App\Support\Leaderboard;
+use App\Support\QuizEngine;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
+use InvalidArgumentException;
 
+/**
+ * Taking quizzes from the mobile app (GAM-REQ05-07, GAM-REQ10).
+ *
+ *   GET  quizzes                         open quizzes with the member's status
+ *   GET  quizzes/{id}                    rules and availability
+ *   POST quizzes/{id}/start              start or resume; questions without answers
+ *   PUT  quizzes/attempts/{id}/answers   save one answer (autosave)
+ *   POST quizzes/attempts/{id}/submit    score and close
+ *   GET  quizzes/{id}/attempt/{a}/results
+ */
 class QuizController extends BaseController
 {
-    /**
-     * GET /api/v1/quizzes
-     * Requires: auth:sanctum
-     */
     public function index(Request $request): JsonResponse
     {
-        $quizzes = Quiz::with('content:content_id,title,content_type')
-            ->active()
-            ->orderBy('created_at', 'desc')
-            ->paginate($request->per_page ?? 15);
+        $member = $request->user();
+        $results = QuizAttempt::where('user_id', $member->user_id)->where('is_best_attempt', true)->get()->keyBy('quiz_id');
 
-        return $this->paginated($quizzes);
-    }
-
-    /**
-     * GET /api/v1/quizzes/{id}
-     * Requires: auth:sanctum
-     */
-    public function show(string $id): JsonResponse
-    {
-        $quiz = Quiz::with('content')->find($id);
-
-        if (! $quiz) {
-            return $this->error('Quiz not found.', 404);
-        }
-
-        return $this->success($quiz);
-    }
-
-    /**
-     * POST /api/v1/quizzes
-     * Requires: create_quiz
-     */
-    public function store(Request $request): JsonResponse
-    {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:300',
-            'content_id' => 'nullable|uuid|exists:content,content_id',
-            'description' => 'nullable|string',
-            'total_marks' => 'required|integer|min:1',
-            'is_active' => 'sometimes|boolean',
-        ]);
-
-        if ($validator->fails()) {
-            return $this->error('Validation failed.', 422, $validator->errors());
-        }
-
-        $quiz = Quiz::create($request->only(['title', 'content_id', 'description', 'total_marks', 'is_active']));
-
-        return $this->success($quiz, 'Quiz created successfully.', 201);
-    }
-
-    /**
-     * PUT /api/v1/quizzes/{id}
-     * Requires: edit_quiz
-     */
-    public function update(Request $request, string $id): JsonResponse
-    {
-        $quiz = Quiz::find($id);
-
-        if (! $quiz) {
-            return $this->error('Quiz not found.', 404);
-        }
-
-        $validator = Validator::make($request->all(), [
-            'title' => 'sometimes|string|max:300',
-            'description' => 'nullable|string',
-            'total_marks' => 'sometimes|integer|min:1',
-            'is_active' => 'sometimes|boolean',
-        ]);
-
-        if ($validator->fails()) {
-            return $this->error('Validation failed.', 422, $validator->errors());
-        }
-
-        $quiz->fill($request->only(['title', 'description', 'total_marks', 'is_active']))->save();
-
-        return $this->success($quiz, 'Quiz updated successfully.');
-    }
-
-    /**
-     * DELETE /api/v1/quizzes/{id}
-     * Requires: delete_quiz
-     */
-    public function destroy(string $id): JsonResponse
-    {
-        $quiz = Quiz::withCount('attempts')->find($id);
-
-        if (! $quiz) {
-            return $this->error('Quiz not found.', 404);
-        }
-
-        $quiz->delete();
-
-        return $this->success(null, 'Quiz deleted successfully.');
-    }
-
-    // ─── Quiz Attempts ─────────────────────────────────────────────
-
-    /**
-     * POST /api/v1/quizzes/{id}/attempts
-     * Student submits a quiz attempt. Requires: auth:sanctum
-     */
-    public function submitAttempt(Request $request, string $id): JsonResponse
-    {
-        $quiz = Quiz::find($id);
-
-        if (! $quiz || ! $quiz->is_active) {
-            return $this->error('Quiz not found or not available.', 404);
-        }
-
-        $validator = Validator::make($request->all(), [
-            'score' => 'required|integer|min:0',
-        ]);
-
-        if ($validator->fails()) {
-            return $this->error('Validation failed.', 422, $validator->errors());
-        }
-
-        if ($request->score > $quiz->total_marks) {
-            return $this->error("Score cannot exceed the maximum marks of {$quiz->total_marks}.", 422);
-        }
-
-        $attempt = QuizAttempt::create([
-            'user_id' => $request->user()->user_id,
-            'quiz_id' => $quiz->quiz_id,
-            'score' => $request->score,
-            'max_score' => $quiz->total_marks,
-        ]);
-
-        return $this->success([
-            'attempt' => $attempt,
-            'score_percentage' => $attempt->score_percentage,
-            'passed' => $attempt->isPassed(),
-        ], 'Quiz attempt recorded.', 201);
-    }
-
-    /**
-     * GET /api/v1/quizzes/{id}/attempts
-     * Admin/educator sees all attempts; students see only their own.
-     * Requires: auth:sanctum
-     */
-    public function attempts(Request $request, string $id): JsonResponse
-    {
-        $quiz = Quiz::find($id);
-
-        if (! $quiz) {
-            return $this->error('Quiz not found.', 404);
-        }
-
-        $user = $request->user();
-        $isAdmin = $user->hasAnyRole(['admin', 'super_admin', 'educator']);
-
-        $query = QuizAttempt::with('user:user_id,full_name,membership_id')
-            ->where('quiz_id', $id)
-            ->when(! $isAdmin, fn ($q) => $q->where('user_id', $user->user_id))
-            ->orderBy('score', 'desc');
-
-        return $this->paginated($query->paginate($request->per_page ?? 20));
-    }
-
-    /**
-     * GET /api/v1/quizzes/{id}/leaderboard
-     * Top scorers per quiz. Requires: auth:sanctum
-     */
-    public function leaderboard(string $id): JsonResponse
-    {
-        $quiz = Quiz::find($id);
-
-        if (! $quiz) {
-            return $this->error('Quiz not found.', 404);
-        }
-
-        $leaderboard = QuizAttempt::with('user:user_id,full_name,institution_id', 'user.institution:institution_id,name')
-            ->where('quiz_id', $id)
-            ->orderBy('score', 'desc')
-            ->orderBy('attempted_at', 'asc') // earlier attempt wins tie
-            ->limit(20)
+        $quizzes = Quiz::availableTo($member)->with('category')
+            ->withCount(['questions' => fn ($query) => $query->where('is_active', true)])
+            ->latest('published_at')
             ->get()
-            ->map(fn ($attempt, $index) => [
-                'rank' => $index + 1,
-                'user' => self::leaderboardMember($attempt->user),
-                'score' => $attempt->score,
-                'max_score' => $attempt->max_score,
-                'score_percentage' => $attempt->score_percentage,
-                'attempted_at' => $attempt->attempted_at,
+            ->map(fn (Quiz $quiz) => $this->summary($quiz) + [
+                'result' => ($result = $results->get($quiz->quiz_id)) ? ['percent' => $result->percent, 'passed' => $result->passed] : null,
             ]);
 
-        return $this->success($leaderboard);
+        return $this->success($quizzes);
     }
 
-    /**
-     * GET /api/v1/quizzes/my-attempts
-     * Authenticated user's own quiz history. Requires: auth:sanctum
-     */
-    public function myAttempts(Request $request): JsonResponse
+    public function show(Request $request, string $id): JsonResponse
     {
-        $attempts = QuizAttempt::with('quiz:quiz_id,title,total_marks')
-            ->where('user_id', $request->user()->user_id)
-            ->orderBy('attempted_at', 'desc')
-            ->paginate($request->per_page ?? 15);
+        $quiz = $this->findForMember($request->user(), $id);
 
-        return $this->paginated($attempts);
-    }
-
-    /**
-     * GET /api/v1/quizzes/{id}/questions
-     * Get quiz questions with answers (for taking quiz)
-     */
-    public function questions(string $id): JsonResponse
-    {
-        $quiz = Quiz::with(['questions.answers' => function ($q) {
-            $q->orderBy('order_index');
-        }])->find($id);
-
-        if (! $quiz || ! $quiz->is_active) {
-            return $this->error('Quiz not found.', 404);
-        }
-
-        // Hide correct answers for now (will be checked during submission)
-        $questions = $quiz->questions->map(function ($question) {
-            return [
-                'question_id' => $question->question_id,
-                'question_text' => $question->question_text,
-                'question_type' => $question->question_type,
-                'points' => $question->points,
-                'order_index' => $question->order_index,
-                'answers' => $question->answers->map(function ($answer) {
-                    return [
-                        'answer_id' => $answer->answer_id,
-                        'answer_text' => $answer->answer_text,
-                    ];
-                }),
-            ];
-        });
-
-        return $this->success([
-            'quiz' => $quiz,
-            'questions' => $questions,
-            'total_questions' => $questions->count(),
-            'total_possible_points' => $quiz->questions->sum('points'),
-        ]);
-    }
-
-    /**
-     * POST /api/v1/quizzes/{id}/submit
-     * Submit quiz answers and calculate points
-     */
-    public function submitQuiz(Request $request, string $id): JsonResponse
-    {
-        $quiz = Quiz::with('questions.answers')->find($id);
-
-        if (! $quiz || ! $quiz->is_active) {
+        if (! $quiz) {
             return $this->error('Quiz not available.', 404);
         }
 
-        $validator = Validator::make($request->all(), [
-            'answers' => 'required|array',
-            'answers.*.question_id' => 'required|uuid|exists:quiz_questions,question_id',
-            'answers.*.answer_id' => 'nullable|uuid|exists:quiz_answers,answer_id',
-            'answers.*.answer_text' => 'nullable|string',
-            'time_spent_seconds' => 'nullable|integer',
+        $status = QuizEngine::availability($request->user(), $quiz);
+
+        return $this->success($this->summary($quiz->loadCount(['questions' => fn ($query) => $query->where('is_active', true)])) + [
+            'instructions' => $quiz->instructions,
+            'can_start' => $status['can_start'],
+            'reason' => $status['reason'],
+            'attempts_used' => $status['attempts_used'],
+            'attempts_left' => $status['attempts_left'],
+            'attempt_in_progress' => $status['in_progress']?->attempt_id,
         ]);
-
-        if ($validator->fails()) {
-            return $this->error('Validation failed.', 422, $validator->errors());
-        }
-
-        $user = $request->user();
-        $answers = collect($request->answers);
-        $totalScore = 0;
-        $totalPointsEarned = 0;
-        $responses = [];
-
-        DB::beginTransaction();
-
-        try {
-            // Check if user has previous attempts
-            $previousBestAttempt = $user->quizAttempts()
-                ->where('quiz_id', $id)
-                ->where('is_best_attempt', true)
-                ->first();
-
-            // Calculate score for each answer
-            foreach ($quiz->questions as $question) {
-                $userAnswer = $answers->firstWhere('question_id', $question->question_id);
-
-                if (! $userAnswer) {
-                    continue;
-                }
-
-                $isCorrect = false;
-                $pointsEarned = 0;
-                $selectedAnswer = null;
-
-                if ($question->question_type === 'multiple_choice' && isset($userAnswer['answer_id'])) {
-                    $selectedAnswer = $question->answers->firstWhere('answer_id', $userAnswer['answer_id']);
-                    if ($selectedAnswer && $selectedAnswer->is_correct) {
-                        $isCorrect = true;
-                        $pointsEarned = $question->points;
-                        $totalScore += $question->points;
-                    }
-                } elseif ($question->question_type === 'true_false' && isset($userAnswer['answer_id'])) {
-                    $selectedAnswer = $question->answers->firstWhere('answer_id', $userAnswer['answer_id']);
-                    if ($selectedAnswer && $selectedAnswer->is_correct) {
-                        $isCorrect = true;
-                        $pointsEarned = $question->points;
-                        $totalScore += $question->points;
-                    }
-                }
-
-                $totalPointsEarned += $pointsEarned;
-
-                $responses[] = [
-                    'response_id' => (string) Str::uuid(),
-                    'question_id' => $question->question_id,
-                    'answer_id' => $userAnswer['answer_id'] ?? null,
-                    'answer_text' => $userAnswer['answer_text'] ?? null,
-                    'is_correct' => $isCorrect,
-                    'points_earned' => $pointsEarned,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
-            }
-
-            $maxScore = $quiz->questions->sum('points');
-            $scorePercentage = $maxScore > 0 ? round(($totalScore / $maxScore) * 100, 2) : 0;
-            $isPassed = $scorePercentage >= 50;
-
-            // Create attempt record
-            $attempt = QuizAttempt::create([
-                'attempt_id' => (string) Str::uuid(),
-                'user_id' => $user->user_id,
-                'quiz_id' => $quiz->quiz_id,
-                'score' => $totalScore,
-                'max_score' => $maxScore,
-                'total_points_earned' => $totalPointsEarned,
-                'is_best_attempt' => false,
-                'time_spent_seconds' => $request->time_spent_seconds,
-                'attempted_at' => now(),
-            ]);
-
-            // Save responses
-            foreach ($responses as $response) {
-                $response['attempt_id'] = $attempt->attempt_id;
-                QuizUserResponse::create($response);
-            }
-
-            // Handle points and best attempt
-            if ($previousBestAttempt) {
-                if ($totalPointsEarned > $previousBestAttempt->total_points_earned) {
-                    // New attempt is better - update points
-                    $pointsDifference = $totalPointsEarned - $previousBestAttempt->total_points_earned;
-                    $user->addPoints($pointsDifference, "Improved quiz score: {$quiz->title}");
-
-                    // Mark previous as not best
-                    $previousBestAttempt->is_best_attempt = false;
-                    $previousBestAttempt->save();
-
-                    // Mark new as best
-                    $attempt->is_best_attempt = true;
-                    $attempt->save();
-                } else {
-                    // New attempt is worse or equal - no points change
-                    $attempt->is_best_attempt = false;
-                    $attempt->save();
-                }
-            } else {
-                // First attempt - award all points
-                $user->addPoints($totalPointsEarned, "Completed quiz: {$quiz->title}");
-                $attempt->is_best_attempt = true;
-                $attempt->save();
-            }
-
-            DB::commit();
-
-            // Update user's total points recalculation
-            $user->recalculatePoints();
-
-            return $this->success([
-                'attempt_id' => $attempt->attempt_id,
-                'score' => $totalScore,
-                'max_score' => $maxScore,
-                'score_percentage' => $scorePercentage,
-                'points_earned' => $totalPointsEarned,
-                'total_user_points' => $user->total_points,
-                'passed' => $isPassed,
-                'is_best_attempt' => $attempt->is_best_attempt,
-                'message' => $isPassed ? 'Congratulations! You passed the quiz!' : 'Keep practicing! You can retake the quiz to improve your score.',
-            ], 'Quiz submitted successfully.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            return $this->error('Failed to submit quiz: '.$e->getMessage(), 500);
-        }
     }
 
-    /**
-     * GET /api/v1/quizzes/{id}/my-attempts
-     * Get user's attempts for a specific quiz
-     */
-    public function myQuizAttempts(Request $request, string $id): JsonResponse
+    public function start(Request $request, string $id): JsonResponse
     {
-        $quiz = Quiz::find($id);
+        $quiz = $this->findForMember($request->user(), $id);
 
         if (! $quiz) {
-            return $this->error('Quiz not found.', 404);
+            return $this->error('Quiz not available.', 404);
         }
 
-        $attempts = $request->user()
-            ->quizAttempts()
-            ->where('quiz_id', $id)
-            ->orderBy('attempted_at', 'desc')
-            ->get()
-            ->map(function ($attempt) {
-                return [
-                    'attempt_id' => $attempt->attempt_id,
-                    'score' => $attempt->score,
-                    'max_score' => $attempt->max_score,
-                    'score_percentage' => $attempt->score_percentage,
-                    'points_earned' => $attempt->total_points_earned,
-                    'is_best_attempt' => $attempt->is_best_attempt,
-                    'attempted_at' => $attempt->attempted_at,
-                    'passed' => $attempt->isPassed(),
-                ];
-            });
+        try {
+            $attempt = QuizEngine::start($request->user(), $quiz);
+        } catch (InvalidArgumentException $exception) {
+            return $this->error($exception->getMessage(), 422);
+        }
 
-        return $this->success([
-            'quiz' => $quiz,
-            'attempts' => $attempts,
-            'best_attempt' => $attempts->firstWhere('is_best_attempt', true),
-            'total_attempts' => $attempts->count(),
-        ]);
+        return $this->success($this->attemptPayload($attempt), 'Attempt started.');
     }
 
     /**
-     * GET /api/v1/quizzes/{id}/attempt/{attemptId}/results
-     * Get detailed results for a specific attempt
+     * PUT quizzes/attempts/{attemptId}/answers  { question_id, answer_ids: [] }
      */
-    public function attemptResults(Request $request, string $id, string $attemptId): JsonResponse
+    public function saveAnswer(Request $request, string $attemptId): JsonResponse
     {
-        $attempt = QuizAttempt::with(['responses.question', 'responses.answer'])
-            ->where('quiz_id', $id)
-            ->where('attempt_id', $attemptId)
-            ->where('user_id', $request->user()->user_id)
-            ->first();
+        $attempt = QuizAttempt::where('user_id', $request->user()->user_id)->find($attemptId);
 
         if (! $attempt) {
             return $this->error('Attempt not found.', 404);
         }
 
-        $results = $attempt->responses->map(function ($response) {
-            return [
-                'question_id' => $response->question_id,
-                'question_text' => $response->question->question_text,
-                'user_answer' => $response->answer?->answer_text ?? $response->answer_text,
-                'correct_answer' => $response->question->getCorrectAnswer()?->answer_text,
-                'is_correct' => $response->is_correct,
-                'points_earned' => $response->points_earned,
-                'max_points' => $response->question->points,
-            ];
-        });
-
-        return $this->success([
-            'attempt' => [
-                'attempt_id' => $attempt->attempt_id,
-                'score' => $attempt->score,
-                'max_score' => $attempt->max_score,
-                'score_percentage' => $attempt->score_percentage,
-                'points_earned' => $attempt->total_points_earned,
-                'attempted_at' => $attempt->attempted_at,
-                'time_spent_seconds' => $attempt->time_spent_seconds,
-            ],
-            'results' => $results,
+        $validator = Validator::make($request->all(), [
+            'question_id' => 'required|string',
+            'answer_ids' => 'present|array',
+            'answer_ids.*' => 'string',
         ]);
+
+        if ($validator->fails()) {
+            return $this->error('Validation failed.', 422, $validator->errors());
+        }
+
+        try {
+            QuizEngine::saveAnswer($attempt, $request->question_id, $request->answer_ids);
+        } catch (InvalidArgumentException $exception) {
+            return $this->error($exception->getMessage(), 409);
+        }
+
+        return $this->success(['seconds_left' => $this->secondsLeft($attempt)], 'Saved.');
+    }
+
+    public function submitAttempt(Request $request, string $attemptId): JsonResponse
+    {
+        $attempt = QuizAttempt::where('user_id', $request->user()->user_id)->find($attemptId);
+
+        if (! $attempt) {
+            return $this->error('Attempt not found.', 404);
+        }
+
+        return $this->success($this->resultPayload(QuizEngine::submit($attempt)), 'Quiz submitted.');
     }
 
     /**
-     * GET /api/v1/leaderboard
-     * Global leaderboard by points
+     * POST quizzes/{id}/submit — one-step submission kept for older app
+     * versions. Only for quizzes without a time limit.
+     */
+    public function submitQuiz(Request $request, string $id): JsonResponse
+    {
+        $quiz = $this->findForMember($request->user(), $id);
+
+        if (! $quiz) {
+            return $this->error('Quiz not available.', 404);
+        }
+
+        if ($quiz->time_limit_minutes) {
+            return $this->error('This quiz has a time limit. Start it with POST /quizzes/{id}/start.', 409);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'answers' => 'required|array',
+            'answers.*.question_id' => 'required|string',
+            'answers.*.answer_id' => 'nullable|string',
+            'answers.*.answer_ids' => 'nullable|array',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->error('Validation failed.', 422, $validator->errors());
+        }
+
+        try {
+            $attempt = QuizEngine::start($request->user(), $quiz);
+            foreach ($request->answers as $answer) {
+                if (in_array($answer['question_id'], $attempt->question_order ?? [], true)) {
+                    QuizEngine::saveAnswer($attempt, $answer['question_id'], $answer['answer_ids'] ?? array_filter([$answer['answer_id'] ?? null]));
+                }
+            }
+        } catch (InvalidArgumentException $exception) {
+            return $this->error($exception->getMessage(), 422);
+        }
+
+        return $this->success($this->resultPayload(QuizEngine::submit($attempt)), 'Quiz submitted.');
+    }
+
+    /**
+     * GET quizzes/{id}/questions — replaced by start.
+     */
+    public function questions(): JsonResponse
+    {
+        return $this->error('Start the quiz with POST /quizzes/{id}/start to get its questions.', 410);
+    }
+
+    public function attemptResults(Request $request, string $id, string $attemptId): JsonResponse
+    {
+        $attempt = QuizAttempt::where('user_id', $request->user()->user_id)->where('quiz_id', $id)->find($attemptId);
+
+        if (! $attempt || $attempt->status !== QuizAttempt::SUBMITTED) {
+            return $this->error('Result not found.', 404);
+        }
+
+        return $this->success($this->resultPayload($attempt));
+    }
+
+    public function myAttempts(Request $request): JsonResponse
+    {
+        $attempts = QuizAttempt::with('quiz:quiz_id,title,code')
+            ->where('user_id', $request->user()->user_id)
+            ->where('status', QuizAttempt::SUBMITTED)
+            ->latest('submitted_at')
+            ->paginate(20);
+
+        return $this->paginated($attempts);
+    }
+
+    public function myQuizAttempts(Request $request, string $id): JsonResponse
+    {
+        return $this->success(QuizAttempt::where('user_id', $request->user()->user_id)->where('quiz_id', $id)
+            ->where('status', QuizAttempt::SUBMITTED)->orderByDesc('attempt_number')
+            ->get(['attempt_id', 'attempt_number', 'score', 'max_score', 'percent', 'passed', 'is_best_attempt', 'submitted_at']));
+    }
+
+    /**
+     * GET quizzes/{id}/leaderboard — best result per member.
+     */
+    public function leaderboard(Request $request, string $id): JsonResponse
+    {
+        if (! Leaderboard::enabled()) {
+            return $this->success(['leaderboard' => []]);
+        }
+
+        $rows = DB::table('quiz_attempts')
+            ->join('users', 'users.user_id', '=', 'quiz_attempts.user_id')
+            ->where('quiz_attempts.quiz_id', $id)
+            ->where('quiz_attempts.is_best_attempt', true)
+            ->where('users.account_status', User::STATUS_ACTIVE)
+            ->orderByDesc('quiz_attempts.percent')
+            ->orderBy('quiz_attempts.time_spent_seconds')
+            ->limit(Leaderboard::SIZE)
+            ->get(['users.user_id', 'users.full_name', 'quiz_attempts.percent', 'quiz_attempts.time_spent_seconds']);
+
+        return $this->success(['leaderboard' => $rows->values()->map(fn (object $row, int $index) => [
+            'rank' => $index + 1,
+            'display_name' => (new User(['full_name' => $row->full_name]))->publicName(),
+            'percent' => (float) $row->percent,
+            'time_spent_seconds' => $row->time_spent_seconds,
+            'is_me' => $row->user_id === $request->user()->user_id,
+        ])]);
+    }
+
+    /**
+     * GET leaderboard?period=all|month|week&scope=national|region|institution
      */
     public function globalLeaderboard(Request $request): JsonResponse
     {
-        $users = User::select('user_id', 'full_name', 'institution_id', 'total_points')
-            ->with('institution:institution_id,name')
-            ->where('account_status', User::STATUS_ACTIVE)
-            ->where('total_points', '>', 0)
-            ->orderBy('total_points', 'desc')
-            ->paginate($request->per_page ?? 20);
+        if (! Leaderboard::enabled()) {
+            return $this->success(['enabled' => false, 'leaderboard' => [], 'me' => null]);
+        }
 
-        $leaderboard = $users->map(function ($user, $index) use ($users) {
-            return [
-                'rank' => $users->firstItem() + $index,
-                ...self::leaderboardMember($user),
-                'total_points' => $user->total_points,
-            ];
-        });
+        $ranking = Leaderboard::rank($request->user()->load('institution'), (string) $request->query('period', 'all'), (string) $request->query('scope', 'national'));
 
         return $this->success([
-            'leaderboard' => $leaderboard,
-            'meta' => [
-                'current_page' => $users->currentPage(),
-                'per_page' => $users->perPage(),
-                'total' => $users->total(),
-                'last_page' => $users->lastPage(),
-            ],
+            'enabled' => true,
+            'leaderboard' => $ranking['entries']->map(fn (array $entry) => collect($entry)->except('user_id')->all())->values(),
+            'me' => $ranking['me'] ? collect($ranking['me'])->except('user_id')->all() : null,
         ]);
     }
 
-    /**
-     * POST /api/v1/quizzes/{id}/questions
-     * Add a question to a quiz. Requires: edit_quiz
-     */
-    public function addQuestion(Request $request, string $id): JsonResponse
+    private function findForMember(User $member, string $id): ?Quiz
     {
         $quiz = Quiz::find($id);
 
         if (! $quiz) {
-            return $this->error('Quiz not found.', 404);
+            return null;
         }
 
-        $validator = Validator::make($request->all(), [
-            'question_text' => 'required|string',
-            'question_type' => 'required|in:multiple_choice,true_false',
-            'points' => 'required|integer|min:1',
-            'is_active' => 'sometimes|boolean',
-        ]);
-
-        if ($validator->fails()) {
-            return $this->error('Validation failed.', 422, $validator->errors());
-        }
-
-        // Get the highest order index
-        $maxOrder = $quiz->questions()->max('order_index') ?? -1;
-
-        $question = $quiz->questions()->create([
-            'question_id' => (string) Str::uuid(),
-            'question_text' => $request->question_text,
-            'question_type' => $request->question_type,
-            'points' => $request->points,
-            'order_index' => $maxOrder + 1,
-            'is_active' => $request->boolean('is_active', true),
-        ]);
-
-        return $this->success($question, 'Question added successfully.', 201);
+        return $quiz->isAvailableTo($member) || $quiz->attempts()->where('user_id', $member->user_id)->exists() ? $quiz : null;
     }
 
     /**
-     * PUT /api/v1/quizzes/questions/{questionId}
-     * Update a question. Requires: edit_quiz
+     * @return array<string, mixed>
      */
-    public function updateQuestion(Request $request, string $questionId): JsonResponse
+    private function summary(Quiz $quiz): array
     {
-        $question = QuizQuestion::find($questionId);
-
-        if (! $question) {
-            return $this->error('Question not found.', 404);
-        }
-
-        $validator = Validator::make($request->all(), [
-            'question_text' => 'sometimes|string',
-            'question_type' => 'sometimes|in:multiple_choice,true_false',
-            'points' => 'sometimes|integer|min:1',
-            'is_active' => 'sometimes|boolean',
-        ]);
-
-        if ($validator->fails()) {
-            return $this->error('Validation failed.', 422, $validator->errors());
-        }
-
-        $question->fill($request->only(['question_text', 'question_type', 'points', 'is_active']))->save();
-
-        return $this->success($question, 'Question updated successfully.');
+        return [
+            'quiz_id' => $quiz->quiz_id,
+            'code' => $quiz->code,
+            'title' => $quiz->title,
+            'description' => $quiz->description,
+            'category' => $quiz->category?->name(),
+            'content_id' => $quiz->content_id,
+            'mode' => $quiz->mode,
+            'pass_mark' => $quiz->pass_mark,
+            'time_limit_minutes' => $quiz->time_limit_minutes,
+            'max_attempts' => $quiz->max_attempts,
+            'retained_result' => $quiz->retained_result,
+            'questions_count' => $quiz->questions_count ?? null,
+            'closes_at' => $quiz->closes_at?->toIso8601String(),
+        ];
     }
 
-    // app/Http/Controllers/API/V1/QuizController.php
-
     /**
-     * GET /api/v1/quizzes/{id}/manage-questions
-     * Admin endpoint to manage questions (includes correct answers)
-     * Requires: edit_quiz permission
+     * @return array<string, mixed>
      */
-    public function manageQuestions(string $id): JsonResponse
+    private function attemptPayload(QuizAttempt $attempt): array
     {
-        $quiz = Quiz::with(['questions.answers' => function ($q) {
-            $q->orderBy('order_index');
-        }])->find($id);
+        $questions = QuizQuestion::with('answers')->whereIn('question_id', $attempt->question_order ?? [])->get()->keyBy('question_id');
+        $saved = $attempt->responses()->get()->keyBy('question_id');
 
-        if (! $quiz) {
-            return $this->error('Quiz not found.', 404);
-        }
-
-        // Include all answer data including is_correct for admin management
-        $questions = $quiz->questions->map(function ($question) {
-            return [
+        return [
+            'attempt_id' => $attempt->attempt_id,
+            'attempt_number' => $attempt->attempt_number,
+            'started_at' => $attempt->started_at->toIso8601String(),
+            'expires_at' => $attempt->expires_at?->toIso8601String(),
+            'seconds_left' => $this->secondsLeft($attempt),
+            'questions' => collect($attempt->question_order ?? [])->map(fn ($questionId) => $questions->get($questionId))->filter()->values()->map(fn (QuizQuestion $question) => [
                 'question_id' => $question->question_id,
                 'question_text' => $question->question_text,
                 'question_type' => $question->question_type,
                 'points' => $question->points,
-                'order_index' => $question->order_index,
-                'is_active' => $question->is_active,
-                'answers' => $question->answers->map(function ($answer) {
-                    return [
-                        'answer_id' => $answer->answer_id,
-                        'answer_text' => $answer->answer_text,
-                        'is_correct' => $answer->is_correct, // Include this for admin
-                        'order_index' => $answer->order_index,
-                    ];
-                }),
-            ];
-        });
-
-        return $this->success([
-            'quiz' => $quiz,
-            'questions' => $questions,
-            'total_questions' => $questions->count(),
-            'total_possible_points' => $quiz->questions->sum('points'),
-        ]);
-    }
-
-    /**
-     * DELETE /api/v1/quizzes/questions/{questionId}
-     * Delete a question. Requires: edit_quiz
-     */
-    public function deleteQuestion(string $questionId): JsonResponse
-    {
-        $question = QuizQuestion::with('answers')->find($questionId);
-
-        if (! $question) {
-            return $this->error('Question not found.', 404);
-        }
-
-        // Delete associated answers first
-        foreach ($question->answers as $answer) {
-            $answer->delete();
-        }
-
-        $question->delete();
-
-        return $this->success(null, 'Question deleted successfully.');
-    }
-
-    /**
-     * POST /api/v1/quizzes/questions/{questionId}/answers
-     * Add an answer to a question. Requires: edit_quiz
-     */
-    public function addAnswer(Request $request, string $questionId): JsonResponse
-    {
-        $question = QuizQuestion::find($questionId);
-
-        if (! $question) {
-            return $this->error('Question not found.', 404);
-        }
-
-        $validator = Validator::make($request->all(), [
-            'answer_text' => 'required|string',
-            'is_correct' => 'required|boolean',
-        ]);
-
-        if ($validator->fails()) {
-            return $this->error('Validation failed.', 422, $validator->errors());
-        }
-
-        // Get the highest order index
-        $maxOrder = $question->answers()->max('order_index') ?? -1;
-
-        $answer = $question->answers()->create([
-            'answer_id' => (string) Str::uuid(),
-            'answer_text' => $request->answer_text,
-            'is_correct' => $request->is_correct,
-            'order_index' => $maxOrder + 1,
-        ]);
-
-        return $this->success($answer, 'Answer added successfully.', 201);
-    }
-
-    /**
-     * PUT /api/v1/quizzes/answers/{answerId}
-     * Update an answer. Requires: edit_quiz
-     */
-    public function updateAnswer(Request $request, string $answerId): JsonResponse
-    {
-        $answer = QuizAnswer::find($answerId);
-
-        if (! $answer) {
-            return $this->error('Answer not found.', 404);
-        }
-
-        $validator = Validator::make($request->all(), [
-            'answer_text' => 'sometimes|string',
-            'is_correct' => 'sometimes|boolean',
-        ]);
-
-        if ($validator->fails()) {
-            return $this->error('Validation failed.', 422, $validator->errors());
-        }
-
-        $answer->fill($request->only(['answer_text', 'is_correct']))->save();
-
-        return $this->success($answer, 'Answer updated successfully.');
-    }
-
-    /**
-     * DELETE /api/v1/quizzes/answers/{answerId}
-     * Delete an answer. Requires: edit_quiz
-     */
-    public function deleteAnswer(string $answerId): JsonResponse
-    {
-        $answer = QuizAnswer::find($answerId);
-
-        if (! $answer) {
-            return $this->error('Answer not found.', 404);
-        }
-
-        $answer->delete();
-
-        return $this->success(null, 'Answer deleted successfully.');
-    }
-
-    /**
-     * POST /api/v1/quizzes/reorder-questions
-     * Reorder questions. Requires: edit_quiz
-     */
-    public function reorderQuestions(Request $request): JsonResponse
-    {
-        $validator = Validator::make($request->all(), [
-            'questions' => 'required|array',
-            'questions.*.question_id' => 'required|uuid|exists:quiz_questions,question_id',
-            'questions.*.order_index' => 'required|integer|min:0',
-        ]);
-
-        if ($validator->fails()) {
-            return $this->error('Validation failed.', 422, $validator->errors());
-        }
-
-        foreach ($request->questions as $item) {
-            QuizQuestion::where('question_id', $item['question_id'])
-                ->update(['order_index' => $item['order_index']]);
-        }
-
-        return $this->success(null, 'Questions reordered successfully.');
-    }
-
-    /**
-     * PATCH /api/v1/quizzes/{id}/toggle
-     * Toggle quiz active status. Requires: edit_quiz
-     */
-    public function toggle(string $id): JsonResponse
-    {
-        $quiz = Quiz::find($id);
-
-        if (! $quiz) {
-            return $this->error('Quiz not found.', 404);
-        }
-
-        $quiz->is_active = ! $quiz->is_active;
-        $quiz->save();
-
-        $state = $quiz->is_active ? 'activated' : 'deactivated';
-
-        return $this->success($quiz, "Quiz {$state} successfully.");
-    }
-
-    /**
-     * What other members may see on a leaderboard: first name, last initial
-     * and institution. No membership numbers or contact details (GAM-REQ10).
-     *
-     * @return array{user_id: ?string, display_name: string, institution: ?string}
-     */
-    private static function leaderboardMember(?User $user): array
-    {
-        return [
-            'user_id' => $user?->user_id,
-            'display_name' => $user?->publicName() ?? '',
-            'institution' => $user?->institution?->name,
+                'answers' => $question->answers->map(fn ($answer) => ['answer_id' => $answer->answer_id, 'answer_text' => $answer->answer_text])->values(),
+                'selected_answer_ids' => $saved->get($question->question_id)?->selected_answer_ids ?? [],
+            ]),
         ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function resultPayload(QuizAttempt $attempt): array
+    {
+        $showAnswers = QuizEngine::canSeeAnswers($attempt);
+        $responses = $attempt->responses()->get()->keyBy('question_id');
+
+        return [
+            'attempt_id' => $attempt->attempt_id,
+            'score' => $attempt->score,
+            'max_score' => $attempt->max_score,
+            'percent' => (float) $attempt->percent,
+            'passed' => $attempt->passed,
+            'auto_submitted' => $attempt->auto_submitted,
+            'counts_as_result' => $attempt->is_best_attempt,
+            'points_awarded' => (int) DB::table('points_ledger')->where('source_type', 'quiz_attempt')->where('source_id', $attempt->attempt_id)->sum('points'),
+            'answers_visible' => $showAnswers,
+            'questions' => $showAnswers ? QuizQuestion::with('answers')->whereIn('question_id', $attempt->question_order ?? [])->get()->map(fn (QuizQuestion $question) => [
+                'question_id' => $question->question_id,
+                'question_text' => $question->question_text,
+                'explanation' => $question->explanation,
+                'correct_answer_ids' => $question->answers->where('is_correct', true)->pluck('answer_id')->values(),
+                'selected_answer_ids' => $responses->get($question->question_id)?->selected_answer_ids ?? [],
+                'is_correct' => (bool) $responses->get($question->question_id)?->is_correct,
+            ])->values() : null,
+        ];
+    }
+
+    private function secondsLeft(QuizAttempt $attempt): ?int
+    {
+        return $attempt->expires_at ? max(0, (int) now()->diffInSeconds($attempt->expires_at, false)) : null;
     }
 }

@@ -11,7 +11,7 @@
         <section aria-labelledby="card-heading" class="space-y-6">
             <h2 id="card-heading" class="sr-only">{{ __('My membership card') }}</h2>
             <x-membership-card :member="$member" />
-            <a href="{{ route('member.card') }}" class="btn-primary w-full">{{ __('Open my card and QR code') }}</a>
+            <a wire:navigate href="{{ route('member.card') }}" class="btn-primary w-full">{{ __('Open my card and QR code') }}</a>
 
             <dl class="grid grid-cols-2 gap-4">
                 <div class="rounded-2xl border-2 border-line bg-white p-5">
@@ -29,7 +29,7 @@
             <section aria-labelledby="learn-heading">
                 <div class="flex flex-wrap items-end justify-between gap-3">
                     <h2 id="learn-heading" class="text-2xl font-black tracking-tight">{{ __('Continue learning') }}</h2>
-                    <a href="{{ Locales::route('learn.index') }}" class="link">{{ __('All lessons') }}</a>
+                    <a wire:navigate href="{{ route('member.learn') }}" class="link">{{ __('All lessons') }}</a>
                 </div>
                 @if ($lessons->isEmpty())
                     <p class="mt-4 rounded-2xl bg-white p-6 text-lg text-slate">{{ __('Lessons will appear here as soon as TRA publishes them.') }}</p>
@@ -39,9 +39,7 @@
                             <li class="flex flex-col rounded-2xl border-2 border-line bg-white p-5">
                                 <span class="self-start rounded-full bg-brand px-3 py-0.5 text-sm font-extrabold">{{ __('content_type.'.$lesson->content_type) }}</span>
                                 <span class="mt-3 flex-1 text-lg font-black leading-snug">{{ $lesson->title }}</span>
-                                @if ($lesson->is_public && $lesson->slug)
-                                    <a href="{{ Locales::route('learn.show', ['slug' => $lesson->slug]) }}" class="link mt-3 self-start">{{ __('Open') }}<span class="sr-only">: {{ $lesson->title }}</span></a>
-                                @endif
+                                <a wire:navigate href="{{ route('member.learn.lesson', $lesson) }}" class="link mt-3 self-start">{{ __('Open') }}<span class="sr-only">: {{ $lesson->title }}</span></a>
                             </li>
                         @endforeach
                     </ul>
@@ -51,14 +49,14 @@
             <section aria-labelledby="events-heading">
                 <div class="flex flex-wrap items-end justify-between gap-3">
                     <h2 id="events-heading" class="text-2xl font-black tracking-tight">{{ __('Upcoming events') }}</h2>
-                    <a href="{{ Locales::route('events.index') }}" class="link">{{ __('All events') }}</a>
+                    <a wire:navigate href="{{ route('member.events') }}" class="link">{{ __('All events') }}</a>
                 </div>
                 @if ($events->isEmpty())
                     <p class="mt-4 rounded-2xl bg-white p-6 text-lg text-slate">{{ __('No events are scheduled yet. We will notify you when one is announced.') }}</p>
                 @else
                     <div class="mt-4 grid gap-3">
                         @foreach ($events as $event)
-                            @include('events.partials.row', ['event' => $event])
+                            @include('events.partials.row', ['event' => $event, 'memberLink' => true])
                         @endforeach
                     </div>
                 @endif

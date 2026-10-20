@@ -87,6 +87,27 @@ class ModuleSeeder extends Seeder
             'controls' => [
                 ['name' => 'Manage Notification Templates', 'description' => 'Edit message wording and turn channels on or off.'],
                 ['name' => 'View SMS Log', 'description' => 'See SMS delivery status and retry failed messages.'],
+                ['name' => 'Create Broadcast', 'description' => 'Write targeted or broadcast notifications and send them for approval.'],
+                ['name' => 'Approve Broadcast', 'description' => 'Approve, schedule or send broadcast notifications.'],
+                ['name' => 'Manage Reminders', 'description' => 'Turn automatic reminders on or off and set their timing.'],
+            ],
+        ],
+        [
+            'name' => 'Gamification',
+            'description' => 'Points rules, badges and leaderboards.',
+            'controls' => [
+                ['name' => 'Manage Gamification', 'description' => 'Change point values, badges and leaderboard settings.'],
+                ['name' => 'Adjust Points', 'description' => 'Add or remove a member\'s points with a reason.'],
+            ],
+        ],
+        [
+            'name' => 'Feedback',
+            'description' => 'Feedback, suggestions and concerns from members.',
+            'controls' => [
+                ['name' => 'View Feedback', 'description' => 'See submitted feedback and its history.'],
+                ['name' => 'Manage Feedback', 'description' => 'Classify, prioritise and assign feedback to officers.'],
+                ['name' => 'Respond To Feedback', 'description' => 'Reply to feedback, record actions and close it.'],
+                ['name' => 'Handle Safeguarding Concerns', 'description' => 'See and handle feedback marked as a safety or safeguarding concern.'],
             ],
         ],
         [
@@ -103,6 +124,9 @@ class ModuleSeeder extends Seeder
                 ['name' => 'Upload Content', 'description' => 'Upload or create new content.'],
                 ['name' => 'Edit Content',   'description' => 'Update existing content.'],
                 ['name' => 'Delete Content', 'description' => 'Remove content from the system.'],
+                ['name' => 'Review Content', 'description' => 'Approve, return or reject submitted learning content.'],
+                ['name' => 'Publish Content', 'description' => 'Publish, schedule, unpublish and archive approved content and modules.'],
+                ['name' => 'Manage Content Categories', 'description' => 'Create and edit learning categories.'],
             ],
         ],
         [
@@ -113,6 +137,8 @@ class ModuleSeeder extends Seeder
                 ['name' => 'Edit Quiz',    'description' => 'Update quiz details.'],
                 ['name' => 'Delete Quiz',  'description' => 'Delete a quiz.'],
                 ['name' => 'View Results', 'description' => 'View all user quiz attempts and scores.'],
+                ['name' => 'Review Quiz', 'description' => 'Approve, return or reject submitted quizzes.'],
+                ['name' => 'Publish Quiz', 'description' => 'Publish, schedule and close approved quizzes.'],
             ],
         ],
         [
@@ -122,6 +148,9 @@ class ModuleSeeder extends Seeder
                 ['name' => 'Add Opportunity',    'description' => 'Post a new opportunity listing.'],
                 ['name' => 'Edit Opportunity',   'description' => 'Update an opportunity listing.'],
                 ['name' => 'Delete Opportunity', 'description' => 'Remove an opportunity listing.'],
+                ['name' => 'Review Opportunity', 'description' => 'Approve, return or reject submitted opportunities.'],
+                ['name' => 'Publish Opportunity', 'description' => 'Publish, schedule, close, withdraw and archive approved opportunities.'],
+                ['name' => 'View Opportunity Reports', 'description' => 'See engagement with opportunities and career resources.'],
             ],
         ],
         [
@@ -140,6 +169,9 @@ class ModuleSeeder extends Seeder
                 ['name' => 'Edit Event',             'description' => 'Update event details.'],
                 ['name' => 'Delete Event',           'description' => 'Delete an event.'],
                 ['name' => 'View Event Attendees',   'description' => 'View registered attendees for an event.'],
+                ['name' => 'Review Event', 'description' => 'Approve, return or reject proposed events and campaigns.'],
+                ['name' => 'Publish Event', 'description' => 'Publish, schedule, postpone, cancel and close approved events.'],
+                ['name' => 'Check In Attendees', 'description' => 'Record attendance by scanning membership cards or ticking the list.'],
             ],
         ],
     ];

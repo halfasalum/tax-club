@@ -23,6 +23,12 @@ class User extends Authenticatable implements HasLocalePreference
     /** @var list<string> */
     protected array $auditIgnore = ['last_login', 'total_points', 'points_earned_this_month'];
 
+    /** @var list<string>|null Permission slugs, loaded once per request. */
+    private ?array $controlCache = null;
+
+    /** @var list<string>|null|false Institution scope; false means not loaded yet. */
+    private array|null|false $scopeCache = false;
+
     protected $table = 'users';
 
     protected $primaryKey = 'user_id';
@@ -188,6 +194,18 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function institutionScope(): ?array
     {
+        if ($this->scopeCache !== false) {
+            return $this->scopeCache;
+        }
+
+        return $this->scopeCache = $this->computeInstitutionScope();
+    }
+
+    /**
+     * @return list<string>|null
+     */
+    private function computeInstitutionScope(): ?array
+    {
         if ($this->hasControl('view_all_registrations')) {
             return null;
         }
@@ -275,12 +293,7 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function hasControl(string $controlSlug): bool
     {
-        return $this->roles()
-            ->where('roles.is_active', true)
-            ->whereHas('controls', function ($query) use ($controlSlug) {
-                $query->where('slug', $controlSlug)
-                    ->where('module_controls.is_active', true);
-            })->exists();
+        return in_array($controlSlug, $this->allControls(), true);
     }
 
     /**
@@ -289,7 +302,8 @@ class User extends Authenticatable implements HasLocalePreference
      */
     public function allControls(): array
     {
-        return $this->roles()
+        // Loaded once per request: menus and checks ask many times.
+        return $this->controlCache ??= $this->roles()
             ->where('roles.is_active', true)
             ->with(['controls' => fn ($q) => $q->where('module_controls.is_active', true)])
             ->get()
@@ -299,6 +313,17 @@ class User extends Authenticatable implements HasLocalePreference
             ->unique()
             ->values()
             ->toArray();
+    }
+
+    /**
+     * Forget cached permissions and scope, e.g. after roles change.
+     */
+    public function refreshAccess(): static
+    {
+        $this->controlCache = null;
+        $this->scopeCache = false;
+
+        return $this;
     }
 
     // ─── Relationships ─────────────────────────────────────────────

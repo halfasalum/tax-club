@@ -10,7 +10,7 @@
     <h1 class="text-3xl font-black tracking-tight sm:text-4xl">{{ __('Overview') }}</h1>
 
     @if ($pendingRegistrations > 0 && auth()->user()->hasControl('view_registrations'))
-        <a href="{{ route('admin.registrations') }}" class="sun-hatch mt-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border-4 border-ink px-6 py-5 shadow-[6px_6px_0_var(--color-ink)] transition hover:-translate-y-0.5">
+        <a wire:navigate href="{{ route('admin.registrations') }}" class="sun-hatch mt-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border-4 border-ink px-6 py-5 shadow-[6px_6px_0_var(--color-ink)] transition hover:-translate-y-0.5">
             <span class="flex items-center gap-4">
                 <span class="grid size-14 place-items-center rounded-full bg-ink text-2xl font-black text-brand">{{ $pendingRegistrations > 99 ? '99+' : $pendingRegistrations }}</span>
                 <span class="text-xl font-black">{{ trans_choice(':count registration is waiting for confirmation|:count registrations are waiting for confirmation', $pendingRegistrations, ['count' => number_format($pendingRegistrations)]) }}</span>

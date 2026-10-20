@@ -90,7 +90,7 @@
                             </td>
                         @endif
                         <td class="px-4 py-3">
-                            <a href="{{ route('admin.members.show', $member) }}" class="font-black hover:underline">{{ $member->full_name }}</a>
+                            <a wire:navigate href="{{ route('admin.members.show', $member) }}" class="font-black hover:underline">{{ $member->full_name }}</a>
                             @if ($member->isMinor())<span class="ml-1 rounded-full bg-ink px-2 py-0.5 text-xs font-extrabold text-brand">{{ __('Under 18') }}</span>@endif
                             @if ($member->alumni_requested_at)<span class="ml-1 rounded-full bg-brand px-2 py-0.5 text-xs font-extrabold">{{ __('Alumni request') }}</span>@endif
                             <span class="block font-receipt text-sm text-slate">{{ $member->membership_id ?? $member->registration_reference }}</span>

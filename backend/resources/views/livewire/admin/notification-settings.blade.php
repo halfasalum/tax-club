@@ -3,7 +3,7 @@
     <h1 class="text-3xl font-black tracking-tight sm:text-4xl">{{ __('Notifications') }}</h1>
     <p class="mt-2 max-w-[65ch] text-lg text-slate">{{ __('Change the wording of each message and choose whether it goes by SMS, to the in-app inbox, or both. One SMS holds about 160 characters; longer messages cost more.') }}</p>
     @if (auth()->user()->hasControl('view_sms_log'))
-        <a href="{{ route('admin.sms') }}" class="link mt-3 inline-block">{{ __('See SMS delivery') }}</a>
+        <a wire:navigate href="{{ route('admin.sms') }}" class="link mt-3 inline-block">{{ __('See SMS delivery') }}</a>
     @endif
 
     @if ($statusMessage)
@@ -21,7 +21,7 @@
                             @if ($item['template']?->body_sw || $item['template']?->body_en)<span class="ml-1 rounded-full bg-brand px-2 py-0.5 text-xs font-extrabold">{{ __('Custom wording') }}</span>@endif
                         </p>
                         <p class="mt-1 flex flex-wrap gap-2 text-sm font-extrabold">
-                            @php($sms = $class::required() || ($item['template']?->sms_enabled ?? true))
+                            @php($sms = $class::required() || ($item['template']?->sms_enabled ?? $class::smsByDefault()))
                             @php($inbox = ! $class::sensitive() && ($item['template']?->inbox_enabled ?? true))
                             <span @class(['rounded-full px-2.5 py-0.5', 'bg-ink text-brand' => $sms, 'bg-mist text-slate line-through' => ! $sms])>SMS</span>
                             <span @class(['rounded-full px-2.5 py-0.5', 'bg-ink text-brand' => $inbox, 'bg-mist text-slate line-through' => ! $inbox])>{{ __('Inbox') }}</span>

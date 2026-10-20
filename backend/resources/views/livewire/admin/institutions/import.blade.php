@@ -1,6 +1,6 @@
 <div class="max-w-3xl">
     <nav aria-label="{{ __('Breadcrumb') }}" class="text-sm font-bold">
-        <a href="{{ route('admin.institutions.index') }}" class="link">{{ __('Institutions') }}</a>
+        <a wire:navigate href="{{ route('admin.institutions.index') }}" class="link">{{ __('Institutions') }}</a>
     </nav>
     <h1 class="mt-4 text-3xl font-black tracking-tight sm:text-4xl">{{ __('Import institutions') }}</h1>
     <p class="mt-2 text-lg text-slate">{{ __('Register many institutions at once from a spreadsheet saved as CSV. Rows that are incomplete or already registered are skipped and listed below.') }}</p>
@@ -64,7 +64,7 @@
                     </table>
                 </div>
             @endif
-            <a href="{{ route('admin.institutions.index') }}" class="btn-primary mt-6">{{ __('View institutions') }}</a>
+            <a wire:navigate href="{{ route('admin.institutions.index') }}" class="btn-primary mt-6">{{ __('View institutions') }}</a>
         </section>
     @endif
 </div>

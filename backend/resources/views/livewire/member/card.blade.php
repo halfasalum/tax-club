@@ -1,7 +1,7 @@
 @php use App\Support\MembershipCard; @endphp
 <div class="mx-auto max-w-xl">
     <div class="print:hidden">
-        <a href="{{ route('member.dashboard') }}" class="link">← {{ __('My Tax Club') }}</a>
+        <a wire:navigate href="{{ route('member.dashboard') }}" class="link">← {{ __('My Tax Club') }}</a>
         <h1 class="mt-4 text-3xl font-black tracking-tight sm:text-4xl">{{ __('My membership card') }}</h1>
         <p class="mt-2 text-lg text-slate">{{ __('Show this card at Tax Club events. Officers scan the QR code to check that your membership is active.') }}</p>
     </div>

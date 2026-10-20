@@ -127,6 +127,26 @@
                 </form>
             </section>
 
+            <section class="rounded-3xl border-2 border-line bg-white p-6 sm:p-8" aria-labelledby="notify-heading">
+                <h2 id="notify-heading" class="text-2xl font-black">{{ __('Notifications') }}</h2>
+                <p class="mt-2 text-slate">{{ __('Messages about your account, membership and security always reach you. You can choose for the rest.') }}</p>
+                <form wire:submit="savePreferences" class="mt-4 space-y-3">
+                    @foreach (\App\Support\NotificationPreferences::categories() as $category => $info)
+                        <div class="flex flex-wrap items-center justify-between gap-3 rounded-xl border-2 border-line p-4">
+                            <div class="min-w-0">
+                                <p class="font-extrabold">{{ $info['label'] }}</p>
+                                <p class="text-sm text-slate">{{ $info['description'] }}</p>
+                            </div>
+                            <div class="flex gap-4">
+                                <label class="flex items-center gap-2 font-bold"><input type="checkbox" wire:model="preferences.{{ $category }}.inbox" class="size-4 accent-ink"> {{ __('Inbox') }}</label>
+                                <label class="flex items-center gap-2 font-bold"><input type="checkbox" wire:model="preferences.{{ $category }}.sms" class="size-4 accent-ink"> SMS</label>
+                            </div>
+                        </div>
+                    @endforeach
+                    <button type="submit" class="btn-ghost">{{ __('Save choices') }}</button>
+                </form>
+            </section>
+
             <section class="rounded-3xl border-2 border-line bg-white p-6 sm:p-8" aria-labelledby="phone-heading">
                 <h2 id="phone-heading" class="text-2xl font-black">{{ __('Change mobile number') }}</h2>
                 @if (! $phoneCodeSent)

@@ -14,6 +14,7 @@ class LearnController extends Controller
         $search = trim((string) $request->query('q'));
 
         $lessons = Content::publiclyVisible()
+            ->where(fn ($query) => $query->where('language', app()->getLocale())->orWhereNull('language'))
             ->when($search !== '', fn ($query) => $query->where('title', 'like', '%'.$search.'%'))
             ->latest('published_at')
             ->paginate(12)

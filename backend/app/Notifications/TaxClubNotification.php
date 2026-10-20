@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Models\NotificationTemplate;
 use App\Models\User;
 use App\Notifications\Channels\SmsChannel;
+use App\Support\NotificationPreferences;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
@@ -73,6 +74,24 @@ abstract class TaxClubNotification extends Notification implements ShouldQueue
         return false;
     }
 
+    /**
+     * Whether SMS is on before an administrator changes it. Routine updates
+     * can default to the inbox only to save SMS costs.
+     */
+    public static function smsByDefault(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Optional category members can switch off (NOT-REQ05); null means the
+     * notification is about their account and always delivered.
+     */
+    public static function preferenceCategory(): ?string
+    {
+        return null;
+    }
+
     public static function template(): ?NotificationTemplate
     {
         return NotificationTemplate::find(static::key());
@@ -90,8 +109,18 @@ abstract class TaxClubNotification extends Notification implements ShouldQueue
             $channels[] = 'database';
         }
 
-        if (static::required() || ($template?->sms_enabled ?? true)) {
+        if (static::required() || ($template?->sms_enabled ?? static::smsByDefault())) {
             $channels[] = SmsChannel::class;
+        }
+
+        // Members may switch off optional categories (NOT-REQ05).
+        if ($notifiable instanceof User && static::preferenceCategory() && ! static::required()) {
+            $preference = NotificationPreferences::for($notifiable, static::preferenceCategory());
+            $channels = array_values(array_filter($channels, fn ($channel) => match ($channel) {
+                'database' => $preference['inbox'],
+                SmsChannel::class => $preference['sms'],
+                default => true,
+            }));
         }
 
         return $channels;

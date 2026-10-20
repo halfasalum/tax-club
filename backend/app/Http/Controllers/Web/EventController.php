@@ -10,14 +10,14 @@ class EventController extends Controller
 {
     public function index(): View
     {
-        $events = Event::upcoming()->orderBy('starts_at')->paginate(12);
+        $events = Event::publiclyListed()->orderBy('starts_at')->paginate(12);
 
         return view('events.index', compact('events'));
     }
 
     public function show(string $slug): View
     {
-        $event = Event::active()->where('slug', $slug)->firstOrFail();
+        $event = Event::live()->where('is_public', true)->where('slug', $slug)->firstOrFail();
 
         return view('events.show', compact('event'));
     }

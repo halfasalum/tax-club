@@ -35,6 +35,9 @@ php artisan serve
 | `/app/card` | Digital membership card with QR code (print or save as PDF) |
 | `/app/profile` | Profile: photo, contact details, SMS language, phone and password change, alumni request |
 | `/app/notifications` | In-app notification inbox |
+| `/app/learn` | Learning hub: modules, search, lessons with progress |
+| `/app/quizzes` | Quizzes with timer, autosave and results |
+| `/app/points` | Points, badges and leaderboards |
 | `/verify`, `/verify/{token}` | Check a membership card by QR scan or number (public, rate-limited) |
 | `/admin` | Administration Portal: registration queue, institutions and Tax Clubs |
 | `/admin/institutions` | Register or import institutions, set up Tax Clubs, assign patrons |
@@ -42,6 +45,9 @@ php artisan serve
 | `/admin/statistics` | Members by region, institution and category, with CSV download |
 | `/admin/coordinators` | Assign TRA coordinators to regions |
 | `/admin/notifications`, `/admin/sms` | Message wording and channels; SMS delivery with retry |
+| `/admin/learning` | Write lessons, review, publish and version them; modules and categories |
+| `/admin/quizzes` | Build quizzes, review, open for a period, results |
+| `/admin/gamification` | Point values, daily cap, leaderboards on/off, badges |
 | `/admin/audit` | Audit log of changes and sign-ins |
 | `/sitemap.xml`, `/robots.txt` | SEO |
 | `/api/v1/...` | Mobile API |
@@ -77,6 +83,62 @@ QUEUE_CONNECTION=database
 - The QR code on the card opens `/verify/{token}`. The token is random, so a card cannot be forged from the number. Members can replace their QR code if the card is lost or shared, and old copies then stop verifying.
 - Anyone can check a card. They see whether it is valid and the member's short name (e.g. "Asha M."). Officers with the **Verify Membership** permission also see the full name, number, category, institution and an "Under 18" badge. Every check is recorded in `membership_verifications`.
 - API: `GET /api/v1/membership/card` and `POST /api/v1/membership/card/reissue` (signed in), and `POST /api/v1/membership/verify` with `token` or `membership_number` (public; full details with an officer's token).
+
+## Learning, quizzes and points (Release 2)
+
+- **Lessons** are written in Markdown, sent for review, and published now or on a date, with an optional end date. Every change is a new version that is reviewed again; members keep seeing the live version until the new one is published. Tax content is due for review 12 months after publication.
+- **Reviews** need a second person: nobody can approve their own lesson or quiz (`FOUR_EYES_REVIEW=true`).
+- **Quizzes** can be scored or practice, with a pass mark, time limit, number of attempts, which attempt counts (best or latest), and when correct answers are shown. The server times each attempt and closes it when time runs out, using the answers already saved. Questions are locked once members have taken a quiz; make a new version instead.
+- **Points** (decision D-15 values, editable): quiz pass 10, each correct answer 1 (best attempt only), lesson 2, module 10, at most 50 automatic points per day. Officers can add or remove points with a reason. Badges are awarded automatically.
+- Uploaded lesson files go to the `public` disk: run `php artisan storage:link` once.
+- The scheduler also publishes scheduled lessons and closes overdue quiz attempts.
+- After pulling, also run `php artisan db:seed --class=ContentCategorySeeder` and `php artisan db:seed --class=BadgeSeeder`.
+
+## Events, opportunities, broadcasts and feedback (Release 3)
+
+- **Events and campaigns** (`/admin/events`): organizers propose an event (type, in person or online, venue, audience, places, registration cut-off, optional question). Another officer approves it, then it is published now or on a date. Members register at `/app/events`. When it is full, new registrations join a **waitlist** and move up automatically when someone cancels or places are added. Organizers can postpone, move or cancel (registered members are told), post updates and materials (optionally for registered members only), and close the event to freeze the participation summary (registered, attended, absent, walk-ins, by category and region; CSV download).
+- **Check-in** (`/admin/events/{event}/check-in`): scan the QR code on the member's card with the phone camera (Chrome on Android), a handheld scanner, or type the membership number. Members who did not register can be admitted as walk-ins. Each check-in earns attendance points (15 by default) and counts towards the "Event goer" badge. Mistakes are corrected with a reason, and the points are taken back.
+- **Opportunities** (`/admin/opportunities`): jobs, internships, attachments, scholarships, training and more, with eligibility, audience, deadline and how to apply (link, email or instructions). They are reviewed before publishing, close automatically after the deadline and are archived 90 days later. Members search, filter, save and apply at `/app/opportunities`; the page also lists career guidance lessons (category *Careers in tax*). `/admin/opportunities/report` shows views, saves and application clicks by type, category and region, without names.
+- **Broadcasts** (`/admin/broadcasts`): write an announcement in Kiswahili (and optionally English), choose SMS and/or inbox and the audience (member category, region, institution codes, age). The screen shows how many members it will reach and the SMS count. A second officer approves it and sends it now or at a set time. Members who switched off announcements are skipped.
+- **Automatic reminders** (`/admin/reminders`): before an event (registered members), before a saved opportunity closes, and before a quiz closes (members with an unfinished attempt). Each can be turned off and its timing changed; each member gets each reminder once.
+- **Feedback** (`/app/feedback`): members send suggestions, problems or concerns and get a reference such as `FB-2026-00001`, follow its status and read the response. Officers classify, prioritise, assign, keep internal notes, respond and close at `/admin/feedback`. **Safety concerns** are marked high priority and only officers with *Handle Safeguarding Concerns* can see them.
+- **Starter content from tra.go.tz**: `TraLearningSeeder` adds 8 lessons (with a 5-question quiz each) and 3 career guides, in Kiswahili and English, plus two modules. Each lesson links to the TRA pages it is based on. Members see lessons and quizzes in their own language first and can switch to all languages.
+- The scheduler also publishes scheduled events, opportunities and broadcasts, closes opportunities at their deadline and sends reminders, so keep `php artisan schedule:work` (or the cron entry) running.
+
+**After pulling Release 3**
+
+```bash
+composer install
+php artisan migrate
+php artisan db:seed --class=ModuleSeeder          # Events, Opportunities, Broadcast and Feedback permissions
+php artisan db:seed --class=SuperAdminRoleSeeder
+php artisan db:seed --class=PatronRoleSeeder      # patrons can check members in; coordinators manage events
+php artisan db:seed --class=BadgeSeeder           # "Event goer" badge
+php artisan db:seed --class=TraLearningSeeder     # bilingual lessons and quizzes from tra.go.tz
+```
+
+## Speed
+
+The app itself answers most pages in 15–40 ms with under 15 database queries. If it feels slow locally, it is almost always the local PHP setup:
+
+1. **Turn on PHP's code cache for the command line.** `php artisan serve` uses the CLI, where opcache is usually off, so every request re-reads all of Laravel. In your `php.ini` (find it with `php --ini`):
+   ```ini
+   opcache.enable_cli=1
+   opcache.validate_timestamps=1
+   opcache.revalidate_freq=0
+   ```
+2. **Let the dev server answer requests in parallel.** Keep `PHP_CLI_SERVER_WORKERS=4` in `.env`. `composer run dev` starts `php artisan serve --no-reload` so the setting is used (restart it after changing `.env`).
+3. **Windows:** prefer [Laravel Herd](https://herd.laravel.com) (nginx + PHP-FPM with opcache) over `php artisan serve`, and exclude the project folder from real-time antivirus scanning; scanning `vendor/` on every request is a common cause of 1–2 s page loads.
+4. **Not editing CSS or JS?** Run `npm run build` once instead of `npm run dev`.
+5. Keep `BOOST_BROWSER_LOGS_WATCHER=false` unless you need browser logs in Laravel Boost.
+
+What the app does to stay fast:
+- Moving between pages inside the portal swaps only the page content (Livewire `wire:navigate`); menu links start loading on hover.
+- Fonts are served from this site, not a third-party font server.
+- Each person's permissions are loaded once per request.
+- Indexes cover member lists, unread notifications, quiz attempts and leaderboards.
+
+**Production checklist:** `composer install --no-dev --optimize-autoloader`, `npm run build`, `php artisan optimize` (caches config, routes, views and events; run again after each deploy), PHP-FPM with opcache on, Redis for `CACHE_STORE`, `SESSION_DRIVER` and `QUEUE_CONNECTION` when available, and long browser caching for `/build`, `/fonts` and `/images` (already set in `public/.htaccess` for Apache).
 
 ## Roles and access
 

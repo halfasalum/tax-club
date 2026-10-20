@@ -5,6 +5,9 @@ use App\Http\Controllers\Web\LearnController;
 use App\Http\Controllers\Web\PageController;
 use App\Http\Controllers\Web\SitemapController;
 use App\Livewire\Admin\AuditLog as AdminAuditLog;
+use App\Livewire\Admin\Broadcasts\Form as BroadcastForm;
+use App\Livewire\Admin\Broadcasts\Index as BroadcastIndex;
+use App\Livewire\Admin\Broadcasts\Show as BroadcastShow;
 use App\Livewire\Admin\Coordinators as AdminCoordinators;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Admin\Events\CheckIn as EventCheckIn;
@@ -34,6 +37,7 @@ use App\Livewire\Admin\Quizzes\Builder as QuizBuilder;
 use App\Livewire\Admin\Quizzes\Index as QuizIndex;
 use App\Livewire\Admin\Quizzes\Show as QuizShow;
 use App\Livewire\Admin\Registrations as AdminRegistrations;
+use App\Livewire\Admin\ReminderSettings as AdminReminders;
 use App\Livewire\Admin\SmsLog as AdminSmsLog;
 use App\Livewire\Admin\Statistics as AdminStatistics;
 use App\Livewire\Auth\ForgotPassword;
@@ -212,6 +216,13 @@ Route::middleware(['auth', 'active'])->group(function (): void {
             }, 'tax-club-statistics-'.now()->format('Y-m-d').'.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
         })->middleware('permission:view_statistics')->name('statistics.export');
         Route::get('/notifications', AdminNotificationSettings::class)->middleware('permission:manage_notification_templates')->name('notifications');
+        Route::prefix('broadcasts')->name('broadcasts.')->group(function (): void {
+            Route::get('/', BroadcastIndex::class)->middleware('permission:create_broadcast,approve_broadcast')->name('index');
+            Route::get('/new', BroadcastForm::class)->middleware('permission:create_broadcast')->name('create');
+            Route::get('/{broadcast}', BroadcastShow::class)->middleware('permission:create_broadcast,approve_broadcast')->name('show');
+            Route::get('/{broadcast}/edit', BroadcastForm::class)->middleware('permission:create_broadcast')->name('edit');
+        });
+        Route::get('/reminders', AdminReminders::class)->middleware('permission:manage_reminders')->name('reminders');
         Route::get('/sms', AdminSmsLog::class)->middleware('permission:view_sms_log')->name('sms');
         Route::prefix('learning')->name('learning.')->group(function (): void {
             $authors = 'permission:upload_content,edit_content,review_content,publish_content';

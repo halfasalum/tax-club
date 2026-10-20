@@ -5,9 +5,13 @@ namespace App\Support;
 use App\Notifications\AccountDeactivated;
 use App\Notifications\AccountReactivated;
 use App\Notifications\AccountSuspended;
+use App\Notifications\AlumniConnection;
 use App\Notifications\AlumniStatusGranted;
 use App\Notifications\BadgeEarned;
 use App\Notifications\BroadcastMessage;
+use App\Notifications\CertificateIssued;
+use App\Notifications\CommunityReply;
+use App\Notifications\CompetitionUpdate;
 use App\Notifications\ContentReviewed;
 use App\Notifications\CoordinatorAssigned;
 use App\Notifications\EventChanged;
@@ -17,16 +21,26 @@ use App\Notifications\EventReminder;
 use App\Notifications\EventUpdatePosted;
 use App\Notifications\FeedbackAssigned;
 use App\Notifications\FeedbackUpdated;
+use App\Notifications\MentorApplicationDecided;
+use App\Notifications\MentorshipMatched;
+use App\Notifications\MentorshipNeedsAttention;
+use App\Notifications\ModerationAlert;
+use App\Notifications\ModerationWarning;
 use App\Notifications\OpportunityDeadlineReminder;
 use App\Notifications\PasswordChanged;
 use App\Notifications\PasswordResetCode;
 use App\Notifications\PatronAssigned;
 use App\Notifications\PhoneChangeCode;
 use App\Notifications\PointsAdjusted;
+use App\Notifications\QuestionAnswered;
+use App\Notifications\QuestionAssigned;
 use App\Notifications\QuizClosingReminder;
 use App\Notifications\RegistrationApproved;
 use App\Notifications\RegistrationReceived;
 use App\Notifications\RegistrationRejected;
+use App\Notifications\ReportReviewed;
+use App\Notifications\RestrictionApplied;
+use App\Notifications\RewardAwarded;
 use App\Notifications\StaffLoginCode;
 use App\Notifications\TaxClubNotification;
 use Illuminate\Support\Facades\App;
@@ -60,6 +74,20 @@ final class NotificationCatalogue
         QuizClosingReminder::class,
         FeedbackUpdated::class,
         FeedbackAssigned::class,
+        ModerationAlert::class,
+        ModerationWarning::class,
+        RestrictionApplied::class,
+        ReportReviewed::class,
+        CommunityReply::class,
+        QuestionAssigned::class,
+        QuestionAnswered::class,
+        CompetitionUpdate::class,
+        RewardAwarded::class,
+        CertificateIssued::class,
+        MentorApplicationDecided::class,
+        MentorshipMatched::class,
+        MentorshipNeedsAttention::class,
+        AlumniConnection::class,
         PasswordChanged::class,
         PasswordResetCode::class,
         StaffLoginCode::class,
@@ -88,6 +116,11 @@ final class NotificationCatalogue
         'change' => 'was postponed',
         'update' => 'Programme and venue map',
         'date' => '30 Nov 2026',
+        'pair' => 'Neema K. and Asha M.',
+        'issue' => 'no session recorded for 30 days',
+        'feature' => 'the community',
+        'role' => 'mentor',
+        'reward' => 'Trophy',
         'message' => 'Tax Club week starts on Monday. Visit your club patron for details.',
     ];
 

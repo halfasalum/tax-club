@@ -8,6 +8,8 @@ use App\Livewire\Admin\AuditLog as AdminAuditLog;
 use App\Livewire\Admin\Broadcasts\Form as BroadcastForm;
 use App\Livewire\Admin\Broadcasts\Index as BroadcastIndex;
 use App\Livewire\Admin\Broadcasts\Show as BroadcastShow;
+use App\Livewire\Admin\Community\Members as CommunityMembers;
+use App\Livewire\Admin\Community\Spaces as CommunitySpaces;
 use App\Livewire\Admin\Coordinators as AdminCoordinators;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Admin\Events\CheckIn as EventCheckIn;
@@ -28,6 +30,10 @@ use App\Livewire\Admin\Learning\Modules as LearningModules;
 use App\Livewire\Admin\Learning\Show as LearningShow;
 use App\Livewire\Admin\Members\Index as MemberIndex;
 use App\Livewire\Admin\Members\Show as MemberShow;
+use App\Livewire\Admin\Moderation\Index as ModerationIndex;
+use App\Livewire\Admin\Moderation\Report as SafetyReport;
+use App\Livewire\Admin\Moderation\Restrictions as ModerationRestrictions;
+use App\Livewire\Admin\Moderation\Show as ModerationShow;
 use App\Livewire\Admin\NotificationSettings as AdminNotificationSettings;
 use App\Livewire\Admin\Opportunities\Form as OpportunityForm;
 use App\Livewire\Admin\Opportunities\Index as OpportunityIndex;
@@ -44,6 +50,9 @@ use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Member\Card as MemberCard;
+use App\Livewire\Member\Community\Index as MemberCommunity;
+use App\Livewire\Member\Community\Post as MemberCommunityPost;
+use App\Livewire\Member\Community\Space as MemberCommunitySpace;
 use App\Livewire\Member\Dashboard as MemberDashboard;
 use App\Livewire\Member\Events\Index as MemberEvents;
 use App\Livewire\Member\Events\Show as MemberEvent;
@@ -163,6 +172,9 @@ Route::middleware(['auth', 'active'])->group(function (): void {
     Route::get('/app/events', MemberEvents::class)->name('member.events');
     Route::get('/app/events/{slug}', MemberEvent::class)->name('member.events.show');
     Route::get('/app/feedback', MemberFeedback::class)->name('member.feedback');
+    Route::get('/app/community', MemberCommunity::class)->name('member.community');
+    Route::get('/app/community/posts/{post}', MemberCommunityPost::class)->name('member.community.post');
+    Route::get('/app/community/{space:slug}', MemberCommunitySpace::class)->name('member.community.space');
     Route::get('/app/opportunities', MemberOpportunities::class)->name('member.opportunities');
     Route::get('/app/opportunities/{slug}', MemberOpportunity::class)->name('member.opportunities.show');
 
@@ -280,6 +292,16 @@ Route::middleware(['auth', 'active'])->group(function (): void {
             Route::get('/{opportunity}', OpportunityShow::class)->middleware($staff)->name('show');
             Route::get('/{opportunity}/edit', OpportunityForm::class)->middleware('permission:add_opportunity,edit_opportunity')->name('edit');
         });
+
+        Route::prefix('moderation')->name('moderation.')->group(function (): void {
+            $moderators = 'permission:moderate_community,handle_safeguarding_concerns';
+            Route::get('/', ModerationIndex::class)->middleware($moderators)->name('index');
+            Route::get('/restrictions', ModerationRestrictions::class)->middleware('permission:restrict_users')->name('restrictions');
+            Route::get('/report', SafetyReport::class)->middleware('permission:view_safety_reports,manage_safety_settings')->name('report');
+            Route::get('/{case}', ModerationShow::class)->middleware($moderators)->name('show');
+        });
+        Route::get('/community', CommunitySpaces::class)->middleware('permission:manage_community_spaces')->name('community.spaces');
+        Route::get('/community/{space}/members', CommunityMembers::class)->middleware('permission:manage_community_spaces')->name('community.members');
 
         Route::get('/feedback', FeedbackIndex::class)->middleware('permission:view_feedback')->name('feedback.index');
         Route::get('/feedback/{feedback}', FeedbackShow::class)->middleware('permission:view_feedback')->name('feedback.show');

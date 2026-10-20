@@ -26,6 +26,10 @@ use App\Livewire\Admin\Learning\Show as LearningShow;
 use App\Livewire\Admin\Members\Index as MemberIndex;
 use App\Livewire\Admin\Members\Show as MemberShow;
 use App\Livewire\Admin\NotificationSettings as AdminNotificationSettings;
+use App\Livewire\Admin\Opportunities\Form as OpportunityForm;
+use App\Livewire\Admin\Opportunities\Index as OpportunityIndex;
+use App\Livewire\Admin\Opportunities\Report as OpportunityReport;
+use App\Livewire\Admin\Opportunities\Show as OpportunityShow;
 use App\Livewire\Admin\Quizzes\Builder as QuizBuilder;
 use App\Livewire\Admin\Quizzes\Index as QuizIndex;
 use App\Livewire\Admin\Quizzes\Show as QuizShow;
@@ -46,6 +50,8 @@ use App\Livewire\Member\Leaderboard as MemberLeaderboard;
 use App\Livewire\Member\Learn\Index as MemberLearn;
 use App\Livewire\Member\Learn\Lesson as MemberLesson;
 use App\Livewire\Member\Learn\Module as MemberModule;
+use App\Livewire\Member\Opportunities\Index as MemberOpportunities;
+use App\Livewire\Member\Opportunities\Show as MemberOpportunity;
 use App\Livewire\Member\Profile as MemberProfilePage;
 use App\Livewire\Member\Quizzes\Index as MemberQuizzes;
 use App\Livewire\Member\Quizzes\Result as MemberQuizResult;
@@ -54,12 +60,14 @@ use App\Livewire\Member\Quizzes\Take as MemberQuizTake;
 use App\Livewire\Membership\Verify as VerifyMembership;
 use App\Models\Event;
 use App\Models\EventUpdate;
+use App\Models\Opportunity;
 use App\Models\User;
 use App\Support\Audit;
 use App\Support\EventLabels;
 use App\Support\EventManager;
 use App\Support\MemberProfile;
 use App\Support\MembershipStatistics;
+use App\Support\OpportunityBoard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -151,6 +159,17 @@ Route::middleware(['auth', 'active'])->group(function (): void {
     Route::get('/app/events', MemberEvents::class)->name('member.events');
     Route::get('/app/events/{slug}', MemberEvent::class)->name('member.events.show');
     Route::get('/app/feedback', MemberFeedback::class)->name('member.feedback');
+    Route::get('/app/opportunities', MemberOpportunities::class)->name('member.opportunities');
+    Route::get('/app/opportunities/{slug}', MemberOpportunity::class)->name('member.opportunities.show');
+
+    // Counts the click, then opens the approved application channel (OPP-REQ06, OPP-REQ08).
+    Route::get('/app/opportunities/{slug}/apply', function (Request $request, string $slug) {
+        $opportunity = Opportunity::open()->where('slug', $slug)->firstOrFail();
+        abort_unless($opportunity->isVisibleTo($request->user()) && $opportunity->applyTarget(), 404);
+        OpportunityBoard::record($opportunity, $request->user(), 'apply');
+
+        return redirect()->away($opportunity->applyTarget());
+    })->middleware('throttle:30,1')->name('member.opportunities.apply');
     Route::get('/app/feedback/{reference}', MemberFeedbackCase::class)->name('member.feedback.show');
 
     // Event materials are private: staff, and members who may see the item (EVT-REQ07).
@@ -240,6 +259,15 @@ Route::middleware(['auth', 'active'])->group(function (): void {
                     fclose($out);
                 }, $event->code.'-registrations.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
             })->middleware('permission:view_event_attendees')->name('export');
+        });
+
+        Route::prefix('opportunities')->name('opportunities.')->group(function (): void {
+            $staff = 'permission:add_opportunity,edit_opportunity,review_opportunity,publish_opportunity,view_opportunity_reports';
+            Route::get('/', OpportunityIndex::class)->middleware($staff)->name('index');
+            Route::get('/new', OpportunityForm::class)->middleware('permission:add_opportunity')->name('create');
+            Route::get('/report', OpportunityReport::class)->middleware('permission:view_opportunity_reports')->name('report');
+            Route::get('/{opportunity}', OpportunityShow::class)->middleware($staff)->name('show');
+            Route::get('/{opportunity}/edit', OpportunityForm::class)->middleware('permission:add_opportunity,edit_opportunity')->name('edit');
         });
 
         Route::get('/feedback', FeedbackIndex::class)->middleware('permission:view_feedback')->name('feedback.index');

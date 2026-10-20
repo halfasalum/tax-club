@@ -252,7 +252,11 @@ Route::middleware(['auth:sanctum', 'active'])->group(function () {
     // ── Opportunities ─────────────────────────────────────────
     Route::prefix('opportunities')->group(function () {
         Route::get('/', [OpportunityController::class, 'index']);   // all auth users
+        Route::get('/career-resources', [OpportunityController::class, 'careerResources']);
         Route::get('/{id}', [OpportunityController::class, 'show']);    // all auth users
+        Route::post('/{id}/save', [OpportunityController::class, 'save']);
+        Route::delete('/{id}/save', [OpportunityController::class, 'save']);
+        Route::post('/{id}/apply', [OpportunityController::class, 'apply'])->middleware('throttle:30,1');
 
         Route::post('/', [OpportunityController::class, 'store'])
             ->middleware('permission:add_opportunity');

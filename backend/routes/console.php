@@ -1,6 +1,7 @@
 <?php
 
 use App\Support\Broadcasts;
+use App\Support\CompetitionDesk;
 use App\Support\ContentWorkflow;
 use App\Support\EventManager;
 use App\Support\OpportunityBoard;
@@ -22,3 +23,4 @@ Schedule::call(fn () => EventManager::applySchedule())->name('events:apply-sched
 Schedule::call(fn () => OpportunityBoard::applySchedule())->name('opportunities:apply-schedule')->everyFifteenMinutes()->withoutOverlapping();
 Schedule::call(fn () => Broadcasts::applySchedule())->name('broadcasts:send-scheduled')->everyMinute()->withoutOverlapping();
 Schedule::call(fn () => Reminders::run())->name('reminders:send')->hourly()->withoutOverlapping();
+Schedule::call(fn () => CompetitionDesk::applySchedule())->name('competitions:apply-schedule')->everyFiveMinutes()->withoutOverlapping();

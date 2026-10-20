@@ -29,7 +29,15 @@
                 $can('create_quiz', 'edit_quiz', 'review_quiz', 'publish_quiz', 'view_results') ? ['route' => 'admin.quizzes.index', 'match' => 'admin.quizzes.*', 'label' => __('Quizzes'), 'icon' => 'quiz'] : null,
                 $can('manage_gamification') ? ['route' => 'admin.gamification', 'label' => __('Points and badges'), 'icon' => 'trophy'] : null,
             ],
+            __('Engagement') => [
+                $can('add_event', 'edit_event', 'review_event', 'publish_event', 'view_event_attendees', 'check_in_attendees') ? ['route' => 'admin.events.index', 'match' => 'admin.events.*', 'label' => __('Events'), 'icon' => 'calendar'] : null,
+                $can('add_opportunity', 'edit_opportunity', 'review_opportunity', 'publish_opportunity', 'view_opportunity_reports') ? ['route' => 'admin.opportunities.index', 'match' => 'admin.opportunities.*', 'label' => __('Opportunities'), 'icon' => 'briefcase'] : null,
+                $can('view_feedback') ? ['route' => 'admin.feedback.index', 'match' => 'admin.feedback.*', 'label' => __('Feedback'), 'icon' => 'feedback',
+                    'badge' => \App\Models\Feedback::visibleTo($user)->where('status', \App\Models\Feedback::SUBMITTED)->count()] : null,
+            ],
             __('Communication') => [
+                $can('create_broadcast', 'approve_broadcast') ? ['route' => 'admin.broadcasts.index', 'match' => ['admin.broadcasts.*', 'admin.reminders'], 'label' => __('Broadcasts'), 'icon' => 'megaphone'] : null,
+                $can('manage_reminders') && ! $can('create_broadcast', 'approve_broadcast') ? ['route' => 'admin.reminders', 'label' => __('Automatic reminders'), 'icon' => 'bell'] : null,
                 $can('manage_notification_templates') ? ['route' => 'admin.notifications', 'label' => __('Messages'), 'icon' => 'message'] : null,
                 $can('view_sms_log') ? ['route' => 'admin.sms', 'label' => __('SMS delivery'), 'icon' => 'bell'] : null,
             ],
@@ -42,12 +50,15 @@
                 ['route' => 'member.dashboard', 'label' => __('My Tax Club'), 'icon' => 'home'],
                 ['route' => 'member.learn', 'match' => 'member.learn*', 'label' => __('Learn'), 'icon' => 'learn'],
                 ['route' => 'member.quizzes', 'match' => 'member.quizzes*', 'label' => __('Quizzes'), 'icon' => 'quiz'],
+                ['route' => 'member.events', 'match' => 'member.events*', 'label' => __('Events'), 'icon' => 'calendar'],
+                ['route' => 'member.opportunities', 'match' => 'member.opportunities*', 'label' => __('Opportunities'), 'icon' => 'briefcase'],
                 ['route' => 'member.leaderboard', 'label' => __('Points'), 'icon' => 'trophy'],
             ],
             __('My account') => [
                 ['route' => 'member.card', 'label' => __('My card'), 'icon' => 'card'],
                 ['route' => 'member.notifications', 'label' => __('Notifications'), 'icon' => 'inbox', 'badge' => $unread],
                 ['route' => 'member.profile', 'label' => __('My profile'), 'icon' => 'user'],
+                ['route' => 'member.feedback', 'match' => 'member.feedback*', 'label' => __('Feedback'), 'icon' => 'feedback'],
             ],
         ];
     $sections = collect($sections)->map(fn ($items) => array_values(array_filter($items)))->filter();

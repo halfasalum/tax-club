@@ -94,6 +94,29 @@ QUEUE_CONNECTION=database
 - The scheduler also publishes scheduled lessons and closes overdue quiz attempts.
 - After pulling, also run `php artisan db:seed --class=ContentCategorySeeder` and `php artisan db:seed --class=BadgeSeeder`.
 
+## Events, opportunities, broadcasts and feedback (Release 3)
+
+- **Events and campaigns** (`/admin/events`): organizers propose an event (type, in person or online, venue, audience, places, registration cut-off, optional question). Another officer approves it, then it is published now or on a date. Members register at `/app/events`. When it is full, new registrations join a **waitlist** and move up automatically when someone cancels or places are added. Organizers can postpone, move or cancel (registered members are told), post updates and materials (optionally for registered members only), and close the event to freeze the participation summary (registered, attended, absent, walk-ins, by category and region; CSV download).
+- **Check-in** (`/admin/events/{event}/check-in`): scan the QR code on the member's card with the phone camera (Chrome on Android), a handheld scanner, or type the membership number. Members who did not register can be admitted as walk-ins. Each check-in earns attendance points (15 by default) and counts towards the "Event goer" badge. Mistakes are corrected with a reason, and the points are taken back.
+- **Opportunities** (`/admin/opportunities`): jobs, internships, attachments, scholarships, training and more, with eligibility, audience, deadline and how to apply (link, email or instructions). They are reviewed before publishing, close automatically after the deadline and are archived 90 days later. Members search, filter, save and apply at `/app/opportunities`; the page also lists career guidance lessons (category *Careers in tax*). `/admin/opportunities/report` shows views, saves and application clicks by type, category and region, without names.
+- **Broadcasts** (`/admin/broadcasts`): write an announcement in Kiswahili (and optionally English), choose SMS and/or inbox and the audience (member category, region, institution codes, age). The screen shows how many members it will reach and the SMS count. A second officer approves it and sends it now or at a set time. Members who switched off announcements are skipped.
+- **Automatic reminders** (`/admin/reminders`): before an event (registered members), before a saved opportunity closes, and before a quiz closes (members with an unfinished attempt). Each can be turned off and its timing changed; each member gets each reminder once.
+- **Feedback** (`/app/feedback`): members send suggestions, problems or concerns and get a reference such as `FB-2026-00001`, follow its status and read the response. Officers classify, prioritise, assign, keep internal notes, respond and close at `/admin/feedback`. **Safety concerns** are marked high priority and only officers with *Handle Safeguarding Concerns* can see them.
+- **Starter content from tra.go.tz**: `TraLearningSeeder` adds 8 lessons (with a 5-question quiz each) and 3 career guides, in Kiswahili and English, plus two modules. Each lesson links to the TRA pages it is based on. Members see lessons and quizzes in their own language first and can switch to all languages.
+- The scheduler also publishes scheduled events, opportunities and broadcasts, closes opportunities at their deadline and sends reminders, so keep `php artisan schedule:work` (or the cron entry) running.
+
+**After pulling Release 3**
+
+```bash
+composer install
+php artisan migrate
+php artisan db:seed --class=ModuleSeeder          # Events, Opportunities, Broadcast and Feedback permissions
+php artisan db:seed --class=SuperAdminRoleSeeder
+php artisan db:seed --class=PatronRoleSeeder      # patrons can check members in; coordinators manage events
+php artisan db:seed --class=BadgeSeeder           # "Event goer" badge
+php artisan db:seed --class=TraLearningSeeder     # bilingual lessons and quizzes from tra.go.tz
+```
+
 ## Speed
 
 The app itself answers most pages in 15–40 ms with under 15 database queries. If it feels slow locally, it is almost always the local PHP setup:

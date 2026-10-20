@@ -37,7 +37,7 @@ class Builder extends Component
 
     public string $mode = Quiz::SCORED;
 
-    public string $language = '';
+    public ?string $language = '';
 
     public int $pass_mark = 50;
 

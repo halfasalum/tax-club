@@ -27,7 +27,7 @@ class TraLearningSeederTest extends TestCase
         $this->assertSame(16, Quiz::open()->count());
         $this->assertSame(4, LearningModule::published()->count());
 
-        Content::all()->each(fn (Content $lesson) => $this->assertStringContainsString('Source', $lesson->body_markdown, $lesson->title.' has no source line'));
+        Content::all()->each(fn (Content $lesson) => $this->assertMatchesRegularExpression('/(Source|Chanzo):/', $lesson->body_markdown, $lesson->title.' has no source line'));
         $this->assertSame(0, Content::where('body_markdown', 'like', '%](http%')->where('body_markdown', 'not like', '%tra.go.tz%')->count());
 
         Quiz::with('questions.answers')->get()->each(function (Quiz $quiz) {

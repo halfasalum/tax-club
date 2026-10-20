@@ -142,3 +142,19 @@ Legend: **M** member app, **A** admin portal, **P** public (no auth). The SRS ID
 
 ### Proposed M13 Reporting
 `GET /admin/reports/{membership|learning|quiz|events|opportunities|notifications|safety}` with `from, to, region, institution, category` filters, CSV/XLSX export (async job + download link), scoped by the caller's region and institution.
+
+## 3. Implemented in Release 3 (`/api/v1`, Sanctum token)
+
+The catalogue above is the target design. Release 3 ships these endpoints; officer actions such as review, publishing and broadcasts are done in the Administration Portal.
+
+| Method & path | Who | SRS |
+|---|---|---|
+| `GET /events?type=&search=` (upcoming events for the member's audience) · `GET /events/mine` · `GET /events/{id or slug}` (with updates, materials and the meeting link once registered) | M | EVT-REQ03/04/07 |
+| `POST /events/{id}/register {answer?}` (returns `registered` or `waitlisted` with position) · `DELETE /events/{id}/register` | M | EVT-REQ04/05 |
+| `POST /events/{id}/check-in {card, walk_in?}` (`card` = scanned QR text or membership number; returns `checked_in`, `already`, `not_registered`, `not_valid` or `not_found`) | A (`check_in_attendees`) | EVT-REQ06 |
+| `GET /events/{id}/attendees?status=` · `GET /events/{id}/summary` | A (`view_event_attendees`) | EVT-REQ08 |
+| `POST /events` · `PUT /events/{id}` (drafts and changes; `submit=1` sends for approval) · `DELETE /events/{id}` (unpublished drafts only) | A | EVT-REQ01 |
+| `GET /opportunities?search=&type=&closing_soon=1&saved=1` · `GET /opportunities/{id or slug}` · `GET /opportunities/career-resources` | M | OPP-REQ04/07 |
+| `POST /opportunities/{id}/save` · `DELETE /opportunities/{id}/save` · `POST /opportunities/{id}/apply` (counts the click, returns where to apply) | M | OPP-REQ06/08 |
+| `POST /opportunities` · `PUT /opportunities/{id}` · `DELETE /opportunities/{id}` (unpublished drafts only) | A | OPP-REQ01 |
+| `GET /feedback` · `POST /feedback {category, subject, message, related_type?, related_id?}` · `GET /feedback/{reference}` · `POST /feedback/{reference}/messages {message}` | M | FBK-REQ01/04 |

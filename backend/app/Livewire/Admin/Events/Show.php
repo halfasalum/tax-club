@@ -42,7 +42,7 @@ class Show extends Component
     public string $closingNotes = '';
 
     #[Url(as: 'list')]
-    public string $listView = 'registered';
+    public string $listView = 'all';
 
     public string $search = '';
 

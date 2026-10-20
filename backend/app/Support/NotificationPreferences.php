@@ -25,6 +25,30 @@ final class NotificationPreferences
                 'sms' => false,
                 'inbox' => true,
             ],
+            'events' => [
+                'label' => __('Events'),
+                'description' => __('Registration confirmations, reminders, updates and materials for events you joined.'),
+                'sms' => true,
+                'inbox' => true,
+            ],
+            'opportunities' => [
+                'label' => __('Opportunities'),
+                'description' => __('Reminders before saved opportunities close.'),
+                'sms' => false,
+                'inbox' => true,
+            ],
+            'learning' => [
+                'label' => __('Quiz reminders'),
+                'description' => __('When an open quiz you have not finished is about to close.'),
+                'sms' => false,
+                'inbox' => true,
+            ],
+            'announcements' => [
+                'label' => __('Announcements'),
+                'description' => __('News and announcements from TRA Tax Club.'),
+                'sms' => true,
+                'inbox' => true,
+            ],
         ];
     }
 

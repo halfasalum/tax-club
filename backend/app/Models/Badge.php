@@ -14,7 +14,7 @@ class Badge extends Model
 {
     use Auditable;
 
-    public const CRITERIA = ['lessons_completed', 'modules_completed', 'quizzes_passed', 'perfect_scores', 'points_total'];
+    public const CRITERIA = ['lessons_completed', 'modules_completed', 'quizzes_passed', 'perfect_scores', 'points_total', 'events_attended'];
 
     protected $fillable = ['key', 'icon', 'name_sw', 'name_en', 'description_sw', 'description_en', 'criteria', 'threshold', 'is_active', 'sort_order'];
 

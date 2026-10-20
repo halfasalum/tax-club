@@ -7,6 +7,12 @@ use App\Http\Controllers\Web\SitemapController;
 use App\Livewire\Admin\AuditLog as AdminAuditLog;
 use App\Livewire\Admin\Coordinators as AdminCoordinators;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
+use App\Livewire\Admin\Events\CheckIn as EventCheckIn;
+use App\Livewire\Admin\Events\Form as EventForm;
+use App\Livewire\Admin\Events\Index as EventIndex;
+use App\Livewire\Admin\Events\Show as EventShow;
+use App\Livewire\Admin\Feedback\Index as FeedbackIndex;
+use App\Livewire\Admin\Feedback\Show as FeedbackShow;
 use App\Livewire\Admin\GamificationSettings as AdminGamification;
 use App\Livewire\Admin\Institutions\Form as InstitutionForm;
 use App\Livewire\Admin\Institutions\Import as InstitutionImport;
@@ -31,6 +37,10 @@ use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
 use App\Livewire\Member\Card as MemberCard;
 use App\Livewire\Member\Dashboard as MemberDashboard;
+use App\Livewire\Member\Events\Index as MemberEvents;
+use App\Livewire\Member\Events\Show as MemberEvent;
+use App\Livewire\Member\Feedback\Index as MemberFeedback;
+use App\Livewire\Member\Feedback\Show as MemberFeedbackCase;
 use App\Livewire\Member\Inbox as MemberInbox;
 use App\Livewire\Member\Leaderboard as MemberLeaderboard;
 use App\Livewire\Member\Learn\Index as MemberLearn;
@@ -42,8 +52,12 @@ use App\Livewire\Member\Quizzes\Result as MemberQuizResult;
 use App\Livewire\Member\Quizzes\Show as MemberQuiz;
 use App\Livewire\Member\Quizzes\Take as MemberQuizTake;
 use App\Livewire\Membership\Verify as VerifyMembership;
+use App\Models\Event;
+use App\Models\EventUpdate;
 use App\Models\User;
 use App\Support\Audit;
+use App\Support\EventLabels;
+use App\Support\EventManager;
 use App\Support\MemberProfile;
 use App\Support\MembershipStatistics;
 use Illuminate\Http\Request;
@@ -134,6 +148,22 @@ Route::middleware(['auth', 'active'])->group(function (): void {
     Route::get('/app/quizzes/{quiz}', MemberQuiz::class)->name('member.quizzes.show');
     Route::get('/app/learn/modules/{module:slug}', MemberModule::class)->name('member.learn.module');
     Route::get('/app/learn/{lesson:slug}', MemberLesson::class)->name('member.learn.lesson');
+    Route::get('/app/events', MemberEvents::class)->name('member.events');
+    Route::get('/app/events/{slug}', MemberEvent::class)->name('member.events.show');
+    Route::get('/app/feedback', MemberFeedback::class)->name('member.feedback');
+    Route::get('/app/feedback/{reference}', MemberFeedbackCase::class)->name('member.feedback.show');
+
+    // Event materials are private: staff, and members who may see the item (EVT-REQ07).
+    Route::get('/app/events/{event}/materials/{update}', function (Request $request, Event $event, EventUpdate $update) {
+        abort_unless($update->event_id === $event->event_id && $update->file_path, 404);
+        $user = $request->user();
+        $allowed = $user->user_type === 'staff'
+            ? $user->canAccessAdmin()
+            : $event->isVisibleTo($user) && EventManager::updatesFor($event, $user)->contains('id', $update->id);
+        abort_unless($allowed, 404);
+
+        return Storage::disk(EventUpdate::DISK)->download($update->file_path, $update->file_name);
+    })->name('events.material');
 
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function (): void {
         Route::get('/', AdminDashboard::class)->name('dashboard');
@@ -181,6 +211,39 @@ Route::middleware(['auth', 'active'])->group(function (): void {
             Route::get('/{quiz}', QuizShow::class)->middleware($quizStaff)->name('show');
             Route::get('/{quiz}/edit', QuizBuilder::class)->middleware('permission:create_quiz,edit_quiz')->name('edit');
         });
+
+        Route::prefix('events')->name('events.')->group(function (): void {
+            $organizers = 'permission:add_event,edit_event,review_event,publish_event,view_event_attendees,check_in_attendees';
+            Route::get('/', EventIndex::class)->middleware($organizers)->name('index');
+            Route::get('/new', EventForm::class)->middleware('permission:add_event')->name('create');
+            Route::get('/{event}', EventShow::class)->middleware($organizers)->name('show');
+            Route::get('/{event}/edit', EventForm::class)->middleware('permission:add_event,edit_event')->name('edit');
+            Route::get('/{event}/check-in', EventCheckIn::class)->middleware('permission:check_in_attendees')->name('check-in');
+            Route::get('/{event}/registrations.csv', function (Event $event) {
+                $statuses = EventLabels::registrationStatuses();
+                $methods = EventLabels::checkInMethods();
+                Audit::record('event.registrations_exported', $event);
+
+                return response()->streamDownload(function () use ($event, $statuses, $methods): void {
+                    $out = fopen('php://output', 'w');
+                    fwrite($out, "\xEF\xBB\xBF");
+                    fputcsv($out, [__('Name'), __('Membership no.'), __('Category'), __('Institution'), __('Region'), __('Status'), __('Registered'), __('Checked in'), __('Check-in method'), __('Walk-in'), __('Answer')]);
+                    foreach ($event->registrations()->with('user.institution')->orderBy('registered_at')->cursor() as $registration) {
+                        fputcsv($out, [
+                            $registration->user?->full_name, $registration->user?->membership_id, $registration->user?->user_type,
+                            $registration->user?->institution?->name, $registration->user?->institution?->region,
+                            $statuses[$registration->status] ?? $registration->status, $registration->registered_at?->format('Y-m-d H:i'),
+                            $registration->checked_in_at?->format('Y-m-d H:i'), $methods[$registration->check_in_method] ?? '',
+                            $registration->walk_in ? __('Yes') : '', $registration->answer,
+                        ]);
+                    }
+                    fclose($out);
+                }, $event->code.'-registrations.csv', ['Content-Type' => 'text/csv; charset=UTF-8']);
+            })->middleware('permission:view_event_attendees')->name('export');
+        });
+
+        Route::get('/feedback', FeedbackIndex::class)->middleware('permission:view_feedback')->name('feedback.index');
+        Route::get('/feedback/{feedback}', FeedbackShow::class)->middleware('permission:view_feedback')->name('feedback.show');
 
         Route::get('/gamification', AdminGamification::class)->middleware('permission:manage_gamification')->name('gamification');
         Route::get('/audit', AdminAuditLog::class)->middleware('permission:view_audit_log')->name('audit');

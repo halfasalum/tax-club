@@ -21,6 +21,7 @@ class BadgeSeeder extends Seeder
             ['quiz-champion', '🏆', 'Bingwa wa Maswali', 'Quiz champion', 'Faulu majaribio 10 tofauti.', 'Pass 10 different quizzes.', 'quizzes_passed', 10],
             ['perfect-score', '💯', 'Alama Kamili', 'Perfect score', 'Pata 100% kwenye jaribio.', 'Score 100% in a quiz.', 'perfect_scores', 1],
             ['century', '⭐', 'Pointi 100', '100 points', 'Fikisha pointi 100.', 'Reach 100 points.', 'points_total', 100],
+            ['first-event', '🎟️', 'Mshiriki', 'Event goer', 'Hudhuria tukio lako la kwanza la Tax Club.', 'Attend your first Tax Club event.', 'events_attended', 1],
             ['tax-star', '🌟', 'Nyota wa Kodi', 'Tax star', 'Fikisha pointi 500.', 'Reach 500 points.', 'points_total', 500],
         ];
 

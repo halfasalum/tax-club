@@ -25,6 +25,7 @@ use App\Http\Controllers\API\V1\AuthController;
 use App\Http\Controllers\API\V1\ContentController;
 use App\Http\Controllers\API\V1\DashboardController;
 use App\Http\Controllers\API\V1\EventController;
+use App\Http\Controllers\API\V1\FeedbackController;
 use App\Http\Controllers\API\V1\ForumPostController;
 use App\Http\Controllers\API\V1\InstitutionController;
 use App\Http\Controllers\API\V1\LearningController;
@@ -263,6 +264,14 @@ Route::middleware(['auth:sanctum', 'active'])->group(function () {
             ->middleware('permission:delete_opportunity');
     });
 
+    // ── Feedback (FBK-REQ01, FBK-REQ04) ──────────────────────
+    Route::prefix('feedback')->group(function () {
+        Route::get('/', [FeedbackController::class, 'index']);
+        Route::post('/', [FeedbackController::class, 'store']);
+        Route::get('/{reference}', [FeedbackController::class, 'show']);
+        Route::post('/{reference}/messages', [FeedbackController::class, 'message']);
+    });
+
     // ── Forum ─────────────────────────────────────────────────
     Route::prefix('forum')->group(function () {
         Route::get('/', [ForumPostController::class, 'index']);   // all auth users
@@ -280,7 +289,12 @@ Route::middleware(['auth:sanctum', 'active'])->group(function () {
     // ── Events ────────────────────────────────────────────────
     Route::prefix('events')->group(function () {
         Route::get('/', [EventController::class, 'index']);   // all auth users
+        Route::get('/mine', [EventController::class, 'mine']);
         Route::get('/{id}', [EventController::class, 'show']);    // all auth users
+        Route::get('/{id}/summary', [EventController::class, 'summary'])
+            ->middleware('permission:view_event_attendees');
+        Route::post('/{id}/check-in', [EventController::class, 'checkIn'])
+            ->middleware(['permission:check_in_attendees', 'throttle:120,1']);
 
         Route::post('/', [EventController::class, 'store'])
             ->middleware('permission:add_event');

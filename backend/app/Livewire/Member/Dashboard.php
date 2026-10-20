@@ -17,7 +17,7 @@ class Dashboard extends Component
         return view('livewire.member.dashboard', [
             'member' => $member,
             'lessons' => Content::live()->availableTo($member)->latest('published_at')->limit(4)->get(),
-            'events' => Event::upcoming()->orderBy('starts_at')->limit(3)->get(),
+            'events' => Event::upcoming()->orderBy('starts_at')->limit(20)->get()->filter(fn (Event $event) => $event->isVisibleTo($member))->take(3),
             'attempts' => $member->quizAttempts()->count(),
         ])->title(__('My Tax Club'));
     }

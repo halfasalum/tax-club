@@ -7,13 +7,23 @@ use App\Notifications\AccountReactivated;
 use App\Notifications\AccountSuspended;
 use App\Notifications\AlumniStatusGranted;
 use App\Notifications\BadgeEarned;
+use App\Notifications\BroadcastMessage;
 use App\Notifications\ContentReviewed;
 use App\Notifications\CoordinatorAssigned;
+use App\Notifications\EventChanged;
+use App\Notifications\EventPlaceOffered;
+use App\Notifications\EventRegistrationConfirmed;
+use App\Notifications\EventReminder;
+use App\Notifications\EventUpdatePosted;
+use App\Notifications\FeedbackAssigned;
+use App\Notifications\FeedbackUpdated;
+use App\Notifications\OpportunityDeadlineReminder;
 use App\Notifications\PasswordChanged;
 use App\Notifications\PasswordResetCode;
 use App\Notifications\PatronAssigned;
 use App\Notifications\PhoneChangeCode;
 use App\Notifications\PointsAdjusted;
+use App\Notifications\QuizClosingReminder;
 use App\Notifications\RegistrationApproved;
 use App\Notifications\RegistrationReceived;
 use App\Notifications\RegistrationRejected;
@@ -40,6 +50,16 @@ final class NotificationCatalogue
         BadgeEarned::class,
         PointsAdjusted::class,
         ContentReviewed::class,
+        BroadcastMessage::class,
+        EventRegistrationConfirmed::class,
+        EventPlaceOffered::class,
+        EventChanged::class,
+        EventUpdatePosted::class,
+        EventReminder::class,
+        OpportunityDeadlineReminder::class,
+        QuizClosingReminder::class,
+        FeedbackUpdated::class,
+        FeedbackAssigned::class,
         PasswordChanged::class,
         PasswordResetCode::class,
         StaffLoginCode::class,
@@ -62,6 +82,13 @@ final class NotificationCatalogue
         'note' => '',
         'badge' => '🏅 Quiz champion',
         'points' => '20',
+        'when' => 'Sat 14 Nov, 09:00',
+        'place' => 'Mwanza Secondary School hall',
+        'status' => 'Your place is confirmed',
+        'change' => 'was postponed',
+        'update' => 'Programme and venue map',
+        'date' => '30 Nov 2026',
+        'message' => 'Tax Club week starts on Monday. Visit your club patron for details.',
     ];
 
     /**

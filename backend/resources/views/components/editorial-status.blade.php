@@ -12,6 +12,13 @@
         'unpublished' => ['bg-mist text-slate', __('Unpublished')],
         'archived' => ['bg-mist text-slate', __('Archived')],
         'closed' => ['bg-mist text-slate', __('Closed')],
+        'postponed' => ['bg-[#fff7ed] text-[#9a3412]', __('Postponed')],
+        'cancelled' => ['bg-[#fef3f2] text-danger', __('Cancelled')],
+        'happening' => ['bg-savanna text-white', __('Happening now')],
+        'ended' => ['bg-ink text-white', __('Ended')],
+        'withdrawn' => ['bg-[#fef3f2] text-danger', __('Withdrawn')],
+        'sending' => ['bg-ink text-brand', __('Sending')],
+        'sent' => ['bg-savanna text-white', __('Sent')],
     ];
     [$classes, $label] = $styles[$status] ?? ['bg-mist', $status];
 @endphp

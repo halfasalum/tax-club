@@ -21,7 +21,7 @@ class PatronRoleSeeder extends Seeder
         'patron' => [
             'name' => 'Patron',
             'description' => 'Tax Club patron: confirms registrations and looks after members of their own institution.',
-            'controls' => ['view_registrations', 'verify_registration', 'view_members', 'manage_alumni'],
+            'controls' => ['view_registrations', 'verify_registration', 'view_members', 'manage_alumni', 'check_in_attendees'],
         ],
         'coordinator' => [
             'name' => 'Coordinator',
@@ -29,6 +29,7 @@ class PatronRoleSeeder extends Seeder
             'controls' => [
                 'view_registrations', 'verify_registration', 'view_institutions', 'view_members',
                 'change_member_status', 'manage_alumni', 'verify_membership', 'view_statistics',
+                'add_event', 'edit_event', 'view_event_attendees', 'check_in_attendees', 'view_feedback',
             ],
         ],
     ];

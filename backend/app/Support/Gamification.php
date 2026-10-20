@@ -5,6 +5,7 @@ namespace App\Support;
 use App\Models\AppSetting;
 use App\Models\Badge;
 use App\Models\Content;
+use App\Models\Event;
 use App\Models\LearningModule;
 use App\Models\PointsEntry;
 use App\Models\QuizAttempt;
@@ -29,6 +30,7 @@ final class Gamification
         'quiz_correct_answer' => 1,
         'lesson_completed' => 2,
         'module_completed' => 10,
+        'event_attended' => 15,
     ];
 
     public const DEFAULT_DAILY_CAP = 50;
@@ -58,6 +60,39 @@ final class Gamification
     public static function moduleCompleted(User $member, LearningModule $module): void
     {
         self::awardOnce($member, 'module_completed', self::rule('module_completed'), 'module', (string) $module->id, $module->title);
+    }
+
+    /**
+     * Points for attending an event, recorded at check-in (EVT-REQ06).
+     */
+    public static function eventAttended(User $member, Event $event): void
+    {
+        self::awardOnce($member, 'event_attended', self::rule('event_attended'), 'event', $event->event_id, $event->title);
+    }
+
+    /**
+     * Take back automatic points when the action behind them is corrected,
+     * e.g. attendance recorded by mistake.
+     */
+    public static function revoke(User $member, string $reason, string $sourceType, string $sourceId, string $description): void
+    {
+        $points = (int) PointsEntry::where('user_id', $member->user_id)->where('reason', $reason)->where('source_type', $sourceType)->where('source_id', $sourceId)->sum('points');
+
+        if ($points <= 0) {
+            return;
+        }
+
+        DB::transaction(function () use ($member, $reason, $points, $sourceType, $sourceId, $description) {
+            PointsEntry::create([
+                'user_id' => $member->user_id,
+                'points' => -$points,
+                'reason' => $reason,
+                'source_type' => $sourceType,
+                'source_id' => $sourceId,
+                'description' => $description,
+            ]);
+            User::whereKey($member->user_id)->decrement('total_points', min($points, (int) $member->total_points));
+        });
     }
 
     /**
@@ -175,6 +210,7 @@ final class Gamification
             'quizzes_passed' => QuizAttempt::where('user_id', $member->user_id)->where('passed', true)->whereIn('quiz_id', $scored)->distinct('quiz_id')->count('quiz_id'),
             'perfect_scores' => QuizAttempt::where('user_id', $member->user_id)->where('percent', '>=', 100)->whereIn('quiz_id', $scored)->distinct('quiz_id')->count('quiz_id'),
             'points_total' => (int) User::whereKey($member->user_id)->value('total_points'),
+            'events_attended' => DB::table('event_registrations')->where('user_id', $member->user_id)->where('status', 'attended')->count(),
         ];
     }
 

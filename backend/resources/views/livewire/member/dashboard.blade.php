@@ -49,14 +49,14 @@
             <section aria-labelledby="events-heading">
                 <div class="flex flex-wrap items-end justify-between gap-3">
                     <h2 id="events-heading" class="text-2xl font-black tracking-tight">{{ __('Upcoming events') }}</h2>
-                    <a href="{{ Locales::route('events.index') }}" class="link">{{ __('All events') }}</a>
+                    <a wire:navigate href="{{ route('member.events') }}" class="link">{{ __('All events') }}</a>
                 </div>
                 @if ($events->isEmpty())
                     <p class="mt-4 rounded-2xl bg-white p-6 text-lg text-slate">{{ __('No events are scheduled yet. We will notify you when one is announced.') }}</p>
                 @else
                     <div class="mt-4 grid gap-3">
                         @foreach ($events as $event)
-                            @include('events.partials.row', ['event' => $event])
+                            @include('events.partials.row', ['event' => $event, 'memberLink' => true])
                         @endforeach
                     </div>
                 @endif

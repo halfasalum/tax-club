@@ -2,10 +2,11 @@
     $ruleLabels = [
         'quiz_passed' => __('Passing a scored quiz'),
         'quiz_correct_answer' => __('Each correct answer (best attempt only)'),
+        'event_attended' => __('Attending an event (recorded at check-in)'),
         'lesson_completed' => __('Completing a lesson'),
         'module_completed' => __('Completing a module'),
     ];
-    $criteria = ['lessons_completed' => __('lessons completed'), 'modules_completed' => __('modules completed'), 'quizzes_passed' => __('quizzes passed'), 'perfect_scores' => __('perfect scores'), 'points_total' => __('points')];
+    $criteria = ['lessons_completed' => __('lessons completed'), 'modules_completed' => __('modules completed'), 'quizzes_passed' => __('quizzes passed'), 'perfect_scores' => __('perfect scores'), 'points_total' => __('points'), 'events_attended' => __('events attended')];
 @endphp
 <div class="mx-auto max-w-5xl">
     <h1 class="text-3xl font-black tracking-tight sm:text-4xl">{{ __('Points and badges') }}</h1>

@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 final class LearningSearch
 {
     /**
-     * @param  array{search?: ?string, category?: int|string|null, type?: ?string, level?: ?string}  $filters
+     * @param  array{search?: ?string, category?: int|string|null, type?: ?string, level?: ?string, language?: ?string}  $filters
      */
     public static function query(User $member, array $filters = []): Builder
     {
@@ -26,7 +26,8 @@ final class LearningSearch
             ->availableTo($member)
             ->when(filled($filters['category'] ?? null), fn (Builder $query) => $query->where('category_id', $filters['category']))
             ->when(in_array($filters['type'] ?? null, Content::TYPES, true), fn (Builder $query) => $query->where('content_type', $filters['type']))
-            ->when(in_array($filters['level'] ?? null, Content::LEVELS, true), fn (Builder $query) => $query->where('level', $filters['level']));
+            ->when(in_array($filters['level'] ?? null, Content::LEVELS, true), fn (Builder $query) => $query->where('level', $filters['level']))
+            ->when(in_array($filters['language'] ?? null, Content::LANGUAGES, true), fn (Builder $query) => $query->where(fn (Builder $query) => $query->where('language', $filters['language'])->orWhereNull('language')));
 
         foreach ($words as $word) {
             $like = '%'.addcslashes($word, '%_\\').'%';

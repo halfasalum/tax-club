@@ -66,6 +66,14 @@
             <h3 class="pt-2 text-lg font-black">{{ __('Rules') }}</h3>
             <div class="grid gap-4 sm:grid-cols-3">
                 <div>
+                    <label for="language" class="block font-extrabold">{{ __('Language') }}</label>
+                    <select wire:model="language" id="language" class="field">
+                        <option value="">{{ __('Any language') }}</option>
+                        <option value="sw">Kiswahili</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+                <div>
                     <label for="mode" class="block font-extrabold">{{ __('Kind of quiz') }}</label>
                     <select wire:model="mode" id="mode" class="field">
                         <option value="scored">{{ __('Scored (earns points)') }}</option>

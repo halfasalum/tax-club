@@ -41,6 +41,7 @@ class DatabaseSeeder extends Seeder
             ContentCategorySeeder::class,
             BadgeSeeder::class,
             SuperUserSeeder::class,
+            TraLearningSeeder::class,
         ]);
 
         $this->command->info('');

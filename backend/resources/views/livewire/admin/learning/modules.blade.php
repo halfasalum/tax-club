@@ -43,6 +43,14 @@
                     </select>
                 </div>
                 <div>
+                    <label for="language" class="block font-extrabold">{{ __('Language') }}</label>
+                    <select wire:model="language" id="language" class="field">
+                        <option value="">{{ __('Any language') }}</option>
+                        <option value="sw">Kiswahili</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+                <div>
                     <label for="level" class="block font-extrabold">{{ __('Level') }}</label>
                     <select wire:model="level" id="level" class="field">
                         @foreach ($levels as $value => $label)

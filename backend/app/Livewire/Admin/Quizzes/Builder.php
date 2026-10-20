@@ -37,6 +37,8 @@ class Builder extends Component
 
     public string $mode = Quiz::SCORED;
 
+    public string $language = '';
+
     public int $pass_mark = 50;
 
     public ?int $time_limit_minutes = null;
@@ -67,7 +69,7 @@ class Builder extends Component
 
         if ($quiz?->exists) {
             $this->quiz = $quiz;
-            $this->fill($quiz->only(['title', 'mode', 'pass_mark', 'time_limit_minutes', 'max_attempts', 'retained_result', 'show_answers', 'shuffle_questions']));
+            $this->fill($quiz->only(['title', 'mode', 'language', 'pass_mark', 'time_limit_minutes', 'max_attempts', 'retained_result', 'show_answers', 'shuffle_questions']));
             $this->description = (string) $quiz->description;
             $this->instructions = (string) $quiz->instructions;
             $this->category_id = $quiz->category_id ? (string) $quiz->category_id : null;
@@ -91,6 +93,7 @@ class Builder extends Component
             'audience' => 'array',
             'audience.*' => 'in:'.implode(',', Content::AUDIENCES),
             'mode' => 'required|in:scored,practice',
+            'language' => 'nullable|in:sw,en',
             'pass_mark' => 'required|integer|min:1|max:100',
             'time_limit_minutes' => 'nullable|integer|min:1|max:240',
             'max_attempts' => 'nullable|integer|min:1|max:20',
@@ -104,6 +107,7 @@ class Builder extends Component
         $data['instructions'] = $data['instructions'] ?: null;
         $data['category_id'] = $data['category_id'] ?: null;
         $data['content_id'] = $data['content_id'] ?: null;
+        $data['language'] = $data['language'] ?: null;
 
         if ($this->quiz) {
             $this->quiz->update($data);

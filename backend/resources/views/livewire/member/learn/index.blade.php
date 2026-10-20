@@ -43,7 +43,7 @@
 
     <section class="mt-10" aria-labelledby="lessons-heading">
         <h2 id="lessons-heading" class="text-2xl font-black">{{ __('All lessons') }}</h2>
-        <div class="mt-4 grid gap-3 md:grid-cols-[2fr_1fr_1fr_1fr]">
+        <div class="mt-4 grid gap-3 md:grid-cols-[2fr_1fr_1fr_1fr_1fr]">
             <input wire:model.live.debounce.300ms="search" type="search" placeholder="{{ __('Search lessons, e.g. VAT or receipts') }}" class="field mt-0" aria-label="{{ __('Search lessons') }}">
             <select wire:model.live="category" class="field mt-0" aria-label="{{ __('Category') }}">
                 <option value="">{{ __('All categories') }}</option>
@@ -63,6 +63,7 @@
                     <option value="{{ $value }}">{{ $label }}</option>
                 @endforeach
             </select>
+            <x-language-filter />
         </div>
 
         <ul class="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3" wire:loading.class="opacity-60">

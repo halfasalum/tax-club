@@ -81,6 +81,7 @@ class Quiz extends Model
         'opens_at',
         'closes_at',
         'created_by',
+        'language',
     ];
 
     protected $casts = [

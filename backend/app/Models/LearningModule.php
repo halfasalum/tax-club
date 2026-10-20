@@ -23,7 +23,7 @@ class LearningModule extends Model
 
     public const ARCHIVED = 'archived';
 
-    protected $fillable = ['slug', 'title', 'summary', 'category_id', 'level', 'audience', 'status', 'sort_order', 'created_by', 'published_at'];
+    protected $fillable = ['slug', 'title', 'summary', 'category_id', 'level', 'audience', 'status', 'sort_order', 'created_by', 'published_at', 'language'];
 
     protected $casts = [
         'audience' => 'array',

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Member\Learn;
 
+use App\Models\Content;
 use App\Models\ContentCategory;
 use App\Models\LearningModule;
 use App\Models\UserProgress;
@@ -34,6 +35,16 @@ class Index extends Component
     #[Url]
     public string $level = '';
 
+    /** Lesson language; defaults to the language the member uses the site in. */
+    #[Url(as: 'lang_filter')]
+    public ?string $language = null;
+
+    public function mount(): void
+    {
+        // Until something is published in the member's language, show everything.
+        $this->language ??= Content::live()->where('language', app()->getLocale())->exists() ? app()->getLocale() : 'all';
+    }
+
     public function updated(): void
     {
         $this->resetPage();
@@ -53,6 +64,7 @@ class Index extends Component
             'category' => $this->category,
             'type' => $this->type,
             'level' => $this->level,
+            'language' => $this->language,
         ])->with('category')->paginate(12);
     }
 
@@ -60,7 +72,9 @@ class Index extends Component
     {
         $member = auth()->user();
         $progress = LearningProgress::forMember($member);
-        $modules = LearningModule::published()->availableTo($member)->with(['lessons', 'category'])->orderBy('sort_order')->get();
+        $modules = LearningModule::published()->availableTo($member)
+            ->when(in_array($this->language, ['sw', 'en'], true), fn ($query) => $query->where(fn ($query) => $query->where('language', $this->language)->orWhereNull('language')))
+            ->with(['lessons', 'category'])->orderBy('sort_order')->get();
 
         return view('livewire.member.learn.index', [
             'progress' => $progress,

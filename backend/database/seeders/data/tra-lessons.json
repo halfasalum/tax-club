@@ -1,0 +1,2221 @@
+{
+  "lessons": [
+    {
+      "key": "what-is-tra",
+      "category": "taxes-and-you",
+      "level": "beginner",
+      "estimated_minutes": 6,
+      "kind": "lesson",
+      "sources": [
+        "https://www.tra.go.tz/page/history",
+        "https://www.tra.go.tz/sw/page/history",
+        "https://www.tra.go.tz/faq",
+        "https://www.tra.go.tz/tax-club",
+        "https://www.tra.go.tz/sw/tax-club",
+        "https://www.tra.go.tz/"
+      ],
+      "en": {
+        "title": "What TRA Is and Why We Pay Taxes",
+        "summary": "Meet the Tanzania Revenue Authority: when it was created, what it does, the services it offers, and why paying taxes matters for every Tanzanian, including students.",
+        "objectives": [
+          "Explain when and how the Tanzania Revenue Authority (TRA) was established",
+          "Describe TRA's main job and list some of the services it provides",
+          "Explain why paying taxes matters and how Tax Clubs help students take part"
+        ],
+        "keywords": "TRA, Tanzania Revenue Authority, taxes, revenue, Ministry of Finance, tax club, why pay tax",
+        "body_markdown": "## Meet the Tanzania Revenue Authority\n\nThe Tanzania Revenue Authority (TRA) is the government institution that collects taxes in Tanzania. It was established by Act of Parliament No. 11 of 1995 and started its operations on **1st July 1996**.\n\nTRA is an autonomous government institution under the **Ministry of Finance**. Its main job is to **assess, collect and account for** revenue that comes from taxes. While doing this work, TRA is regulated by law and is responsible for administering the various taxes of the Central Government **impartially**, which means fairly and without favouring anyone.\n\n## Vision, mission and core values\n\nTRA describes where it is going and how it works like this:\n\n- **Vision:** A customer-centric and digital-driven revenue administration.\n- **Mission:** To mobilise domestic revenue efficiently and fairly for national prosperity.\n- **Core values:** Professionalism, Accountability, Integrity, Digital Transformation and Excellence in Service.\n\n## What services does TRA provide?\n\nTRA does much more than receive payments. According to TRA, its services include:\n\n- Registration of taxpayers\n- Tax assessment\n- Tax audits and debt management\n- Tax dispute resolutions\n- Customs clearance and trade facilitation\n- Permits and licenses\n- Tax incentives and exemptions\n- Tax refunds and payments\n- Training and taxpayers' education\n- Provision of trade statistics\n\nTRA offices are located nationwide, in every region, district, business centre and official border post. Offices are open Monday to Friday from 0800 to 1700 hours, while customs offices work 24 hours.\n\n## Why do we pay taxes?\n\nTaxes are contributions that people and businesses make so that the government can serve the whole nation. TRA's mission links tax collection to **national prosperity**. The TRA Tax Club page reminds students that one of the benefits of tax is to **finance the education sector**, the same sector that supports the schools, colleges and universities you attend.\n\nTRA's motto puts it simply: **\"Together We Build Our Nation.\"** When everyone pays their fair share, the burden is shared and the country can grow.\n\n## Where students fit in\n\nTRA uses Tax Clubs as one of its key strategies. In secondary schools they are called **Tax Clubs**, while in universities and colleges they are called **Tax Associations**. Their main objective is to foster a culture of **voluntary tax compliance**. Tax Clubs aim to:\n\n- Prepare future taxpayers and future tax experts\n- Increase tax knowledge among young people\n- Prepare young people to meet their tax obligations when they start earning income\n- Build the culture of demanding and issuing a receipt whenever goods or services are bought or sold\n\nYou can start today. TRA's message is: **\"Whenever you sell, issue receipt. Whenever you buy, demand receipt.\"**\n\n## Key points\n\n- TRA was established by Act No. 11 of 1995 and started work on 1st July 1996.\n- TRA is an autonomous institution under the Ministry of Finance.\n- TRA assesses, collects and accounts for tax revenue.\n- One benefit of tax is financing the education sector.\n- Tax Clubs (schools) and Tax Associations (colleges and universities) build a culture of voluntary tax compliance.\n\nSource: [About TRA](https://www.tra.go.tz/page/history); [Frequently Asked Questions](https://www.tra.go.tz/faq); [TRA Tax Club Corner](https://www.tra.go.tz/tax-club); [Tanzania Revenue Authority home page](https://www.tra.go.tz/)"
+      },
+      "sw": {
+        "title": "TRA ni Nini na Kwa Nini Tunalipa Kodi",
+        "summary": "Ifahamu Mamlaka ya Mapato Tanzania: ilianzishwa lini, inafanya kazi gani, inatoa huduma zipi, na kwa nini kulipa kodi ni muhimu kwa kila Mtanzania, wakiwemo wanafunzi.",
+        "objectives": [
+          "Kueleza lini na kwa namna gani Mamlaka ya Mapato Tanzania (TRA) ilianzishwa",
+          "Kueleza kazi kuu ya TRA na kutaja baadhi ya huduma inazotoa",
+          "Kueleza umuhimu wa kulipa kodi na jinsi Klabu za Kodi zinavyowashirikisha wanafunzi"
+        ],
+        "keywords": "TRA, Mamlaka ya Mapato Tanzania, kodi, mapato, Wizara ya Fedha, klabu ya kodi, umuhimu wa kodi",
+        "body_markdown": "## Ifahamu Mamlaka ya Mapato Tanzania\n\nMamlaka ya Mapato Tanzania (TRA) ni taasisi ya Serikali inayokusanya kodi hapa Tanzania. Ilianzishwa kwa Sheria ya Bunge Na. 11 ya mwaka 1995 na ilianza kufanya kazi tarehe **1 Julai 1996**.\n\nTRA ni taasisi ya Serikali inayojitegemea iliyo chini ya **Wizara ya Fedha**. Jukumu lake kuu ni **kukadiria, kukusanya na kuhasibu** mapato yatokanayo na kodi. Katika kutekeleza majukumu yake, TRA inaongozwa na sheria na ina jukumu la kusimamia kwa **uadilifu** kodi mbalimbali za Serikali Kuu, yaani kwa haki bila kumpendelea mtu yeyote.\n\n## Dira, dhamira na maadili ya msingi\n\nTRA inaeleza inakoelekea na jinsi inavyofanya kazi hivi:\n\n- **Dira:** Utawala wa mapato unaomlenga mlipakodi na unaoendeshwa na teknolojia ya kidijitali.\n- **Dhamira:** Kukusanya mapato ya ndani kwa ufanisi na kwa haki kwa ajili ya ustawi wa taifa.\n- **Maadili ya msingi:** Weledi, Uwajibikaji, Uadilifu, Mabadiliko ya Kidijitali na Ubora katika Huduma.\n\n## TRA inatoa huduma gani?\n\nTRA haipokei malipo tu. Kwa mujibu wa TRA, huduma zake ni pamoja na:\n\n- Usajili wa walipakodi\n- Makadirio ya kodi\n- Ukaguzi wa kodi na usimamizi wa madeni ya kodi\n- Usuluhishi wa migogoro ya kikodi\n- Uondoshaji wa bidhaa forodhani na kurahisisha biashara za kimataifa\n- Vibali na leseni\n- Vivutio vya kodi na misamaha ya kodi\n- Marejesho ya kodi na malipo\n- Mafunzo na elimu kwa mlipakodi\n- Utoaji wa takwimu za kibiashara\n\nOfisi za TRA zipo nchi nzima, katika kila mkoa, wilaya, vituo vya biashara na vituo rasmi vya mipakani. Ofisi hufunguliwa Jumatatu hadi Ijumaa kuanzia saa 2 asubuhi hadi saa 11 jioni, wakati ofisi za forodha zinafanya kazi saa 24.\n\n## Kwa nini tunalipa kodi?\n\nKodi ni mchango wa watu na biashara ili Serikali iweze kulihudumia taifa zima. Dhamira ya TRA inaunganisha ukusanyaji wa kodi na **ustawi wa taifa**. Ukurasa wa Klabu za Kodi wa TRA unawakumbusha wanafunzi kwamba moja ya faida za kodi ni **kufadhili sekta ya elimu**, sekta ileile inayohudumia shule, vyuo na vyuo vikuu mnavyosoma.\n\nKauli mbiu ya TRA inasema: **\"Together We Build Our Nation\"** (Kwa pamoja tunajenga taifa letu). Kila mmoja akilipa sehemu yake, mzigo unagawanywa na nchi inakua.\n\n## Nafasi ya wanafunzi\n\nTRA inatumia Klabu za Kodi kama mojawapo ya mikakati yake muhimu. Katika shule za sekondari huitwa **Klabu za Kodi (Tax Clubs)**, na katika vyuo na vyuo vikuu huitwa **Jumuiya za Kodi (Tax Associations)**. Lengo lao kuu ni kujenga utamaduni wa **kulipa kodi kwa hiari**. Klabu za Kodi zinalenga:\n\n- Kuandaa walipakodi na wataalamu wa kodi wa siku zijazo\n- Kuongeza maarifa ya kodi kwa vijana\n- Kuwaandaa vijana kutimiza wajibu wao wa kodi wanapoanza kupata kipato\n- Kujenga utamaduni wa kudai na kutoa risiti kila wanaponunua au kuuza bidhaa au huduma\n\nUnaweza kuanza leo. Ujumbe wa TRA ni: **\"Whenever you sell, issue receipt. Whenever you buy, demand receipt\"** (Ukiuza, toa risiti. Ukinunua, dai risiti).\n\n## Mambo muhimu\n\n- TRA ilianzishwa kwa Sheria Na. 11 ya mwaka 1995 na ilianza kazi tarehe 1 Julai 1996.\n- TRA ni taasisi inayojitegemea iliyo chini ya Wizara ya Fedha.\n- TRA inakadiria, inakusanya na kuhasibu mapato ya kodi.\n- Moja ya faida za kodi ni kufadhili sekta ya elimu.\n- Klabu za Kodi (shuleni) na Jumuiya za Kodi (vyuoni) zinajenga utamaduni wa kulipa kodi kwa hiari.\n\nSource: [Kuhusu TRA](https://www.tra.go.tz/sw/page/history); [Maswali Yanayoulizwa Mara kwa Mara](https://www.tra.go.tz/faq); [Kona ya Klabu za Kodi](https://www.tra.go.tz/sw/tax-club); [Tovuti ya TRA](https://www.tra.go.tz/)"
+      },
+      "quiz": {
+        "en": {
+          "title": "Quiz: What TRA Is and Why We Pay Taxes",
+          "description": "Check what you learned about TRA and the purpose of taxes.",
+          "questions": [
+            {
+              "question_text": "When did TRA start its operations?",
+              "explanation": "TRA was established by Act No. 11 of 1995 and started operations on 1st July 1996.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "1st July 1996",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "1st January 1995",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "1st July 2006",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "1st January 2000",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "TRA is an autonomous government institution under which ministry?",
+              "explanation": "TRA operates under the Ministry of Finance.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "Ministry of Education",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Ministry of Finance",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Ministry of Health",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Ministry of Home Affairs",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "In universities and colleges, TRA's tax clubs are called Tax Associations.",
+              "explanation": "Secondary schools have Tax Clubs, while universities and colleges have Tax Associations.",
+              "question_type": "true_false",
+              "answers": [
+                {
+                  "answer_text": "True",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "False",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Which of these are services TRA provides? (Choose all that apply)",
+              "explanation": "Registration, customs clearance and taxpayers' education are on TRA's list of services; passports are not.",
+              "question_type": "multiple_select",
+              "answers": [
+                {
+                  "answer_text": "Registration of taxpayers",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Customs clearance and trade facilitation",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Training and taxpayers' education",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Issuing national passports",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "According to the TRA Tax Club page, one benefit of tax is to finance which sector?",
+              "explanation": "The Tax Club page says one of the benefits of tax is to finance the education sector.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "Education",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Entertainment",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Private businesses",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Foreign embassies",
+                  "is_correct": false
+                }
+              ]
+            }
+          ]
+        },
+        "sw": {
+          "title": "Jaribio: TRA ni Nini na Kwa Nini Tunalipa Kodi",
+          "description": "Pima ulichojifunza kuhusu TRA na madhumuni ya kodi.",
+          "questions": [
+            {
+              "question_text": "TRA ilianza kufanya kazi lini?",
+              "explanation": "TRA ilianzishwa kwa Sheria Na. 11 ya 1995 na ilianza kazi tarehe 1 Julai 1996.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "1 Julai 1996",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "1 Januari 1995",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "1 Julai 2006",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "1 Januari 2000",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "TRA ni taasisi ya Serikali inayojitegemea iliyo chini ya wizara gani?",
+              "explanation": "TRA iko chini ya Wizara ya Fedha.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "Wizara ya Elimu",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Wizara ya Fedha",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Wizara ya Afya",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Wizara ya Mambo ya Ndani",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Katika vyuo na vyuo vikuu, klabu za kodi za TRA huitwa Jumuiya za Kodi (Tax Associations).",
+              "explanation": "Shule za sekondari zina Klabu za Kodi, na vyuo vina Jumuiya za Kodi.",
+              "question_type": "true_false",
+              "answers": [
+                {
+                  "answer_text": "Kweli",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Si kweli",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Ni zipi kati ya hizi ni huduma zinazotolewa na TRA? (Chagua zote sahihi)",
+              "explanation": "Usajili, uondoshaji wa bidhaa forodhani na elimu kwa mlipakodi zimo kwenye orodha ya huduma za TRA; pasipoti hazimo.",
+              "question_type": "multiple_select",
+              "answers": [
+                {
+                  "answer_text": "Usajili wa walipakodi",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Uondoshaji wa bidhaa forodhani na kurahisisha biashara",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Mafunzo na elimu kwa mlipakodi",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Kutoa pasipoti za kusafiria",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Kwa mujibu wa ukurasa wa Klabu za Kodi wa TRA, moja ya faida za kodi ni kufadhili sekta gani?",
+              "explanation": "Ukurasa wa Klabu za Kodi unasema moja ya faida za kodi ni kufadhili sekta ya elimu.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "Elimu",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Burudani",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Biashara binafsi",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Balozi za nje",
+                  "is_correct": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "taxpayer-rights-obligations",
+      "category": "taxes-and-you",
+      "level": "beginner",
+      "estimated_minutes": 7,
+      "kind": "lesson",
+      "sources": [
+        "https://www.tra.go.tz/page/client-service-charter",
+        "https://www.tra.go.tz/sw/page/client-service-charter",
+        "https://www.tra.go.tz/images/uploads/pages/CLIENT_SERVICE_CHARTER.pdf",
+        "https://www.tra.go.tz/faq"
+      ],
+      "en": {
+        "title": "Taxpayer Rights and Obligations: TRA's Client Service Charter",
+        "summary": "TRA's Client Service Charter sets out what taxpayers can expect from TRA and what TRA expects from taxpayers. Learn your rights, your duties and TRA's service standards.",
+        "objectives": [
+          "State the purpose of TRA's Client Service Charter",
+          "List the main rights of a taxpayer and the main obligations of a taxpayer",
+          "Give examples of TRA service standards and how to raise a complaint"
+        ],
+        "keywords": "taxpayer rights, taxpayer obligations, client service charter, TRA charter, complaints, Sikika, receipts",
+        "body_markdown": "## What is the Client Service Charter?\n\nThe **Client Service Charter** is TRA's public promise about how it will serve people. The current version is the **10th Edition, dated January 2024**. In the Charter, the Commissioner General explains that it provides information on services offered, service standards, and the **rights and obligations** of clients in the process of paying taxes. TRA says it recognises taxpayers as **honoured partners** in tax administration.\n\nThe Charter has three purposes:\n\n- It sets out fundamental service standards.\n- It explains the rights and obligations of TRA's clients.\n- It strengthens the relationship between TRA and its clients.\n\n## TRA's obligations to you\n\nTRA commits itself:\n\n- To issue correct tax assessments in accordance with tax laws.\n- To collect taxes according to existing tax laws, regulations and procedures.\n- To provide high quality services so that taxpayers can fulfil their obligations.\n- To handle all enquiries and complaints and use them to improve service.\n- To educate taxpayers on their rights and obligations.\n- To facilitate effective communication with taxpayers.\n\n## Your rights as a taxpayer\n\n- You have a right to **fair treatment**.\n- Your tax affairs are kept **private and confidential**, unless the law provides otherwise.\n- You have the right to be **presumed honest** unless evidence to the contrary exists and is proven.\n- Your tax objections and other decisions will be handled according to tax laws and procedures.\n- You may apply for incentives and exemptions allowed under the tax laws.\n- You will receive **timely, clear and accurate** responses to your enquiries, complaints and requests.\n\n## Your obligations as a taxpayer\n\n1. **Registration:** anyone eligible to register for tax purposes must register.\n2. **Filing returns:** file tax returns on time and pay assessed tax by the due dates.\n3. **Accuracy:** returns, customs declarations and refund claims must be complete and truthful.\n4. **Timely payment:** pay taxes promptly to avoid penalties and interest.\n5. **Receipts and records:** sellers must keep records and issue fiscalized receipts; **every buyer must demand a fiscalized receipt**.\n6. **Cooperation:** cooperate with TRA officers and never intimidate, abuse or threaten them.\n7. **No bribes:** do not offer gifts, money, bribes or favours to obtain services.\n\n## Service standards you can expect\n\nThe Charter lists timelines for many services. Examples:\n\n- Completing a TIN application at a regional or district office: **within 1 working day**.\n- Picking telephone calls: **within 40 seconds**.\n- Replying to simple correspondence: **within 1 working day**; complex correspondence within 5 working days.\n- Managing complaints: **within 5 working days**.\n\n## If something goes wrong\n\nIf you disagree with a tax assessment, you can object by submitting an objection letter to TRA within the specified period. To send feedback, suggestions or complaints directly to the Commissioner General, TRA provides the **Sikika App**.\n\n## Key points\n\n- The Client Service Charter (10th Edition, January 2024) sets out rights, obligations and service standards.\n- Taxpayers have rights to fair treatment, confidentiality and being presumed honest.\n- Taxpayers must register, file and pay on time, be accurate, keep records and demand receipts.\n- Offering bribes or gifts for services is against the Charter.\n- Complaints can be sent to the Commissioner General through the Sikika App.\n\nSource: [Client Service Charter](https://www.tra.go.tz/page/client-service-charter); [Client's Service Charter, 10th Edition (PDF)](https://www.tra.go.tz/images/uploads/pages/CLIENT_SERVICE_CHARTER.pdf); [Frequently Asked Questions](https://www.tra.go.tz/faq)"
+      },
+      "sw": {
+        "title": "Haki na Wajibu wa Mlipakodi: Mkataba wa Huduma kwa Mteja wa TRA",
+        "summary": "Mkataba wa Huduma kwa Mteja wa TRA unaeleza mlipakodi atarajie nini kutoka TRA na TRA inatarajia nini kutoka kwa mlipakodi. Jifunze haki zako, wajibu wako na viwango vya huduma.",
+        "objectives": [
+          "Kueleza madhumuni ya Mkataba wa Huduma kwa Mteja wa TRA",
+          "Kutaja haki kuu na wajibu mkuu wa mlipakodi",
+          "Kutoa mifano ya viwango vya huduma vya TRA na jinsi ya kuwasilisha malalamiko"
+        ],
+        "keywords": "haki za mlipakodi, wajibu wa mlipakodi, mkataba wa huduma kwa mteja, malalamiko, Sikika, risiti",
+        "body_markdown": "## Mkataba wa Huduma kwa Mteja ni nini?\n\n**Mkataba wa Huduma kwa Mteja** ni ahadi ya wazi ya TRA kuhusu jinsi itakavyowahudumia watu. Toleo la sasa ni **Toleo la 10 la Januari 2024**. Katika Mkataba huu, Kamishna Mkuu anaeleza kwamba umeainisha huduma zinazotolewa, viwango vya huduma pamoja na **haki na wajibu** wa mteja katika kulipa kodi. TRA inamtambua mlipakodi kama **mshirika muhimu** katika usimamizi wa kodi, na inawahimiza walipakodi: **\"TIMIZA WAJIBU TUKUHUDUMIE IPASAVYO.\"**\n\nMkataba una madhumuni matatu:\n\n- Kuweka viwango vya msingi vya huduma.\n- Kueleza haki na wajibu wa wateja wa TRA.\n- Kuimarisha uhusiano kati ya TRA na wateja wake.\n\n## Wajibu wa TRA kwako\n\nTRA inaahidi:\n\n- Kutoa makadirio sahihi ya kodi kwa mujibu wa sheria za kodi.\n- Kukusanya kodi kwa mujibu wa sheria, kanuni na taratibu zilizopo.\n- Kutoa huduma bora ili walipakodi waweze kutimiza wajibu wao.\n- Kushughulikia maswali na malalamiko yote na kuyatumia kuboresha huduma.\n- Kuwaelimisha walipakodi kuhusu haki na wajibu wao.\n- Kuwezesha mawasiliano mazuri na walipakodi.\n\n## Haki zako kama mlipakodi\n\n- Una haki ya **kutendewa kwa haki**.\n- Taarifa zako za kodi zitakuwa **siri**, isipokuwa pale sheria inapoelekeza vinginevyo.\n- Una haki ya **kuchukuliwa kuwa mwaminifu** hadi ushahidi wa kinyume utakapopatikana na kuthibitishwa.\n- Pingamizi zako za kodi na maamuzi mengine yatashughulikiwa kwa mujibu wa sheria na taratibu.\n- Unaweza kuomba vivutio na misamaha inayoruhusiwa na sheria za kodi.\n- Utapata majibu **kwa wakati, yaliyo wazi na sahihi** kwa maswali, malalamiko na maombi yako.\n\n## Wajibu wako kama mlipakodi\n\n1. **Usajili:** kila anayestahili kusajiliwa kwa madhumuni ya kodi lazima ajisajili.\n2. **Kuwasilisha ritani:** wasilisha ritani za kodi kwa wakati na ulipe kodi kabla ya tarehe ya mwisho.\n3. **Usahihi:** ritani, matamko ya forodha na maombi ya marejesho yawe kamili na ya kweli.\n4. **Kulipa kwa wakati:** lipa kodi mapema ili kuepuka adhabu na riba.\n5. **Risiti na kumbukumbu:** muuzaji lazima atunze kumbukumbu na atoe risiti za kielektroniki; **kila mnunuzi ana wajibu wa kudai risiti**.\n6. **Ushirikiano:** shirikiana na maafisa wa TRA na usiwatishe, kuwanyanyasa wala kuwatukana.\n7. **Hakuna rushwa:** usitoe zawadi, fedha, rushwa au upendeleo ili kupata huduma.\n\n## Viwango vya huduma unavyoweza kutarajia\n\nMkataba unaorodhesha muda wa kutoa huduma nyingi. Mifano:\n\n- Kukamilisha maombi ya TIN katika ofisi ya mkoa au wilaya: **ndani ya siku 1 ya kazi**.\n- Kupokea simu: **ndani ya sekunde 40**.\n- Kujibu barua rahisi: **ndani ya siku 1 ya kazi**; barua ngumu ndani ya siku 5 za kazi.\n- Kushughulikia malalamiko: **ndani ya siku 5 za kazi**.\n\n## Jambo likienda vibaya\n\nUkikubaliani na makadirio ya kodi, unaweza kuweka pingamizi kwa kuwasilisha barua ya pingamizi TRA ndani ya muda uliowekwa. Ili kutuma maoni, ushauri au malalamiko moja kwa moja kwa Kamishna Mkuu, TRA imeweka **Sikika App**.\n\n## Mambo muhimu\n\n- Mkataba wa Huduma kwa Mteja (Toleo la 10, Januari 2024) unaeleza haki, wajibu na viwango vya huduma.\n- Mlipakodi ana haki ya kutendewa haki, usiri na kuchukuliwa kuwa mwaminifu.\n- Mlipakodi anapaswa kujisajili, kuwasilisha ritani na kulipa kwa wakati, kuwa mkweli, kutunza kumbukumbu na kudai risiti.\n- Kutoa rushwa au zawadi ili kupata huduma ni kinyume na Mkataba.\n- Malalamiko yanaweza kutumwa kwa Kamishna Mkuu kupitia Sikika App.\n\nSource: [Mkataba wa Huduma kwa Mteja](https://www.tra.go.tz/sw/page/client-service-charter); [Client's Service Charter, 10th Edition (PDF)](https://www.tra.go.tz/images/uploads/pages/CLIENT_SERVICE_CHARTER.pdf); [Maswali Yanayoulizwa Mara kwa Mara](https://www.tra.go.tz/faq)"
+      },
+      "quiz": {
+        "en": {
+          "title": "Quiz: Taxpayer Rights and Obligations",
+          "description": "Test your knowledge of TRA's Client Service Charter.",
+          "questions": [
+            {
+              "question_text": "Which edition of TRA's Client Service Charter is described in this lesson?",
+              "explanation": "The current Charter is the 10th Edition, dated January 2024.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "1st Edition, July 1996",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "5th Edition, January 2010",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "10th Edition, January 2024",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "12th Edition, July 2026",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Which of these are taxpayer rights in the Charter? (Choose all that apply)",
+              "explanation": "The Charter lists fair treatment, confidentiality and being presumed honest; choosing when to pay is not a right.",
+              "question_type": "multiple_select",
+              "answers": [
+                {
+                  "answer_text": "The right to fair treatment",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Privacy and confidentiality of tax affairs",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "The right to be presumed honest",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "The right to pay tax whenever you wish",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "According to the Charter, every buyer has a duty to demand a fiscalized receipt.",
+              "explanation": "Obligation 7.5 says every buyer has a duty to demand fiscalized receipts.",
+              "question_type": "true_false",
+              "answers": [
+                {
+                  "answer_text": "True",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "False",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "What is the Charter's service standard for managing complaints?",
+              "explanation": "The Charter says complaints are managed within 5 working days.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "Within 40 seconds",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Within 5 working days",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Within 6 months",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Within 1 year",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Which app lets you send feedback or complaints directly to the Commissioner General?",
+              "explanation": "TRA set up the Sikika App for feedback, suggestions and complaints to the Commissioner General.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "Hakiki Stempu",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Sikika App",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "TANCIS",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "PAYE Calculator",
+                  "is_correct": false
+                }
+              ]
+            }
+          ]
+        },
+        "sw": {
+          "title": "Jaribio: Haki na Wajibu wa Mlipakodi",
+          "description": "Pima uelewa wako wa Mkataba wa Huduma kwa Mteja wa TRA.",
+          "questions": [
+            {
+              "question_text": "Ni toleo lipi la Mkataba wa Huduma kwa Mteja wa TRA limeelezwa katika somo hili?",
+              "explanation": "Mkataba wa sasa ni Toleo la 10 la Januari 2024.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "Toleo la 1, Julai 1996",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Toleo la 5, Januari 2010",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Toleo la 10, Januari 2024",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Toleo la 12, Julai 2026",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Ni zipi kati ya hizi ni haki za mlipakodi kwenye Mkataba? (Chagua zote sahihi)",
+              "explanation": "Mkataba unataja kutendewa haki, usiri na kuchukuliwa kuwa mwaminifu; kuchagua muda wa kulipa si haki.",
+              "question_type": "multiple_select",
+              "answers": [
+                {
+                  "answer_text": "Haki ya kutendewa kwa haki",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Usiri wa taarifa za kodi",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Haki ya kuchukuliwa kuwa mwaminifu",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Haki ya kulipa kodi wakati wowote unaotaka",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Kwa mujibu wa Mkataba, kila mnunuzi ana wajibu wa kudai risiti ya kielektroniki.",
+              "explanation": "Wajibu namba 7.5 unasema kila mnunuzi ana wajibu wa kudai risiti.",
+              "question_type": "true_false",
+              "answers": [
+                {
+                  "answer_text": "Kweli",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Si kweli",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Kiwango cha huduma cha Mkataba kwa kushughulikia malalamiko ni kipi?",
+              "explanation": "Mkataba unasema malalamiko hushughulikiwa ndani ya siku 5 za kazi.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "Ndani ya sekunde 40",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Ndani ya siku 5 za kazi",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Ndani ya miezi 6",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Ndani ya mwaka 1",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Ni programu ipi inakuwezesha kutuma maoni au malalamiko moja kwa moja kwa Kamishna Mkuu?",
+              "explanation": "TRA imeweka Sikika App kwa maoni, ushauri na malalamiko kwa Kamishna Mkuu.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "Hakiki Stempu",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Sikika App",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "TANCIS",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Kikokotoo cha PAYE",
+                  "is_correct": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "tin-registration",
+      "category": "business-and-tin",
+      "level": "beginner",
+      "estimated_minutes": 7,
+      "kind": "lesson",
+      "sources": [
+        "https://www.tra.go.tz/page/starting-business-income-for-individuals-and-paying-taxes",
+        "https://www.tra.go.tz/sw/page/starting-business-income-for-individuals-and-paying-taxes",
+        "https://www.tra.go.tz/faq",
+        "https://www.tra.go.tz/images/uploads/pages/CLIENT_SERVICE_CHARTER.pdf",
+        "https://www.tra.go.tz/page/income-tax-for-individuals"
+      ],
+      "en": {
+        "title": "Taxpayer Identification Number (TIN): Who Needs It and How to Register",
+        "summary": "A TIN is your identity in the tax system. Learn who needs one, the 15-day rule for new businesses, the documents required and how to apply online through TRA's Taxpayer Portal.",
+        "objectives": [
+          "Explain what a Taxpayer Identification Number (TIN) is and why it is needed",
+          "Describe the steps and documents an individual needs to register for a TIN",
+          "Explain what happens after registration, including tax clearance and the business licence"
+        ],
+        "keywords": "TIN, Taxpayer Identification Number, TIN registration, Taxpayer Portal, IDRAS, start business, BRELA, tax clearance",
+        "body_markdown": "## What is a TIN?\n\nA **Taxpayer Identification Number (TIN)** is the number TRA uses to identify a taxpayer. It appears on your TIN certificate, on VAT certificates and on official tax documents. Your individual TIN is also your **username** for logging into TRA's Taxpayer Portal.\n\n## Who needs a TIN?\n\nAccording to TRA, whether you are a resident or a non-resident, an individual starting a business needs to obtain a TIN. A person who becomes potentially liable to tax because they are carrying on a business must apply for a TIN **within fifteen (15) days from the date of commencing the business**.\n\nTINs are also issued to other kinds of taxpayers:\n\n- **Corporations (limited companies)**, after registration with BRELA (Business Registration and Licensing Authority).\n- **Partnerships**, after registering the firm with BRELA.\n- **Trusts**, where each trustee applies for a TIN.\n- **Groups**, which need a group registration certificate from the District or Municipal Council.\n\n## How does an individual apply?\n\n1. Get an official identification: a **National ID, Passport or Voter ID**.\n2. Visit the TRA website or go directly to the **Taxpayer Portal** at https://taxpayerportal.tra.go.tz and fill in the online TIN application form.\n3. Follow the instructions, answer the online questions and upload the required documents.\n4. For a business TIN, attach a **letter from the Local Government Authority** and a **lease agreement or title deed** for the business location.\n\nTRA's Client Service Charter says a TIN application at a regional or district office should be completed **within 1 working day**.\n\n## What happens after you get a TIN?\n\n- Once the TIN certificate is issued, the taxpayer goes through an **assessment interview** for tax evaluation.\n- After fulfilling the tax obligations, the taxpayer receives a **Tax Clearance**.\n- The Tax Clearance is used to obtain a **Business Licence** from the Trade office in the District, Municipal or City Council, or from the Ministry of Industry and Trade, depending on the type of business.\n\nIf you register a business name with BRELA, the name appears on your TIN certificate together with your own name, showing that you are \"trading as\" (T/A) that business.\n\n## Good news for new small businesses\n\nTRA explains that an individual obtaining a TIN to start a business for the first time, whose projected annual turnover is within the presumptive tax limits (above TZS 4,000,000 but not above TZS 200,000,000), can apply for tax relief. TRA's presumptive tax table shows **no tax for the first 12 months** of business for such new taxpayers, provided the conditions are met.\n\n## Using your TIN online\n\nThe Taxpayer Portal lets taxpayers apply for a TIN, file tax returns, make tax payments, apply for a driving licence and register motor vehicles. Only an **individual TIN** (not an entity TIN) can be used to log in.\n\n## Key points\n\n- A TIN identifies you as a taxpayer and is your Taxpayer Portal username.\n- Apply for a business TIN within 15 days of starting a business.\n- You need a National ID, Passport or Voter ID, plus a local government letter and a lease or title deed for a business TIN.\n- Apply online at https://taxpayerportal.tra.go.tz.\n- After meeting your tax obligations, you get a Tax Clearance to obtain a business licence.\n\nSource: [Starting Business](https://www.tra.go.tz/page/starting-business-income-for-individuals-and-paying-taxes); [Frequently Asked Questions](https://www.tra.go.tz/faq); [Client's Service Charter (PDF)](https://www.tra.go.tz/images/uploads/pages/CLIENT_SERVICE_CHARTER.pdf); [Income Tax for Individuals](https://www.tra.go.tz/page/income-tax-for-individuals)"
+      },
+      "sw": {
+        "title": "Namba ya Utambulisho wa Mlipakodi (TIN): Nani Anaihitaji na Jinsi ya Kujisajili",
+        "summary": "TIN ni utambulisho wako katika mfumo wa kodi. Jifunze nani anaihitaji, sharti la siku 15 kwa biashara mpya, nyaraka zinazohitajika na jinsi ya kuomba mtandaoni kupitia Taxpayer Portal.",
+        "objectives": [
+          "Kueleza Namba ya Utambulisho wa Mlipakodi (TIN) ni nini na kwa nini inahitajika",
+          "Kueleza hatua na nyaraka anazohitaji mtu binafsi ili kusajili TIN",
+          "Kueleza kinachofuata baada ya usajili, ikiwemo hati safi ya kodi na leseni ya biashara"
+        ],
+        "keywords": "TIN, Namba ya Utambulisho wa Mlipakodi, usajili wa TIN, Taxpayer Portal, kuanzisha biashara, BRELA, hati safi ya kodi",
+        "body_markdown": "## TIN ni nini?\n\n**Namba ya Utambulisho wa Mlipakodi (TIN)** ni namba ambayo TRA hutumia kumtambua mlipakodi. Inaonekana kwenye cheti chako cha TIN, kwenye cheti cha VAT na kwenye nyaraka rasmi za kodi. TIN yako ya mtu binafsi pia ndiyo **jina la mtumiaji (username)** la kuingia kwenye Taxpayer Portal ya TRA.\n\n## Nani anahitaji TIN?\n\nKwa mujibu wa TRA, mtu binafsi anayeanzisha biashara, awe mkazi au si mkazi, anahitaji kupata TIN. Mtu anayeanzisha biashara anatakiwa kuomba TIN **ndani ya siku kumi na tano (15) kuanzia tarehe ya kuanza biashara**.\n\nTIN pia hutolewa kwa aina nyingine za walipakodi:\n\n- **Makampuni (kampuni zenye dhima ya ukomo)**, baada ya kusajiliwa BRELA (Mamlaka ya Usajili wa Biashara na Leseni).\n- **Ubia (partnership)**, baada ya kusajili kampuni ya ubia BRELA.\n- **Udhamini (trust)**, ambapo kila mdhamini anaomba TIN.\n- **Vikundi**, ambavyo vinahitaji cheti cha usajili wa kikundi kutoka Halmashauri ya Wilaya au Manispaa.\n\n## Mtu binafsi anaombaje?\n\n1. Kuwa na kitambulisho rasmi: **Kitambulisho cha Taifa, Pasipoti au Kitambulisho cha Mpiga Kura**.\n2. Tembelea tovuti ya TRA au nenda moja kwa moja kwenye **Taxpayer Portal** kupitia https://taxpayerportal.tra.go.tz na ujaze fomu ya maombi ya TIN mtandaoni.\n3. Fuata maelekezo, jibu maswali ya mtandaoni na uambatanishe nyaraka zinazohitajika.\n4. Kwa TIN ya biashara, ambatanisha **barua kutoka Mamlaka ya Serikali za Mitaa** na **mkataba wa pango au hati miliki** ya eneo la biashara.\n\nMkataba wa Huduma kwa Mteja wa TRA unasema maombi ya TIN katika ofisi ya mkoa au wilaya yanapaswa kukamilika **ndani ya siku 1 ya kazi**.\n\n## Nini kinafuata baada ya kupata TIN?\n\n- Cheti cha TIN kinapotolewa, mlipakodi anapitia **mahojiano ya tathmini** kwa ajili ya makadirio ya kodi.\n- Baada ya kutimiza wajibu wa kodi, mlipakodi anapata **Hati Safi ya Kodi (Tax Clearance)**.\n- Hati hiyo inatumika kupata **Leseni ya Biashara** kutoka ofisi ya Biashara ya Wilaya, Manispaa au Jiji, au Wizara ya Viwanda na Biashara, kulingana na aina ya biashara.\n\nUkisajili jina la biashara BRELA, jina hilo litaonekana kwenye cheti chako cha TIN pamoja na jina lako, likionyesha kuwa unafanya biashara kama (T/A) jina hilo.\n\n## Habari njema kwa biashara ndogo mpya\n\nTRA inaeleza kuwa mtu anayepata TIN kwa mara ya kwanza ili kuanzisha biashara, ambaye makadirio ya mauzo yake ya mwaka yako ndani ya viwango vya kodi ya makadirio (zaidi ya TZS 4,000,000 lakini si zaidi ya TZS 200,000,000), anaweza kuomba msamaha. Jedwali la kodi ya makadirio la TRA linaonyesha **hakuna kodi kwa miezi 12 ya kwanza** ya biashara kwa walipakodi wapya kama hao, iwapo masharti yametimizwa.\n\n## Kutumia TIN mtandaoni\n\nTaxpayer Portal inamwezesha mlipakodi kuomba TIN, kuwasilisha ritani za kodi, kulipa kodi, kuomba leseni ya udereva na kusajili magari. Ni **TIN ya mtu binafsi** tu (si ya taasisi) inayoweza kutumika kuingia kwenye mfumo.\n\n## Mambo muhimu\n\n- TIN inakutambulisha kama mlipakodi na ndiyo username yako kwenye Taxpayer Portal.\n- Omba TIN ya biashara ndani ya siku 15 tangu kuanza biashara.\n- Unahitaji Kitambulisho cha Taifa, Pasipoti au Kitambulisho cha Mpiga Kura, pamoja na barua ya serikali ya mtaa na mkataba wa pango au hati miliki.\n- Omba mtandaoni kupitia https://taxpayerportal.tra.go.tz.\n- Baada ya kutimiza wajibu wa kodi, unapata Hati Safi ya Kodi ili kupata leseni ya biashara.\n\nSource: [Kuanzisha Biashara](https://www.tra.go.tz/sw/page/starting-business-income-for-individuals-and-paying-taxes); [Starting Business](https://www.tra.go.tz/page/starting-business-income-for-individuals-and-paying-taxes); [Frequently Asked Questions](https://www.tra.go.tz/faq); [Client's Service Charter (PDF)](https://www.tra.go.tz/images/uploads/pages/CLIENT_SERVICE_CHARTER.pdf); [Income Tax for Individuals](https://www.tra.go.tz/page/income-tax-for-individuals)"
+      },
+      "quiz": {
+        "en": {
+          "title": "Quiz: TIN Registration",
+          "description": "Check what you know about getting a Taxpayer Identification Number.",
+          "questions": [
+            {
+              "question_text": "Within how many days of starting a business must a person apply for a TIN?",
+              "explanation": "TRA says a business TIN must be applied for within fifteen days of commencing business.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "7 days",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "15 days",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "30 days",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "90 days",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Which official identification documents can an individual use to obtain a TIN? (Choose all that apply)",
+              "explanation": "TRA lists the National ID, Passport ID and Voter ID as official identification.",
+              "question_type": "multiple_select",
+              "answers": [
+                {
+                  "answer_text": "National ID",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Passport",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Voter ID",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "School report card",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Where can you fill in the online TIN application form?",
+              "explanation": "The online TIN application form is on the Taxpayer Portal at taxpayerportal.tra.go.tz.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "https://taxpayerportal.tra.go.tz",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Any social media page",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "At a bank counter only",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "By sending an SMS to a friend",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Only an entity TIN, not an individual TIN, can be used to log into the Taxpayer Portal.",
+              "explanation": "It is the opposite: only an individual TIN can be used to log in.",
+              "question_type": "true_false",
+              "answers": [
+                {
+                  "answer_text": "True",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "False",
+                  "is_correct": true
+                }
+              ]
+            },
+            {
+              "question_text": "After fulfilling tax obligations, which document does a new business owner receive in order to get a business licence?",
+              "explanation": "TRA issues a Tax Clearance, which is used to obtain a business licence.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "A driving licence",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "A Tax Clearance",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "A passport",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "A school certificate",
+                  "is_correct": false
+                }
+              ]
+            }
+          ]
+        },
+        "sw": {
+          "title": "Jaribio: Usajili wa TIN",
+          "description": "Pima unachojua kuhusu kupata Namba ya Utambulisho wa Mlipakodi.",
+          "questions": [
+            {
+              "question_text": "Mtu anatakiwa kuomba TIN ndani ya siku ngapi tangu kuanza biashara?",
+              "explanation": "TRA inasema TIN ya biashara iombwe ndani ya siku kumi na tano tangu kuanza biashara.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "Siku 7",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Siku 15",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Siku 30",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Siku 90",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Ni vitambulisho vipi rasmi mtu binafsi anaweza kutumia kupata TIN? (Chagua vyote sahihi)",
+              "explanation": "TRA inataja Kitambulisho cha Taifa, Pasipoti na Kitambulisho cha Mpiga Kura.",
+              "question_type": "multiple_select",
+              "answers": [
+                {
+                  "answer_text": "Kitambulisho cha Taifa",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Pasipoti",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Kitambulisho cha Mpiga Kura",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Ripoti ya shule",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Unaweza kujaza fomu ya maombi ya TIN mtandaoni wapi?",
+              "explanation": "Fomu ya maombi ya TIN iko kwenye Taxpayer Portal, taxpayerportal.tra.go.tz.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "https://taxpayerportal.tra.go.tz",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Ukurasa wowote wa mitandao ya kijamii",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Kwenye dirisha la benki pekee",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Kwa kumtumia rafiki ujumbe mfupi",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Ni TIN ya taasisi pekee, si TIN ya mtu binafsi, inayoweza kutumika kuingia Taxpayer Portal.",
+              "explanation": "Ni kinyume chake: ni TIN ya mtu binafsi pekee inayotumika kuingia.",
+              "question_type": "true_false",
+              "answers": [
+                {
+                  "answer_text": "Kweli",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Si kweli",
+                  "is_correct": true
+                }
+              ]
+            },
+            {
+              "question_text": "Baada ya kutimiza wajibu wa kodi, mfanyabiashara mpya hupata hati gani ili apate leseni ya biashara?",
+              "explanation": "TRA hutoa Hati Safi ya Kodi inayotumika kupata leseni ya biashara.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "Leseni ya udereva",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Hati Safi ya Kodi",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Pasipoti",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Cheti cha shule",
+                  "is_correct": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "vat-basics",
+      "category": "vat",
+      "level": "intermediate",
+      "estimated_minutes": 8,
+      "kind": "lesson",
+      "sources": [
+        "https://www.tra.go.tz/page/value-added-tax-vat",
+        "https://www.tra.go.tz/sw/page/value-added-tax-vat",
+        "https://www.tra.go.tz/faq",
+        "https://www.tra.go.tz/page/paying-taxes"
+      ],
+      "en": {
+        "title": "Value Added Tax (VAT) Basics",
+        "summary": "VAT is a consumption tax added at each stage of production and sale. Learn the 18% standard rate, who must register, how input and output VAT work, and when returns are due.",
+        "objectives": [
+          "Define VAT and explain who finally bears its cost",
+          "State the standard VAT rate, the zero rate for exports and the registration threshold",
+          "Calculate VAT payable using output tax and input tax"
+        ],
+        "keywords": "VAT, Value Added Tax, 18%, input tax, output tax, VAT registration, VAT return, zero rate, exports",
+        "body_markdown": "## What is VAT?\n\n**Value Added Tax (VAT)** is a consumption tax charged on taxable goods, services and immovable property whenever value is added at each stage of production and at the final stage of sale. VAT is charged on locally produced goods and services and also on imports. Importantly, **VAT is charged only by persons registered for VAT**.\n\n## VAT rates\n\nTRA lists the main rates as follows:\n\n- **18%** – the standard rate on taxable goods and services supplied in Mainland Tanzania, and on taxable imports.\n- **0%** – exports of goods and certain services (called zero-rating).\n- **16%** – where a person who is not VAT-registered pays for a standard-rated supply through a bank or an electronic payment system approved by the Commissioner General.\n\n## Who must register for VAT?\n\nVAT registration is **mandatory** for any person whose taxable turnover reaches:\n\n- **TZS 200 million within twelve months**, or\n- **TZS 100 million within six months** (half of the threshold).\n\nThe threshold does not apply to professional service providers, Government entities carrying on economic activities, or intending traders who can show evidence that they plan to start a business. A person who becomes liable must apply to the Commissioner General **within 30 days**. Applications are made online through the Taxpayer Portal (IDRAS).\n\nAfter registration, the trader receives a **VAT Certificate of Registration** showing the TIN and VAT registration number, and must display it in a noticeable position at the main place of business.\n\n## How does VAT work?\n\nVAT works through a **credit system**:\n\n- **Output tax** is VAT a registered business charges customers when it sells.\n- **Input tax** is VAT the business pays when it buys goods and services for its business.\n- **VAT payable = Output tax − Input tax.**\n\n**Example from TRA:** A business sells goods worth TZS 10,000,000 and charges 18% VAT, so output tax is TZS 1,800,000. It buys raw materials for TZS 5,000,000 and pays 18% VAT, so input tax is TZS 900,000. VAT payable is 1,800,000 − 900,000 = **TZS 900,000**.\n\nIf input tax is higher than output tax, the excess can be carried forward or refunded under certain conditions. In practice VAT is not a cost to businesses, because they collect and remit it. **The real cost is borne by the final consumer** – people like you and your family when you buy goods and services.\n\n## Returns and payment\n\n- A **VAT return** is a formal declaration of a registered person's VAT transactions, usually for one month, filed online through the Taxpayer Portal.\n- VAT is due **on or before the 20th day of the following month**, which is also the deadline for the return.\n- A return must be submitted **whether or not** there is VAT to pay for that period.\n- Late filing may result in penalties and interest.\n\n## Key points\n\n- VAT is a consumption tax; the final consumer bears its cost.\n- The standard rate is 18%; exports are zero-rated (0%).\n- Registration is mandatory at TZS 200 million turnover in 12 months (or TZS 100 million in 6 months).\n- VAT payable = output tax minus input tax.\n- Returns and payment are due by the 20th of the following month, even if nothing is payable.\n\nSource: [Value Added Tax (VAT)](https://www.tra.go.tz/page/value-added-tax-vat); [Frequently Asked Questions](https://www.tra.go.tz/faq); [Paying Taxes](https://www.tra.go.tz/page/paying-taxes)"
+      },
+      "sw": {
+        "title": "Misingi ya Kodi ya Ongezeko la Thamani (VAT)",
+        "summary": "VAT ni kodi ya mlaji inayotozwa katika kila hatua ya uzalishaji na mauzo. Jifunze kiwango cha kawaida cha 18%, nani lazima ajisajili, jinsi kodi ya ununuzi na mauzo inavyofanya kazi na tarehe za ritani.",
+        "objectives": [
+          "Kueleza maana ya VAT na nani hubeba gharama yake mwishoni",
+          "Kutaja kiwango cha kawaida cha VAT, kiwango cha sifuri kwa mauzo ya nje na kiwango cha usajili",
+          "Kukokotoa VAT inayolipwa kwa kutumia kodi ya mauzo na kodi ya manunuzi"
+        ],
+        "keywords": "VAT, Kodi ya Ongezeko la Thamani, 18%, kodi ya manunuzi, kodi ya mauzo, usajili wa VAT, ritani ya VAT, mauzo ya nje",
+        "body_markdown": "## VAT ni nini?\n\n**Kodi ya Ongezeko la Thamani (VAT)** ni kodi ya mlaji inayotozwa kwenye bidhaa, huduma na mali zisizohamishika zinazotozwa kodi, kila thamani inapoongezeka katika kila hatua ya uzalishaji na katika hatua ya mwisho ya mauzo. VAT inatozwa kwa bidhaa na huduma zinazozalishwa nchini na pia kwa bidhaa zinazoingizwa kutoka nje. Jambo muhimu: **VAT hutozwa na mtu aliyesajiliwa kwa VAT tu**.\n\n## Viwango vya VAT\n\nTRA inaorodhesha viwango vikuu hivi:\n\n- **18%** – kiwango cha kawaida kwa bidhaa na huduma zinazotozwa kodi Tanzania Bara, na kwa bidhaa zinazoingizwa nchini.\n- **0%** – mauzo ya bidhaa na baadhi ya huduma nje ya nchi (kiwango cha sifuri).\n- **16%** – pale mtu ambaye hajasajiliwa kwa VAT analipia bidhaa au huduma kupitia benki au mfumo wa malipo ya kielektroniki ulioidhinishwa na Kamishna Mkuu.\n\n## Nani lazima ajisajili kwa VAT?\n\nUsajili wa VAT ni **wa lazima** kwa mtu yeyote ambaye mauzo yake yanayotozwa VAT yanafikia:\n\n- **TZS milioni 200 ndani ya miezi kumi na miwili**, au\n- **TZS milioni 100 ndani ya miezi sita** (nusu ya kiwango).\n\nKiwango hiki hakiwahusu watoa huduma za kitaaluma, taasisi za Serikali zinazofanya shughuli za kiuchumi, wala wafanyabiashara wanaotarajia kuanza biashara wenye ushahidi wa kutosha. Anayestahili kusajiliwa anatakiwa kuwasilisha maombi kwa Kamishna Mkuu **ndani ya siku 30**. Maombi hufanywa mtandaoni kupitia Taxpayer Portal (IDRAS).\n\nBaada ya kusajiliwa, mfanyabiashara hupewa **Cheti cha Usajili wa VAT** chenye TIN na namba ya usajili wa VAT, na anatakiwa kukitundika mahali panapoonekana katika makao makuu ya biashara yake.\n\n## VAT inafanyaje kazi?\n\nVAT inafanya kazi kwa **mfumo wa kujirudishia kodi (credit system)**:\n\n- **Kodi ya mauzo (output tax)** ni VAT ambayo biashara iliyosajiliwa inawatoza wateja inapouza.\n- **Kodi ya manunuzi (input tax)** ni VAT ambayo biashara inalipa inaponunua bidhaa na huduma za biashara.\n- **VAT inayolipwa = Kodi ya mauzo − Kodi ya manunuzi.**\n\n**Mfano kutoka TRA:** Biashara inauza bidhaa za TZS 10,000,000 na kutoza VAT ya 18%, hivyo kodi ya mauzo ni TZS 1,800,000. Inanunua malighafi za TZS 5,000,000 na kulipa VAT ya 18%, hivyo kodi ya manunuzi ni TZS 900,000. VAT inayolipwa ni 1,800,000 − 900,000 = **TZS 900,000**.\n\nKodi ya manunuzi ikizidi kodi ya mauzo, ziada inaweza kuhamishiwa vipindi vijavyo au kurejeshwa kwa masharti fulani. Kwa uhalisia VAT si gharama kwa biashara, kwa sababu zinakusanya na kuiwasilisha tu. **Gharama halisi hubebwa na mlaji wa mwisho** – watu kama wewe na familia yako mnaponunua bidhaa na huduma.\n\n## Ritani na malipo\n\n- **Ritani ya VAT** ni tamko rasmi la miamala ya VAT ya mtu aliyesajiliwa, kwa kawaida kwa mwezi mmoja, huwasilishwa mtandaoni kupitia Taxpayer Portal.\n- VAT inalipwa **ifikapo au kabla ya tarehe 20 ya mwezi unaofuata**, ambayo pia ndiyo tarehe ya mwisho ya ritani.\n- Ritani lazima iwasilishwe **hata kama** hakuna VAT ya kulipa kwa kipindi hicho.\n- Kuchelewa kuwasilisha kunaweza kusababisha adhabu na riba.\n\n## Mambo muhimu\n\n- VAT ni kodi ya mlaji; mlaji wa mwisho ndiye hubeba gharama yake.\n- Kiwango cha kawaida ni 18%; mauzo ya nje ni 0%.\n- Usajili ni wa lazima mauzo yakifika TZS milioni 200 kwa miezi 12 (au TZS milioni 100 kwa miezi 6).\n- VAT inayolipwa = kodi ya mauzo toa kodi ya manunuzi.\n- Ritani na malipo ni kabla ya tarehe 20 ya mwezi unaofuata, hata kama hakuna kodi ya kulipa.\n\nSource: [Kodi ya Ongezeko la Thamani (VAT)](https://www.tra.go.tz/sw/page/value-added-tax-vat); [Frequently Asked Questions](https://www.tra.go.tz/faq); [Paying Taxes](https://www.tra.go.tz/page/paying-taxes)"
+      },
+      "quiz": {
+        "en": {
+          "title": "Quiz: VAT Basics",
+          "description": "Test your understanding of how VAT works in Tanzania.",
+          "questions": [
+            {
+              "question_text": "What is the standard VAT rate in Mainland Tanzania?",
+              "explanation": "TRA states that the standard VAT rate is 18%.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "0%",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "10%",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "18%",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "30%",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "VAT registration becomes mandatory when taxable turnover reaches how much within twelve months?",
+              "explanation": "The registration threshold is TZS 200 million within twelve months.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "TZS 4 million",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "TZS 11 million",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "TZS 200 million",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "TZS 1 billion",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "A business has output tax of TZS 1,800,000 and input tax of TZS 900,000. How much VAT does it pay TRA?",
+              "explanation": "VAT payable = output tax − input tax = 1,800,000 − 900,000 = 900,000.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "TZS 2,700,000",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "TZS 1,800,000",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "TZS 900,000",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "TZS 0",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "A VAT-registered person only needs to submit a VAT return when there is VAT to pay.",
+              "explanation": "TRA requires a return whether or not there is VAT payable for the period.",
+              "question_type": "true_false",
+              "answers": [
+                {
+                  "answer_text": "True",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "False",
+                  "is_correct": true
+                }
+              ]
+            },
+            {
+              "question_text": "Which statements about VAT are correct? (Choose all that apply)",
+              "explanation": "Exports are zero-rated, VAT is due by the 20th of the following month, and the final consumer bears the cost; only registered persons charge VAT.",
+              "question_type": "multiple_select",
+              "answers": [
+                {
+                  "answer_text": "Exports of goods are charged VAT at 0%",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "VAT is due on or before the 20th of the following month",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "The final consumer bears the cost of VAT",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Any trader may charge VAT even if not registered",
+                  "is_correct": false
+                }
+              ]
+            }
+          ]
+        },
+        "sw": {
+          "title": "Jaribio: Misingi ya VAT",
+          "description": "Pima uelewa wako wa jinsi VAT inavyofanya kazi Tanzania.",
+          "questions": [
+            {
+              "question_text": "Kiwango cha kawaida cha VAT Tanzania Bara ni kipi?",
+              "explanation": "TRA inasema kiwango cha kawaida cha VAT ni 18%.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "0%",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "10%",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "18%",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "30%",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Usajili wa VAT unakuwa wa lazima mauzo yanapofikia kiasi gani ndani ya miezi kumi na miwili?",
+              "explanation": "Kiwango cha usajili ni TZS milioni 200 ndani ya miezi kumi na miwili.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "TZS milioni 4",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "TZS milioni 11",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "TZS milioni 200",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "TZS bilioni 1",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Biashara ina kodi ya mauzo ya TZS 1,800,000 na kodi ya manunuzi ya TZS 900,000. Inalipa VAT kiasi gani TRA?",
+              "explanation": "VAT inayolipwa = kodi ya mauzo − kodi ya manunuzi = 1,800,000 − 900,000 = 900,000.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "TZS 2,700,000",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "TZS 1,800,000",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "TZS 900,000",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "TZS 0",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Mtu aliyesajiliwa kwa VAT anatakiwa kuwasilisha ritani pale tu anapokuwa na VAT ya kulipa.",
+              "explanation": "TRA inataka ritani iwasilishwe hata kama hakuna VAT ya kulipa kwa kipindi hicho.",
+              "question_type": "true_false",
+              "answers": [
+                {
+                  "answer_text": "Kweli",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Si kweli",
+                  "is_correct": true
+                }
+              ]
+            },
+            {
+              "question_text": "Ni kauli zipi kuhusu VAT ni sahihi? (Chagua zote sahihi)",
+              "explanation": "Mauzo ya nje ni 0%, VAT inalipwa kabla ya tarehe 20 ya mwezi unaofuata, na mlaji wa mwisho hubeba gharama; ni waliosajiliwa tu wanaotoza VAT.",
+              "question_type": "multiple_select",
+              "answers": [
+                {
+                  "answer_text": "Mauzo ya bidhaa nje hutozwa VAT ya 0%",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "VAT inalipwa kabla ya tarehe 20 ya mwezi unaofuata",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Mlaji wa mwisho hubeba gharama ya VAT",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Mfanyabiashara yeyote anaweza kutoza VAT hata kama hajasajiliwa",
+                  "is_correct": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "income-tax-paye",
+      "category": "income-tax",
+      "level": "intermediate",
+      "estimated_minutes": 9,
+      "kind": "lesson",
+      "sources": [
+        "https://www.tra.go.tz/faq",
+        "https://www.tra.go.tz/page/pay-as-you-earn",
+        "https://www.tra.go.tz/sw/page/pay-as-you-earn",
+        "https://www.tra.go.tz/page/income-tax-for-individuals",
+        "https://www.tra.go.tz/page/paying-taxes",
+        "https://www.tra.go.tz/calculators/paye"
+      ],
+      "en": {
+        "title": "Income Tax and PAYE Basics for Individuals and Employees",
+        "summary": "Learn what income tax is, how Pay-As-You-Earn (PAYE) works for employees, the monthly tax bands TRA publishes for individuals, and the key deadlines for employers and individuals.",
+        "objectives": [
+          "Explain what income tax is and name its three recognised sources of income",
+          "Describe how PAYE works and what counts as employment income",
+          "Use TRA's monthly rate table to work out tax on a simple monthly income"
+        ],
+        "keywords": "income tax, PAYE, Pay As You Earn, employee, employer, employment income, tax bands, presumptive tax, return of income",
+        "body_markdown": "## What is income tax?\n\n**Income tax** is a tax on income earned by individuals, businesses and other entities during a year of income. TRA recognises three sources of income: **business, employment and investments**. Individuals earning taxable income above the minimum threshold must pay income tax.\n\n## What is PAYE?\n\n**PAYE** stands for **Pay-As-You-Earn**. It is a withholding tax on the taxable income of employees. Under this system the **employer is required by law to deduct income tax** from an employee's taxable income and pay it to TRA.\n\nAn **employee** includes permanent, part-time and casual employees, managers and directors. A person may work for more than one employer: their main job is the **primary employment** and any others are **secondary employments**.\n\n## What counts as employment income?\n\nEmployment income includes, for example:\n\n- Wages, salary, payment in lieu of leave, fees, commissions, bonuses and gratuity\n- Allowances received in respect of employment\n- Retirement contributions and payments, and payments for redundancy or termination\n- Benefits in kind (non-cash benefits such as housing or a car), valued using prescribed rules\n\nSome amounts are **excluded**, such as an allowance that only reimburses money spent wholly and exclusively in producing employment income.\n\nContributions to approved retirement funds are reduced from gross pay when calculating PAYE. TRA's online PAYE calculator asks you to enter your monthly pay **after deducting NSSF or PSSSF contributions**.\n\n## Monthly tax rates for individuals (Mainland Tanzania)\n\n| Monthly taxable income (TZS) | Tax |\n|---|---|\n| Up to 270,000 | NIL |\n| 270,001 – 520,000 | 8% of the amount above 270,000 |\n| 520,001 – 760,000 | 20,000 + 20% of the amount above 520,000 |\n| 760,001 – 1,000,000 | 68,000 + 25% of the amount above 760,000 |\n| Above 1,000,000 | 128,000 + 30% of the amount above 1,000,000 |\n\nSo an annual income of **TZS 3,240,000** (270,000 a month) is not taxable.\n\n**Example:** Monthly taxable income of TZS 600,000 falls in the third band: 20,000 + 20% × (600,000 − 520,000) = 20,000 + 16,000 = **TZS 36,000**.\n\n## Special cases\n\n- **Non-resident employees:** tax is withheld at a flat rate of **15%** of gross employment income.\n- **Secondary employment:** the secondary employer withholds tax at the **highest** individual rate.\n\n## Key deadlines and duties\n\n- Employers pay PAYE **within seven (7) days after the end of the calendar month**.\n- Employers keep wage sheets and salary records for **five years**.\n- Individuals who must file pay provisional tax in four instalments (31 March, 30 June, 30 September and 31 December) and file the final return by **30 June** of the following year.\n- Small traders under the **presumptive tax regime** (turnover not above TZS 200 million) pay tax based on turnover, and turnover not above TZS 4,000,000 pays NIL.\n\n## Key points\n\n- Income comes from business, employment or investments.\n- PAYE is income tax that employers deduct from employees' pay.\n- Monthly taxable income up to TZS 270,000 is not taxed.\n- Employers must pay PAYE within 7 days after the month ends.\n- Non-resident employees are taxed at a flat 15%.\n\nSource: [Frequently Asked Questions](https://www.tra.go.tz/faq); [Pay As You Earn](https://www.tra.go.tz/page/pay-as-you-earn); [Income Tax for Individuals](https://www.tra.go.tz/page/income-tax-for-individuals); [Paying Taxes](https://www.tra.go.tz/page/paying-taxes); [PAYE Calculator](https://www.tra.go.tz/calculators/paye)"
+      },
+      "sw": {
+        "title": "Misingi ya Kodi ya Mapato na PAYE kwa Watu Binafsi na Waajiriwa",
+        "summary": "Jifunze kodi ya mapato ni nini, jinsi mfumo wa Lipa Kadiri Unavyopata (PAYE) unavyofanya kazi kwa waajiriwa, viwango vya kodi vya kila mwezi vya TRA na tarehe muhimu kwa waajiri na watu binafsi.",
+        "objectives": [
+          "Kueleza kodi ya mapato ni nini na kutaja vyanzo vitatu vya mapato vinavyotambuliwa",
+          "Kueleza jinsi PAYE inavyofanya kazi na mapato gani ni ya ajira",
+          "Kutumia jedwali la viwango vya kila mwezi la TRA kukokotoa kodi ya mshahara rahisi"
+        ],
+        "keywords": "kodi ya mapato, PAYE, Lipa Kadiri Unavyopata, mwajiriwa, mwajiri, mapato ya ajira, viwango vya kodi, kodi ya makadirio, ritani",
+        "body_markdown": "## Kodi ya mapato ni nini?\n\n**Kodi ya mapato** ni kodi inayotozwa kwenye mapato yanayopatikana na watu binafsi, biashara na taasisi nyingine katika mwaka wa mapato. TRA inatambua vyanzo vitatu vya mapato: **biashara, ajira na uwekezaji**. Watu binafsi wenye mapato yanayotozwa kodi juu ya kiwango cha chini wanapaswa kulipa kodi ya mapato.\n\n## PAYE ni nini?\n\nKodi inayotokana na ajira hutozwa kwa mfumo wa **Lipa Kadiri Unavyopata (Pay-As-You-Earn – PAYE)**. Hii ni kodi ya zuio kwa waajiriwa. Chini ya mfumo huu, **mwajiri anapaswa kisheria kukata kodi ya mapato** kutoka kwenye mshahara au ujira wa mwajiriwa na kuilipa TRA.\n\n**Mwajiriwa** anajumuisha waajiriwa wa kudumu, wa muda, vibarua, mameneja na wakurugenzi. Mtu anaweza kuajiriwa na mwajiri zaidi ya mmoja: kazi kuu ni **ajira ya msingi** na nyingine ni **ajira za ziada**.\n\n## Mapato gani ni ya ajira?\n\nMapato ya ajira yanajumuisha, kwa mfano:\n\n- Ujira, mshahara, malipo ya likizo, ada, kamisheni, bonasi na kiinua mgongo\n- Posho zinazopokelewa kuhusiana na ajira\n- Michango na malipo ya kustaafu, na malipo ya kupunguzwa au kuachishwa kazi\n- Mafao yasiyo ya fedha (kama nyumba au gari), yanayothaminishwa kwa kanuni maalum\n\nBaadhi ya malipo **hayajumuishwi**, kama posho inayorejesha tu fedha zilizotumika kikamilifu katika kuzalisha mapato ya ajira.\n\nMichango kwenye mifuko ya hifadhi ya jamii iliyoidhinishwa hupunguzwa kutoka mshahara ghafi wakati wa kukokotoa PAYE. Kikokotoo cha PAYE cha TRA kinakuomba uweke mshahara wako wa mwezi **baada ya kutoa mchango wa NSSF au PSSSF**.\n\n## Viwango vya kodi vya kila mwezi kwa watu binafsi (Tanzania Bara)\n\n| Mapato ya mwezi yanayotozwa kodi (TZS) | Kodi |\n|---|---|\n| Hadi 270,000 | HAKUNA |\n| 270,001 – 520,000 | 8% ya kiasi kinachozidi 270,000 |\n| 520,001 – 760,000 | 20,000 + 20% ya kiasi kinachozidi 520,000 |\n| 760,001 – 1,000,000 | 68,000 + 25% ya kiasi kinachozidi 760,000 |\n| Zaidi ya 1,000,000 | 128,000 + 30% ya kiasi kinachozidi 1,000,000 |\n\nHivyo mapato ya mwaka ya **TZS 3,240,000** (270,000 kwa mwezi) hayatozwi kodi.\n\n**Mfano:** Mapato ya mwezi ya TZS 600,000 yako kwenye kundi la tatu: 20,000 + 20% × (600,000 − 520,000) = 20,000 + 16,000 = **TZS 36,000**.\n\n## Makundi maalum\n\n- **Waajiriwa wasio wakazi:** kodi inazuiwa kwa kiwango kimoja cha **15%** ya mapato ghafi ya ajira.\n- **Ajira ya ziada:** mwajiri wa ziada anazuia kodi kwa kiwango **cha juu kabisa** cha kodi ya mtu binafsi.\n\n## Tarehe muhimu na wajibu\n\n- Mwajiri analipa PAYE **ndani ya siku saba (7) baada ya mwisho wa mwezi**.\n- Mwajiri anatunza kumbukumbu za mishahara kwa **miaka mitano**.\n- Watu binafsi wanaopaswa kuwasilisha ritani hulipa kodi ya awali kwa awamu nne (31 Machi, 30 Juni, 30 Septemba na 31 Desemba) na kuwasilisha ritani ya mwisho kabla ya **30 Juni** ya mwaka unaofuata.\n- Wafanyabiashara wadogo chini ya **mfumo wa kodi ya makadirio** (mauzo yasiyozidi TZS milioni 200) hulipa kodi kulingana na mauzo, na mauzo yasiyozidi TZS 4,000,000 hayatozwi kodi.\n\n## Mambo muhimu\n\n- Mapato hutokana na biashara, ajira au uwekezaji.\n- PAYE ni kodi ya mapato inayokatwa na mwajiri kutoka mshahara wa mwajiriwa.\n- Mapato ya mwezi hadi TZS 270,000 hayatozwi kodi.\n- Mwajiri lazima alipe PAYE ndani ya siku 7 baada ya mwezi kuisha.\n- Waajiriwa wasio wakazi hutozwa kiwango kimoja cha 15%.\n\nSource: [Frequently Asked Questions](https://www.tra.go.tz/faq); [Kodi Itokanayo na Ajira (PAYE)](https://www.tra.go.tz/sw/page/pay-as-you-earn); [Income Tax for Individuals](https://www.tra.go.tz/page/income-tax-for-individuals); [Paying Taxes](https://www.tra.go.tz/page/paying-taxes); [PAYE Calculator](https://www.tra.go.tz/calculators/paye)"
+      },
+      "quiz": {
+        "en": {
+          "title": "Quiz: Income Tax and PAYE",
+          "description": "Check your understanding of income tax and PAYE.",
+          "questions": [
+            {
+              "question_text": "What does PAYE stand for?",
+              "explanation": "PAYE stands for Pay-As-You-Earn, a withholding tax on employees' income.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "Pay-As-You-Earn",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Pay After Year End",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Public Assessment of Yearly Earnings",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Paid Account for Your Expenses",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Up to what monthly taxable income is the tax NIL in Mainland Tanzania?",
+              "explanation": "TRA's table shows NIL tax where monthly income does not exceed TZS 270,000.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "TZS 100,000",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "TZS 270,000",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "TZS 520,000",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "TZS 1,000,000",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Within how many days after the end of the month must an employer pay PAYE?",
+              "explanation": "PAYE is payable within seven days after the end of the calendar month.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "7 days",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "20 days",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "25 days",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "6 months",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Part-time and casual workers are included in TRA's definition of an employee.",
+              "explanation": "TRA's definition includes permanent, part-time and casual employees.",
+              "question_type": "true_false",
+              "answers": [
+                {
+                  "answer_text": "True",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "False",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Which of these are included in employment income? (Choose all that apply)",
+              "explanation": "Salary, bonuses and commissions are employment income; a pure reimbursement of work expenses is excluded.",
+              "question_type": "multiple_select",
+              "answers": [
+                {
+                  "answer_text": "Salary and wages",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Bonuses",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Commissions",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "An allowance that only reimburses money spent wholly on producing employment income",
+                  "is_correct": false
+                }
+              ]
+            }
+          ]
+        },
+        "sw": {
+          "title": "Jaribio: Kodi ya Mapato na PAYE",
+          "description": "Pima uelewa wako wa kodi ya mapato na PAYE.",
+          "questions": [
+            {
+              "question_text": "PAYE inasimama badala ya nini?",
+              "explanation": "PAYE ni Pay-As-You-Earn (Lipa Kadiri Unavyopata), kodi ya zuio kwa mapato ya waajiriwa.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "Pay-As-You-Earn (Lipa Kadiri Unavyopata)",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Pay After Year End (Lipa Baada ya Mwaka)",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Public Assessment of Yearly Earnings (Tathmini ya Mapato ya Mwaka)",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Paid Account for Your Expenses (Akaunti ya Matumizi)",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Mapato ya mwezi hadi kiasi gani hayatozwi kodi Tanzania Bara?",
+              "explanation": "Jedwali la TRA linaonyesha hakuna kodi mapato ya mwezi yasipozidi TZS 270,000.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "TZS 100,000",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "TZS 270,000",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "TZS 520,000",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "TZS 1,000,000",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Mwajiri anatakiwa kulipa PAYE ndani ya siku ngapi baada ya mwisho wa mwezi?",
+              "explanation": "PAYE inalipwa ndani ya siku saba baada ya mwisho wa mwezi.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "Siku 7",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Siku 20",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Siku 25",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Miezi 6",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Waajiriwa wa muda na vibarua wanajumuishwa katika maana ya mwajiriwa ya TRA.",
+              "explanation": "Maana ya TRA inajumuisha waajiriwa wa kudumu, wa muda na vibarua.",
+              "question_type": "true_false",
+              "answers": [
+                {
+                  "answer_text": "Kweli",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Si kweli",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Ni yapi kati ya haya yanajumuishwa katika mapato ya ajira? (Chagua yote sahihi)",
+              "explanation": "Mshahara, bonasi na kamisheni ni mapato ya ajira; posho inayorejesha tu gharama za kazi haijumuishwi.",
+              "question_type": "multiple_select",
+              "answers": [
+                {
+                  "answer_text": "Mshahara na ujira",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Bonasi",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Kamisheni",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Posho inayorejesha tu fedha zilizotumika kikamilifu kuzalisha mapato ya ajira",
+                  "is_correct": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "efd-receipts",
+      "category": "efd-receipts",
+      "level": "beginner",
+      "estimated_minutes": 7,
+      "kind": "lesson",
+      "sources": [
+        "https://www.tra.go.tz/page/know-about-e-fiscal-devices-efd",
+        "https://www.tra.go.tz/sw/page/know-about-e-fiscal-devices-efd",
+        "https://www.tra.go.tz/page/interest-penalties-offences",
+        "https://www.tra.go.tz/images/uploads/pages/CLIENT_SERVICE_CHARTER.pdf",
+        "https://www.tra.go.tz/"
+      ],
+      "en": {
+        "title": "Electronic Fiscal Devices (EFD) and Why You Must Demand a Receipt",
+        "summary": "EFD machines record every sale and send tax information to TRA. Learn the types of EFDs, the duties of sellers and buyers, and the penalties for not issuing or not demanding a receipt.",
+        "objectives": [
+          "Explain what an Electronic Fiscal Device (EFD) is and name its four types",
+          "Describe the duties of sellers and buyers regarding fiscal receipts",
+          "State the penalties for EFD offences, including failing to demand a receipt"
+        ],
+        "keywords": "EFD, Electronic Fiscal Device, receipt, fiscal receipt, demand receipt, ETR, EFP, ESD, EFPP, currency point",
+        "body_markdown": "## What is an EFD?\n\nAn **Electronic Fiscal Device (EFD)** is a machine designed for use in business for efficient management controls in sales analysis and stock control, and which meets the requirements set by law. When a seller uses an EFD, each sale is recorded and a **fiscal receipt** or **fiscal invoice** is produced.\n\n## Types of EFDs\n\n- **Electronic Tax Register (ETR):** used by retail businesses that previously issued receipts manually.\n- **Electronic Fiscal Printer (EFP):** used by computerised retail outlets; it is connected to a computer network and stores every sale in its fiscal memory.\n- **Electronic Signature Device (ESD):** signs documents produced by a personal computer, such as tax invoices, by printing a unique number (signature) on every invoice.\n- **Electronic Fiscal Pump Printer (EFPP):** designed for **petrol stations**; it is connected to a pump and prints a receipt for each sale.\n\n## Why does TRA prefer EFDs?\n\n- They have a fiscal memory that **cannot be erased** by mechanical, chemical or electromagnetic interference.\n- They automatically issue a daily **\"Z\" report** every 24 hours.\n- They **transmit tax information to TRA automatically**.\n- They have a date mechanism that cannot be reversed.\n- They issue receipts that are uniquely identifiable.\n- They have at least 48 hours of power backup.\n- They store data for at least 5 years.\n- They help avoid conflict during audits and tax assessments.\n\n## Duties of sellers\n\n- Issue a receipt or invoice on **each sale**.\n- Notify the Commissioner of any changes or malfunction of the machine **within 24 hours**. The machine supplier must install, configure and fix the machine **within 48 hours**.\n\nSince 2013, the second phase of EFD rollout has included traders who are not VAT-registered with a turnover of **TZS 11 million and above per year**, traders in prime areas, and selected sectors such as spare parts, hardware, mini supermarkets, petrol stations, mobile phone shops, bars and restaurants, and pharmacies.\n\n## Duties of buyers – that means you!\n\nTRA's Client Service Charter says **every buyer has a duty to demand a fiscalized receipt**. TRA's message is: **\"Whenever you sell, issue receipt. Whenever you buy, demand receipt.\"** A receipt proves that the tax you paid in the price will reach the government.\n\n## Penalties\n\nNote: **1 currency point = TZS 20,000**.\n\n- Failing to acquire and use an EFD, failing to issue a fiscal receipt, issuing a false receipt, or tampering with an EFD is an offence. The fine is **not less than 200 and not more than 300 currency points**, or imprisonment of up to **three years**, or both.\n- Where tax has been evaded, the person may also be fined **twice the amount of tax evaded**.\n- A person who **fails to demand** a receipt, or fails to report being denied one, commits an offence with a fine of between **2 and 100 currency points**.\n\n## Key points\n\n- EFDs record sales and send tax information to TRA automatically.\n- The four types are ETR, EFP, ESD and EFPP (for petrol stations).\n- Sellers must issue a receipt for every sale; buyers must demand one.\n- Machine faults must be reported within 24 hours.\n- Not demanding a receipt is an offence; 1 currency point equals TZS 20,000.\n\nSource: [Know About E-Fiscal Devices (EFD)](https://www.tra.go.tz/page/know-about-e-fiscal-devices-efd); [Interest, Penalties and Offences](https://www.tra.go.tz/page/interest-penalties-offences); [Client's Service Charter (PDF)](https://www.tra.go.tz/images/uploads/pages/CLIENT_SERVICE_CHARTER.pdf); [Tanzania Revenue Authority home page](https://www.tra.go.tz/)"
+      },
+      "sw": {
+        "title": "Mashine za Risiti za Kielektroniki (EFD) na Kwa Nini Lazima Udai Risiti",
+        "summary": "Mashine za EFD hurekodi kila mauzo na kutuma taarifa za kodi TRA. Jifunze aina za EFD, wajibu wa wauzaji na wanunuzi, na adhabu za kutotoa au kutodai risiti.",
+        "objectives": [
+          "Kueleza Mashine ya Risiti ya Kielektroniki (EFD) ni nini na kutaja aina zake nne",
+          "Kueleza wajibu wa wauzaji na wanunuzi kuhusu risiti za kielektroniki",
+          "Kutaja adhabu za makosa ya EFD, ikiwemo kutodai risiti"
+        ],
+        "keywords": "EFD, Mashine za Risiti za Kielektroniki, risiti, dai risiti, ETR, EFP, ESD, pointi za sarafu, adhabu",
+        "body_markdown": "## EFD ni nini?\n\n**Mashine za Risiti za Kielektroniki (EFD)** ni mashine zilizotengenezwa kutumika katika biashara ili kudhibiti kwa ufanisi uchambuzi wa mauzo na mfumo wa udhibiti wa mali, na zinazofuata masharti ya sheria. Muuzaji anapotumia EFD, kila mauzo hurekodiwa na **risiti** au **ankara ya kielektroniki** hutolewa.\n\n## Aina za EFD\n\n- **Mashine ya Rejista ya Kodi ya Kielektroniki (ETR):** hutumiwa na wafanyabiashara wa rejareja.\n- **Printa ya Risiti ya Kielektroniki (EFP):** hutumiwa na vituo vya mauzo ya rejareja vilivyounganishwa kikompyuta; huhifadhi miamala yote ya mauzo kwenye kumbukumbu zake.\n- **Chombo cha Kutia Saini za Kielektroniki (ESD):** husaini nyaraka za fedha zinazoandaliwa na kompyuta, kama ankara za kodi, kwa kuchapa namba maalum (saini) kwenye kila ankara.\n- **Mashine ya Kielektroniki ya Printa ya Pampu (EFPP):** imetengenezwa kwa ajili ya **vituo vya mafuta**; huchapa risiti kwa kila mauzo.\n\n## Kwa nini TRA inapendelea EFD?\n\n- Zinatunza kumbukumbu za fedha ambazo **haziwezi kufutwa** kwa mkono, kemikali au sumaku.\n- Zinatoa zenyewe ripoti ya mauzo ya **\"Z\"** kila baada ya saa 24.\n- **Zinatuma taarifa za kodi moja kwa moja kwenye mfumo wa TRA**.\n- Zina mfumo wa tarehe usioweza kubadilishwa.\n- Zinatoa risiti za kipekee zinazotambulika.\n- Zina hifadhi ya umeme ya angalau saa 48.\n- Zinahifadhi taarifa kwa angalau miaka 5.\n- Zinasaidia kuepuka migogoro wakati wa ukaguzi na makadirio ya kodi.\n\n## Wajibu wa muuzaji\n\n- Kutoa risiti au ankara kwa **kila mauzo**.\n- Kutoa taarifa za mabadiliko au hitilafu yoyote ya mashine kwa Kamishna **ndani ya saa 24**. Msambazaji wa mashine atasakinisha, kupanga na kushughulikia hitilafu **ndani ya saa 48**.\n\nTangu mwaka 2013, awamu ya pili ya EFD imejumuisha wafanyabiashara ambao hawajasajiliwa kwa VAT wenye mauzo ghafi ya **Shilingi milioni 11 na zaidi kwa mwaka**, wafanyabiashara wa maeneo maarufu, na sekta teule kama vipuri, vifaa vya ujenzi, maduka madogo, vituo vya petroli, maduka ya simu, baa na migahawa, na maduka ya dawa.\n\n## Wajibu wa mnunuzi – yaani wewe!\n\nMkataba wa Huduma kwa Mteja wa TRA unasema **kila mnunuzi ana wajibu wa kudai risiti ya kielektroniki**. Ujumbe wa TRA ni: **\"Whenever you sell, issue receipt. Whenever you buy, demand receipt\"** (Ukiuza, toa risiti. Ukinunua, dai risiti). Risiti inathibitisha kuwa kodi uliyolipa ndani ya bei itafika Serikalini.\n\n## Adhabu\n\nKumbuka: **pointi 1 ya sarafu = TZS 20,000**.\n\n- Kushindwa kumiliki na kutumia EFD, kushindwa kutoa risiti, kutoa risiti isiyo ya kweli, au kuharibu mashine ni kosa. Faini ni **kati ya pointi za sarafu 200 na 300**, au kifungo kisichozidi **miaka mitatu**, au vyote kwa pamoja.\n- Pale kodi imekwepwa, mhusika anaweza pia kulipa faini ya **mara mbili ya kodi iliyokwepwa**.\n- Mtu **asiyedai** risiti, au asiyetoa taarifa ya kunyimwa risiti, ametenda kosa na atalipa faini ya **kati ya pointi za sarafu 2 na 100**.\n\n## Mambo muhimu\n\n- EFD hurekodi mauzo na kutuma taarifa za kodi TRA moja kwa moja.\n- Aina nne ni ETR, EFP, ESD na EFPP (ya vituo vya mafuta).\n- Muuzaji lazima atoe risiti kwa kila mauzo; mnunuzi lazima aidai.\n- Hitilafu za mashine ziripotiwe ndani ya saa 24.\n- Kutodai risiti ni kosa; pointi 1 ya sarafu ni TZS 20,000.\n\nSource: [Mashine za Risiti za Kielektroniki (EFD)](https://www.tra.go.tz/sw/page/know-about-e-fiscal-devices-efd); [Interest, Penalties and Offences](https://www.tra.go.tz/page/interest-penalties-offences); [Client's Service Charter (PDF)](https://www.tra.go.tz/images/uploads/pages/CLIENT_SERVICE_CHARTER.pdf); [Tovuti ya TRA](https://www.tra.go.tz/)"
+      },
+      "quiz": {
+        "en": {
+          "title": "Quiz: EFDs and Receipts",
+          "description": "Test what you know about EFD machines and receipts.",
+          "questions": [
+            {
+              "question_text": "Which type of EFD is designed for use in petrol stations?",
+              "explanation": "The Electronic Fiscal Pump Printer (EFPP) is connected to a pump at petrol stations.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "Electronic Tax Register (ETR)",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Electronic Signature Device (ESD)",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Electronic Fiscal Pump Printer (EFPP)",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Electronic Fiscal Printer (EFP)",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Within how long must a seller notify the Commissioner of an EFD malfunction?",
+              "explanation": "Changes or malfunctions must be reported within 24 hours.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "24 hours",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "48 hours",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "7 days",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "30 days",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "A buyer who fails to demand a fiscal receipt commits an offence.",
+              "explanation": "Failing to demand or report denial of a receipt is an offence with a fine of 2 to 100 currency points.",
+              "question_type": "true_false",
+              "answers": [
+                {
+                  "answer_text": "True",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "False",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "How much is one currency point?",
+              "explanation": "TRA states that 1 currency point is equal to 20,000 shillings.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "TZS 1,000",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "TZS 10,000",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "TZS 20,000",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "TZS 200,000",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Which are features of EFDs? (Choose all that apply)",
+              "explanation": "EFDs send data to TRA, issue a daily Z report and have memory that cannot be erased; their date mechanism cannot be reversed.",
+              "question_type": "multiple_select",
+              "answers": [
+                {
+                  "answer_text": "They transmit tax information to TRA automatically",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "They issue a daily Z report every 24 hours",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Their fiscal memory cannot be erased",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "The seller can change the date backwards",
+                  "is_correct": false
+                }
+              ]
+            }
+          ]
+        },
+        "sw": {
+          "title": "Jaribio: EFD na Risiti",
+          "description": "Pima unachojua kuhusu mashine za EFD na risiti.",
+          "questions": [
+            {
+              "question_text": "Ni aina gani ya EFD imetengenezwa kwa ajili ya vituo vya mafuta?",
+              "explanation": "Mashine ya Printa ya Pampu (EFPP) huunganishwa na pampu katika vituo vya mafuta.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "Rejista ya Kodi ya Kielektroniki (ETR)",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Chombo cha Kutia Saini (ESD)",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Printa ya Pampu ya Kielektroniki (EFPP)",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Printa ya Risiti ya Kielektroniki (EFP)",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Muuzaji anatakiwa kumjulisha Kamishna kuhusu hitilafu ya EFD ndani ya muda gani?",
+              "explanation": "Mabadiliko au hitilafu lazima ziripotiwe ndani ya saa 24.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "Saa 24",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Saa 48",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Siku 7",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Siku 30",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Mnunuzi asiyedai risiti ya kielektroniki ametenda kosa.",
+              "explanation": "Kutodai au kutoripoti kunyimwa risiti ni kosa lenye faini ya pointi za sarafu 2 hadi 100.",
+              "question_type": "true_false",
+              "answers": [
+                {
+                  "answer_text": "Kweli",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Si kweli",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Pointi moja ya sarafu ni kiasi gani?",
+              "explanation": "TRA inasema pointi 1 ya sarafu ni sawa na shilingi 20,000.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "TZS 1,000",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "TZS 10,000",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "TZS 20,000",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "TZS 200,000",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Ni zipi ni sifa za EFD? (Chagua zote sahihi)",
+              "explanation": "EFD hutuma taarifa TRA, hutoa ripoti ya Z kila siku na zina kumbukumbu zisizofutika; tarehe zake haziwezi kubadilishwa.",
+              "question_type": "multiple_select",
+              "answers": [
+                {
+                  "answer_text": "Zinatuma taarifa za kodi TRA moja kwa moja",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Zinatoa ripoti ya Z kila baada ya saa 24",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Kumbukumbu zake haziwezi kufutwa",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Muuzaji anaweza kurudisha tarehe nyuma",
+                  "is_correct": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "customs-import-basics",
+      "category": "customs",
+      "level": "intermediate",
+      "estimated_minutes": 8,
+      "kind": "lesson",
+      "sources": [
+        "https://www.tra.go.tz/page/trading-across-borders",
+        "https://www.tra.go.tz/sw/page/trading-across-borders",
+        "https://www.tra.go.tz/page/import-procedures",
+        "https://www.tra.go.tz/sw/page/import-procedures",
+        "https://www.tra.go.tz/page/value-added-tax-vat",
+        "https://www.tra.go.tz/faq"
+      ],
+      "en": {
+        "title": "Customs and Import Duties Basics",
+        "summary": "When goods enter Tanzania, TRA's Customs and Excise Department collects import duty, excise duty and VAT. Learn how these taxes are calculated and the steps to clear imported goods.",
+        "objectives": [
+          "Name the taxes collected on imported goods and explain how import duty is calculated",
+          "Describe the main steps and documents for clearing imports through TANCIS",
+          "Explain how electronic tax stamps help consumers check excisable products"
+        ],
+        "keywords": "customs, import duty, excise duty, VAT on imports, CIF, TANCIS, clearing and forwarding agent, EACCMA, tax stamps, Hakiki Stempu",
+        "body_markdown": "## Who handles customs at TRA?\n\nTRA's **Customs and Excise Department** administers all taxes on international trade. When goods are imported into Tanzania, the main taxes are:\n\n- **Import Duty**\n- **Excise Duty**\n- **Value Added Tax (VAT)** on imports, charged at **18%** on taxable imports into Mainland Tanzania\n\nApart from these taxes, imported goods are also subject to port and airport charges.\n\n## Import duty\n\n**Import duty** is a tax levied on imported goods. It is usually calculated either as an **ad valorem** rate (a percentage of value) or a **specific** rate, on the **C.I.F. value** of the goods – that is, the cost of the goods plus insurance and freight. It is collected before goods are entered for home consumption.\n\n## Excise duty\n\n**Excise duty** is levied on certain consumer goods. Traditionally these are goods whose consumption society sees as harmful, such as **beer and cigarettes**, and goods that create negative effects for society, such as **petroleum**. In Tanzania, **soft drinks and motor vehicles** are also excisable for revenue purposes. For an ad valorem excise rate, the tax base is the **C.I.F. value plus import duty**.\n\n## Where do imports enter Tanzania?\n\nGoods are mainly imported through the **Dar es Salaam Port**, **Julius Nyerere International Airport** and **Kilimanjaro International Airport**. Some goods come through land borders, especially with neighbouring countries.\n\n## How are imports cleared?\n\nImport procedures follow the **East African Community Customs Management Act (EACCMA) 2004**.\n\n1. The importer appoints a **Licensed Clearing and Forwarding Agent (CFA)**.\n2. Documents are lodged online in the **Tanzania Customs Integrated System (TANCIS)**, a web-based, paperless system.\n3. Agents are urged to lodge documents **at least 7 days before the goods arrive**.\n4. TANCIS automatically rejects incomplete declarations or those with insufficient descriptions.\n\nImport documents include the final invoice, the agent's authorisation letter, import permits (for example from TMDA, TBS or TASAC), exemption documents if any, the packing list, and transport documents such as the Bill of Lading, Airway Bill or Road Consignment Note.\n\nBefore importing, importers are advised to get approval from relevant agencies depending on the goods, such as the Tanzania Bureau of Standards or the Tanzania Medicines and Medical Devices Authority.\n\n## Paying customs taxes\n\nImport and excise duties are paid through commercial banks or mobile networks using a **Government Electronic Payment Gateway (GEPG) control number**.\n\n## Tax stamps: a tool for consumers\n\nAn **Electronic Tax Stamp (ETS)** is a security mark placed on excisable products to confirm that tax has been paid. It helps prevent counterfeit products and protects consumer health. You can check a stamp with TRA's free **Hakiki Stempu** app by scanning the code on the stamp. If a stamp is not valid, report it and avoid using the product.\n\n## Key points\n\n- Customs and Excise collects import duty, excise duty and VAT on imports.\n- Import duty is usually calculated on the C.I.F. value of goods.\n- Imports are cleared by a licensed agent through TANCIS, ideally 7 days before arrival.\n- Payments use a GEPG control number through banks or mobile networks.\n- Use the Hakiki Stempu app to check tax stamps on excisable products.\n\nSource: [Trading across borders](https://www.tra.go.tz/page/trading-across-borders); [Import Procedures](https://www.tra.go.tz/page/import-procedures); [Value Added Tax (VAT)](https://www.tra.go.tz/page/value-added-tax-vat); [Frequently Asked Questions](https://www.tra.go.tz/faq)"
+      },
+      "sw": {
+        "title": "Misingi ya Forodha na Ushuru wa Bidhaa Zinazoingizwa Nchini",
+        "summary": "Bidhaa zinapoingia Tanzania, Idara ya Forodha na Ushuru ya TRA hukusanya ushuru wa forodha, ushuru wa bidhaa na VAT. Jifunze jinsi kodi hizi zinavyokokotolewa na hatua za kuondosha mizigo.",
+        "objectives": [
+          "Kutaja kodi zinazotozwa kwa bidhaa zinazoingizwa nchini na kueleza jinsi ushuru wa forodha unavyokokotolewa",
+          "Kueleza hatua kuu na nyaraka za kuondosha mizigo kupitia TANCIS",
+          "Kueleza jinsi stempu za kodi za kielektroniki zinavyomsaidia mlaji"
+        ],
+        "keywords": "forodha, ushuru wa forodha, ushuru wa bidhaa, VAT ya bidhaa za nje, CIF, TANCIS, wakala wa forodha, stempu za kodi, Hakiki Stempu",
+        "body_markdown": "## Nani anasimamia forodha TRA?\n\n**Idara ya Forodha na Ushuru** ya TRA inasimamia kodi zote kwenye biashara ya kimataifa. Bidhaa zinapoingizwa Tanzania, kodi kuu ni:\n\n- **Ushuru wa Forodha (Import Duty)**\n- **Ushuru wa Bidhaa (Excise Duty)**\n- **Kodi ya Ongezeko la Thamani (VAT)** kwa bidhaa zinazoingizwa, kwa kiwango cha **18%** kwa bidhaa zinazotozwa kodi zinazoingia Tanzania Bara\n\nMbali na kodi hizi, bidhaa zinazoingizwa pia hutozwa ada za bandari na uwanja wa ndege.\n\n## Ushuru wa forodha\n\n**Ushuru wa forodha** ni ushuru unaotozwa kwa bidhaa zinazoingizwa kutoka nje. Kwa kawaida hukokotolewa kama **asilimia ya thamani (ad valorem)** au kwa **kiwango mahususi**, kwa kuzingatia **thamani ya C.I.F.** ya bidhaa – yaani gharama ya bidhaa pamoja na bima na usafirishaji. Hukusanywa kabla bidhaa hazijaruhusiwa kutumika nchini.\n\n## Ushuru wa bidhaa\n\n**Ushuru wa bidhaa** hutozwa kwa baadhi ya bidhaa za walaji. Kwa kawaida ni bidhaa ambazo matumizi yake yanaonekana hayafai katika jamii, kama **bia na sigara**, na bidhaa ambazo matumizi yake huleta athari mbaya kwa jamii, kama **petroli**. Nchini Tanzania, **vinywaji baridi na magari** pia hutozwa ushuru wa bidhaa kwa madhumuni ya kuongeza mapato. Kwa kiwango cha ad valorem, msingi wa kodi ni **thamani ya C.I.F. pamoja na ushuru wa forodha**.\n\n## Bidhaa huingia Tanzania kupitia wapi?\n\nBidhaa huingizwa zaidi kupitia **Bandari ya Dar es Salaam**, **Uwanja wa Ndege wa Kimataifa wa Julius Nyerere** na **Uwanja wa Ndege wa Kimataifa wa Kilimanjaro**. Baadhi ya bidhaa huingia kupitia mipaka ya nchi kavu, hasa na nchi jirani.\n\n## Mizigo inaondoshwaje?\n\nTaratibu za kuingiza bidhaa zinafuata **Sheria ya Usimamizi wa Forodha ya Jumuiya ya Afrika Mashariki (EACCMA) ya mwaka 2004**.\n\n1. Mwingizaji bidhaa anamteua **Wakala wa Kupokea na Kusafirisha Mizigo mwenye Leseni (CFA)**.\n2. Nyaraka zinawasilishwa mtandaoni kupitia **Mfumo wa Pamoja wa Forodha Tanzania (TANCIS)**, mfumo wa mtandaoni usiotumia karatasi.\n3. Mawakala wanahimizwa kuwasilisha nyaraka **angalau siku 7 kabla ya bidhaa kuwasili**.\n4. TANCIS hukataa moja kwa moja matamko yasiyokamilika au yenye maelezo pungufu.\n\nNyaraka za kuingiza bidhaa ni pamoja na ankara ya mwisho, barua ya kumwidhinisha wakala, vibali vya kuingiza bidhaa (kwa mfano kutoka TMDA, TBS au TASAC), nyaraka za msamaha kama zipo, orodha ya ufungashaji, na nyaraka za usafirishaji kama Bill of Lading, Airway Bill au Road Consignment Note.\n\nKabla ya kuingiza bidhaa, waingizaji wanashauriwa kupata vibali kutoka taasisi husika kulingana na aina ya bidhaa, kama Shirika la Viwango Tanzania au Mamlaka ya Dawa na Vifaa Tiba.\n\n## Kulipa kodi za forodha\n\nUshuru wa forodha na ushuru wa bidhaa hulipwa kupitia benki za biashara au mitandao ya simu kwa kutumia **namba ya malipo (control number) ya GEPG**.\n\n## Stempu za kodi: chombo cha mlaji\n\n**Stempu ya Kodi ya Kielektroniki (ETS)** ni alama ya usalama inayobandikwa kwenye bidhaa zinazotozwa ushuru wa bidhaa kuthibitisha kuwa kodi imelipwa. Inasaidia kuzuia bidhaa bandia na kulinda afya ya mlaji. Unaweza kuhakiki stempu kwa programu ya bure ya TRA ya **Hakiki Stempu** kwa kuskani msimbo ulio kwenye stempu. Stempu isipokuwa halali, ripoti na usitumie bidhaa hiyo.\n\n## Mambo muhimu\n\n- Forodha na Ushuru hukusanya ushuru wa forodha, ushuru wa bidhaa na VAT ya bidhaa zinazoingizwa.\n- Ushuru wa forodha kwa kawaida hukokotolewa kwa thamani ya C.I.F.\n- Mizigo huondoshwa na wakala mwenye leseni kupitia TANCIS, ikiwezekana siku 7 kabla ya kuwasili.\n- Malipo hufanywa kwa control number ya GEPG kupitia benki au mitandao ya simu.\n- Tumia programu ya Hakiki Stempu kuhakiki stempu za kodi.\n\nSource: [Biashara ya Kimataifa (Trading across borders)](https://www.tra.go.tz/sw/page/trading-across-borders); [Taratibu za Kuingiza Bidhaa](https://www.tra.go.tz/sw/page/import-procedures); [Value Added Tax (VAT)](https://www.tra.go.tz/page/value-added-tax-vat); [Frequently Asked Questions](https://www.tra.go.tz/faq)"
+      },
+      "quiz": {
+        "en": {
+          "title": "Quiz: Customs and Import Duties",
+          "description": "Check what you learned about customs taxes and import procedures.",
+          "questions": [
+            {
+              "question_text": "Which TRA department administers taxes on international trade?",
+              "explanation": "The Customs and Excise Department administers all taxes on international trade.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "Customs and Excise Department",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Department of Education",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Department of Motor Vehicles only",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Department of Tourism",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Import duty is usually calculated on which value of the goods?",
+              "explanation": "Import duty is usually calculated on the C.I.F. value of imported goods.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "The retail shop price",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "The C.I.F. value",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "The buyer's monthly salary",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "The weight of the ship",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Agents are urged to lodge import documents at least how many days before goods arrive?",
+              "explanation": "TRA urges agents to lodge documents at least 7 days before arrival.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "1 day",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "7 days",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "30 days",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "90 days",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "An importer is required to appoint a licensed Clearing and Forwarding Agent to clear goods.",
+              "explanation": "TRA's import procedures require a licensed Clearing and Forwarding Agent (CFA).",
+              "question_type": "true_false",
+              "answers": [
+                {
+                  "answer_text": "True",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "False",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Which taxes does the Customs and Excise Department collect on imports? (Choose all that apply)",
+              "explanation": "The three taxes on imports are import duty, excise duty and VAT.",
+              "question_type": "multiple_select",
+              "answers": [
+                {
+                  "answer_text": "Import duty",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Excise duty",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "VAT on imports",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "School fees",
+                  "is_correct": false
+                }
+              ]
+            }
+          ]
+        },
+        "sw": {
+          "title": "Jaribio: Forodha na Ushuru",
+          "description": "Pima ulichojifunza kuhusu kodi za forodha na taratibu za kuingiza bidhaa.",
+          "questions": [
+            {
+              "question_text": "Ni idara gani ya TRA inasimamia kodi za biashara ya kimataifa?",
+              "explanation": "Idara ya Forodha na Ushuru inasimamia kodi zote za biashara ya kimataifa.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "Idara ya Forodha na Ushuru",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Idara ya Elimu",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Idara ya Magari pekee",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Idara ya Utalii",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Ushuru wa forodha kwa kawaida hukokotolewa kwa thamani ipi ya bidhaa?",
+              "explanation": "Ushuru wa forodha kwa kawaida hukokotolewa kwa thamani ya C.I.F.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "Bei ya dukani",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Thamani ya C.I.F.",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Mshahara wa mnunuzi",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Uzito wa meli",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Mawakala wanahimizwa kuwasilisha nyaraka angalau siku ngapi kabla ya bidhaa kuwasili?",
+              "explanation": "TRA inawahimiza mawakala kuwasilisha nyaraka angalau siku 7 kabla ya kuwasili.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "Siku 1",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Siku 7",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Siku 30",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Siku 90",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Mwingizaji bidhaa anatakiwa kumteua Wakala wa Kupokea na Kusafirisha Mizigo mwenye leseni ili kuondosha bidhaa.",
+              "explanation": "Taratibu za TRA zinataka Wakala mwenye leseni (CFA).",
+              "question_type": "true_false",
+              "answers": [
+                {
+                  "answer_text": "Kweli",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Si kweli",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Ni kodi zipi Idara ya Forodha na Ushuru hukusanya kwa bidhaa zinazoingizwa? (Chagua zote sahihi)",
+              "explanation": "Kodi tatu za bidhaa zinazoingizwa ni ushuru wa forodha, ushuru wa bidhaa na VAT.",
+              "question_type": "multiple_select",
+              "answers": [
+                {
+                  "answer_text": "Ushuru wa forodha",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Ushuru wa bidhaa",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "VAT ya bidhaa zinazoingizwa",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Ada ya shule",
+                  "is_correct": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "careers-at-tra-ita",
+      "category": "tax-careers",
+      "level": "beginner",
+      "estimated_minutes": 6,
+      "kind": "lesson",
+      "sources": [
+        "https://www.tra.go.tz/faq",
+        "https://www.tra.go.tz/vacancies",
+        "https://www.tra.go.tz/images/uploads/pages/CLIENT_SERVICE_CHARTER.pdf",
+        "https://www.tra.go.tz/page/management",
+        "https://www.tra.go.tz/sw/page/management",
+        "https://www.tra.go.tz/tax-club",
+        "https://www.tra.go.tz/sw/tax-club",
+        "https://www.tra.go.tz/",
+        "https://www.tra.go.tz/page/history",
+        "https://www.tra.go.tz/sw/page/history"
+      ],
+      "en": {
+        "title": "Careers and Opportunities at TRA and the Institute of Tax Administration",
+        "summary": "TRA offers careers in customs, domestic revenue, ICT, law, audit and more, and its Institute of Tax Administration trains tax professionals. Learn how TRA recruits and how to prepare.",
+        "objectives": [
+          "Describe the kinds of work done across TRA's departments",
+          "Explain how TRA advertises jobs and where to look for vacancies",
+          "Describe the programmes offered by the Institute of Tax Administration (ITA)"
+        ],
+        "keywords": "TRA careers, jobs, vacancies, Institute of Tax Administration, ITA, tax expert, customs officer, tax club",
+        "body_markdown": "## Why think about a tax career?\n\nTRA is a large institution with offices **nationwide**, in every region, district, business centre and official border post. Customs offices work 24 hours. That means TRA needs many skilled people, and Tax Clubs exist partly to **prepare future tax experts**.\n\n## What kind of work happens at TRA?\n\nTRA's management team shows the range of work done in the Authority. Its leadership includes:\n\n- **Commissioner for Customs and Excise** – international trade, customs duties and excise taxes, border protection and fighting smuggling\n- **Commissioner for Domestic Revenue** – taxes collected inside the country\n- **Commissioner for Tax Investigation**\n- **Director for Information and Communication Technology**\n- **Director for Human Resources Management and Administration**\n- **Director for Legal Services**\n- **Director for Research and Planning**\n- **Director for Internal Audit** and **Director for Internal Affairs** – controls, integrity and ethics\n\nSo TRA needs people with backgrounds such as tax, accounting, law, ICT, economics, human resources and auditing, among others.\n\n## How does TRA recruit?\n\nAccording to TRA, like other government institutions it **publicly advertises job vacancies** through:\n\n- Newspapers\n- The official TRA website\n- TRA's official social media platforms\n\nWhen TRA needs experts in a specific field, it announces the available positions based on demand and lets applicants **apply online**. Check the **Vacancies** page on the TRA website regularly; when there is nothing open, it says so and asks you to check back later.\n\n**Tip:** only trust job adverts from official TRA channels.\n\n## The Institute of Tax Administration (ITA)\n\nThe **Institute of Tax Administration (ITA)** is listed among TRA's related links. TRA's Client Service Charter lists ITA's recognised professional training on taxation and the length of each programme:\n\n| Programme | Duration |\n|---|---|\n| Certificate | 1 year |\n| Diploma | 2 years |\n| Bachelor degree | 3 years |\n| Postgraduate Diploma | 1 year |\n| Masters | 2 years |\n\nThe Charter also says eligible applicants are informed **3 weeks** before a short course starts and **1 month** before a long course starts.\n\n## Values TRA looks for\n\nTRA's core values are **Professionalism, Accountability, Integrity, Digital Transformation and Excellence in Service**. The Client Service Charter also forbids offering gifts or bribes for services. Showing these values in school – honesty, responsibility and good service – is great preparation.\n\n## Start now in your Tax Club\n\nTax Club members discuss tax issues, visit TRA offices, take part in tax debates and teach other students. These activities build knowledge and confidence for a future career.\n\n## Key points\n\n- TRA works nationwide and needs many types of professionals.\n- TRA advertises vacancies publicly through newspapers, its website and social media, and applications are made online.\n- ITA offers programmes from Certificate (1 year) to Masters (2 years).\n- Integrity and professionalism are among TRA's core values.\n- Tax Clubs help prepare future tax experts.\n\nSource: [Frequently Asked Questions](https://www.tra.go.tz/faq); [Vacancies](https://www.tra.go.tz/vacancies); [Client's Service Charter (PDF)](https://www.tra.go.tz/images/uploads/pages/CLIENT_SERVICE_CHARTER.pdf); [Management](https://www.tra.go.tz/page/management); [TRA Tax Club Corner](https://www.tra.go.tz/tax-club); [About TRA](https://www.tra.go.tz/page/history); [Tanzania Revenue Authority home page](https://www.tra.go.tz/)"
+      },
+      "sw": {
+        "title": "Ajira na Fursa TRA na Chuo cha Usimamizi wa Kodi (ITA)",
+        "summary": "TRA ina ajira katika forodha, mapato ya ndani, TEHAMA, sheria, ukaguzi na zaidi, na Chuo chake cha Usimamizi wa Kodi (ITA) hufundisha wataalamu wa kodi. Jifunze jinsi TRA inavyoajiri.",
+        "objectives": [
+          "Kueleza aina za kazi zinazofanyika katika idara za TRA",
+          "Kueleza jinsi TRA inavyotangaza ajira na mahali pa kuangalia nafasi za kazi",
+          "Kueleza programu zinazotolewa na Chuo cha Usimamizi wa Kodi (ITA)"
+        ],
+        "keywords": "ajira TRA, kazi, nafasi za kazi, Chuo cha Usimamizi wa Kodi, ITA, mtaalamu wa kodi, afisa forodha, klabu ya kodi",
+        "body_markdown": "## Kwa nini ufikirie taaluma ya kodi?\n\nTRA ni taasisi kubwa yenye ofisi **nchi nzima**, katika kila mkoa, wilaya, vituo vya biashara na vituo rasmi vya mipakani. Ofisi za forodha hufanya kazi saa 24. Hii inamaanisha TRA inahitaji watu wengi wenye ujuzi, na Klabu za Kodi zipo pia kwa ajili ya **kuandaa wataalamu wa kodi wa siku zijazo**.\n\n## Kazi za aina gani hufanyika TRA?\n\nTimu ya menejimenti ya TRA inaonyesha upana wa kazi zinazofanyika. Uongozi wake unajumuisha:\n\n- **Kamishna wa Forodha na Ushuru wa Bidhaa** – biashara ya kimataifa, ushuru wa forodha na ushuru wa bidhaa, ulinzi wa mipaka na kupambana na magendo\n- **Kamishna wa Kodi za Ndani** – kodi zinazokusanywa ndani ya nchi\n- **Kamishna wa Upelelezi wa Kodi**\n- **Mkurugenzi wa Teknolojia ya Habari na Mawasiliano (TEHAMA)**\n- **Mkurugenzi wa Rasilimali Watu na Utawala**\n- **Mkurugenzi wa Huduma za Kisheria**\n- **Mkurugenzi wa Tafiti na Mipango**\n- **Mkurugenzi wa Ukaguzi wa Ndani** na **Mkurugenzi wa Mambo ya Ndani** – udhibiti, uadilifu na maadili\n\nKwa hiyo TRA inahitaji watu wenye taaluma kama kodi, uhasibu, sheria, TEHAMA, uchumi, rasilimali watu na ukaguzi, miongoni mwa nyingine.\n\n## TRA huajiri vipi?\n\nKwa mujibu wa TRA, kama taasisi nyingine za Serikali, **inatangaza ajira zake kwa uwazi** kupitia:\n\n- Magazeti\n- Tovuti rasmi ya TRA\n- Mitandao rasmi ya kijamii ya TRA\n\nPanapotokea uhitaji wa wataalamu katika eneo fulani, TRA hutangaza nafasi kulingana na uhitaji na kuruhusu waombaji **kuomba kwa njia ya mtandao**. Tembelea ukurasa wa **Vacancies (Nafasi za Kazi)** kwenye tovuti ya TRA mara kwa mara; pasipo nafasi, ukurasa huo husema hivyo na kukuomba uangalie tena baadaye.\n\n**Kidokezo:** amini matangazo ya kazi kutoka vyanzo rasmi vya TRA tu.\n\n## Chuo cha Usimamizi wa Kodi (ITA)\n\n**Chuo Cha Usimamizi Wa Kodi (Institute of Tax Administration – ITA)** kimeorodheshwa kwenye viungo vinavyohusiana vya tovuti ya TRA. Mkataba wa Huduma kwa Mteja wa TRA unaorodhesha mafunzo ya kitaaluma ya kodi yanayotambuliwa ya ITA na muda wa kila programu:\n\n| Programu | Muda |\n|---|---|\n| Cheti (Certificate) | Mwaka 1 |\n| Stashahada (Diploma) | Miaka 2 |\n| Shahada ya Kwanza (Bachelor) | Miaka 3 |\n| Stashahada ya Uzamili (Postgraduate Diploma) | Mwaka 1 |\n| Shahada ya Uzamili (Masters) | Miaka 2 |\n\nMkataba pia unasema waombaji wanaostahili hujulishwa **wiki 3** kabla ya kozi fupi kuanza na **mwezi 1** kabla ya kozi ndefu kuanza.\n\n## Maadili ambayo TRA inathamini\n\nMaadili ya msingi ya TRA ni **Weledi, Uwajibikaji, Uadilifu, Mabadiliko ya Kidijitali na Ubora katika Huduma**. Mkataba wa Huduma kwa Mteja pia unakataza kutoa zawadi au rushwa ili kupata huduma. Kuonyesha maadili haya shuleni – uaminifu, uwajibikaji na huduma bora – ni maandalizi mazuri.\n\n## Anza sasa katika Klabu yako ya Kodi\n\nWanachama wa Klabu za Kodi hujadili masuala ya kodi, hutembelea ofisi za TRA, hushiriki midahalo ya kodi na kuwafundisha wanafunzi wengine. Shughuli hizi hujenga maarifa na kujiamini kwa ajili ya taaluma ya baadaye.\n\n## Mambo muhimu\n\n- TRA inafanya kazi nchi nzima na inahitaji wataalamu wa aina nyingi.\n- TRA inatangaza ajira kwa uwazi kupitia magazeti, tovuti yake na mitandao ya kijamii, na maombi hufanywa mtandaoni.\n- ITA inatoa programu kuanzia Cheti (mwaka 1) hadi Shahada ya Uzamili (miaka 2).\n- Uadilifu na weledi ni miongoni mwa maadili ya msingi ya TRA.\n- Klabu za Kodi husaidia kuandaa wataalamu wa kodi wa siku zijazo.\n\nSource: [Maswali Yanayoulizwa Mara kwa Mara](https://www.tra.go.tz/faq); [Vacancies](https://www.tra.go.tz/vacancies); [Client's Service Charter (PDF)](https://www.tra.go.tz/images/uploads/pages/CLIENT_SERVICE_CHARTER.pdf); [Menejimenti](https://www.tra.go.tz/sw/page/management); [Kona ya Klabu za Kodi](https://www.tra.go.tz/sw/tax-club); [Kuhusu TRA](https://www.tra.go.tz/sw/page/history); [Tovuti ya TRA](https://www.tra.go.tz/)"
+      },
+      "quiz": {
+        "en": {
+          "title": "Quiz: Careers at TRA and ITA",
+          "description": "Check what you learned about careers at TRA and training at ITA.",
+          "questions": [
+            {
+              "question_text": "How does TRA advertise its job vacancies?",
+              "explanation": "TRA publicly advertises vacancies through newspapers, its official website and official social media.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "Only through private messages to selected people",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Publicly, through newspapers, the TRA website and official social media",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Only on posters at bus stations",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "TRA never advertises jobs",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "What is the name of the institute linked from TRA's website that offers tax training programmes?",
+              "explanation": "The Institute of Tax Administration (ITA) offers recognised professional training on taxation.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "Institute of Tax Administration (ITA)",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Tanzania Customs Integrated System (TANCIS)",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Business Registration and Licensing Authority (BRELA)",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Tanzania Bureau of Standards (TBS)",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "According to TRA's Client Service Charter, how long is ITA's Bachelor degree programme?",
+              "explanation": "The Charter lists the ITA Bachelor degree as 3 years.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "1 year",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "2 years",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "3 years",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "5 years",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "When TRA announces positions, applicants are allowed to apply online.",
+              "explanation": "TRA's FAQ says it announces positions and allows applicants to apply online.",
+              "question_type": "true_false",
+              "answers": [
+                {
+                  "answer_text": "True",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "False",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Which of these are offices in TRA's management team? (Choose all that apply)",
+              "explanation": "Customs and Excise, Domestic Revenue and ICT are part of TRA's management; passports are not a TRA function.",
+              "question_type": "multiple_select",
+              "answers": [
+                {
+                  "answer_text": "Commissioner for Customs and Excise",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Commissioner for Domestic Revenue",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Director for Information and Communication Technology",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Commissioner for Passports",
+                  "is_correct": false
+                }
+              ]
+            }
+          ]
+        },
+        "sw": {
+          "title": "Jaribio: Ajira TRA na ITA",
+          "description": "Pima ulichojifunza kuhusu ajira TRA na mafunzo ITA.",
+          "questions": [
+            {
+              "question_text": "TRA inatangazaje nafasi zake za kazi?",
+              "explanation": "TRA inatangaza ajira kwa uwazi kupitia magazeti, tovuti rasmi na mitandao rasmi ya kijamii.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "Kupitia ujumbe binafsi kwa watu waliochaguliwa tu",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Kwa uwazi, kupitia magazeti, tovuti ya TRA na mitandao rasmi ya kijamii",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Kupitia mabango ya vituo vya mabasi tu",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "TRA haitangazi ajira kamwe",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Ni chuo gani kilichounganishwa na tovuti ya TRA kinachotoa programu za mafunzo ya kodi?",
+              "explanation": "Chuo cha Usimamizi wa Kodi (ITA) kinatoa mafunzo ya kitaaluma ya kodi.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "Chuo cha Usimamizi wa Kodi (ITA)",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Mfumo wa Pamoja wa Forodha Tanzania (TANCIS)",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Mamlaka ya Usajili wa Biashara na Leseni (BRELA)",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Shirika la Viwango Tanzania (TBS)",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Kwa mujibu wa Mkataba wa Huduma kwa Mteja wa TRA, Shahada ya Kwanza ya ITA inachukua muda gani?",
+              "explanation": "Mkataba unaonyesha Shahada ya Kwanza ya ITA ni miaka 3.",
+              "question_type": "single_choice",
+              "answers": [
+                {
+                  "answer_text": "Mwaka 1",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Miaka 2",
+                  "is_correct": false
+                },
+                {
+                  "answer_text": "Miaka 3",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Miaka 5",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "TRA inapotangaza nafasi, waombaji wanaruhusiwa kuomba kwa njia ya mtandao.",
+              "explanation": "FAQ ya TRA inasema hutangaza nafasi na kuruhusu waombaji kuomba mtandaoni.",
+              "question_type": "true_false",
+              "answers": [
+                {
+                  "answer_text": "Kweli",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Si kweli",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "question_text": "Ni zipi kati ya hizi ni ofisi katika timu ya menejimenti ya TRA? (Chagua zote sahihi)",
+              "explanation": "Forodha na Ushuru wa Bidhaa, Kodi za Ndani na TEHAMA ni sehemu ya menejimenti ya TRA; pasipoti si kazi ya TRA.",
+              "question_type": "multiple_select",
+              "answers": [
+                {
+                  "answer_text": "Kamishna wa Forodha na Ushuru wa Bidhaa",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Kamishna wa Kodi za Ndani",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Mkurugenzi wa TEHAMA",
+                  "is_correct": true
+                },
+                {
+                  "answer_text": "Kamishna wa Pasipoti",
+                  "is_correct": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "key": "career-writing-a-cv",
+      "category": "tax-careers",
+      "level": "beginner",
+      "estimated_minutes": 5,
+      "kind": "career",
+      "sources": [],
+      "en": {
+        "title": "Writing a Simple CV",
+        "summary": "A CV is a short document that tells an employer who you are and what you can do. Learn what to include, how to organise it and common mistakes to avoid.",
+        "objectives": [
+          "List the main sections of a simple CV",
+          "Describe how to present education, skills and activities clearly",
+          "Avoid common CV mistakes that cost applicants opportunities"
+        ],
+        "keywords": "CV, curriculum vitae, resume, job application, skills, referees, students",
+        "body_markdown": "## What is a CV?\n\nA **CV (curriculum vitae)** is a short summary of your education, skills and experience. Employers, colleges and attachment coordinators use it to decide whom to invite for an interview. For a student, one or two pages is enough.\n\n## The main sections\n\n1. **Personal details:** full name, phone number, email address and location. Use a simple, professional email address.\n2. **Profile:** two or three sentences about who you are and what you are looking for, for example: \"A hardworking accounting student interested in tax administration.\"\n3. **Education:** list your schools or colleges, starting with the most recent, with dates and the course or level.\n4. **Skills:** computer skills, languages (Kiswahili, English), communication, teamwork and any other practical skills.\n5. **Experience and activities:** part-time work, volunteering, attachments and club roles. Being chairperson or secretary of your **Tax Club** shows leadership and responsibility.\n6. **Achievements:** prizes, debate wins, certificates.\n7. **Referees:** two or three people, such as a teacher or patron, who know you well. Always ask them first.\n\n## Tips for a strong CV\n\n- **Keep it short and clear.** Use headings and bullet points.\n- **Be honest.** Never include qualifications or experience you do not have. Integrity matters to every employer.\n- **Use action words:** \"organised\", \"led\", \"prepared\", \"taught\".\n- **Tailor it.** Adjust your profile and skills to match each job or attachment you apply for.\n- **Check spelling and grammar.** Ask a teacher or friend to read it.\n- **Save it as a PDF** with a clear file name, such as \"Amina_Juma_CV.pdf\".\n\n## Common mistakes to avoid\n\n- Long paragraphs that are hard to read\n- Missing or wrong phone numbers\n- Unprofessional photos or email addresses\n- Copying someone else's CV word for word\n\n## Key points\n\n- A student CV should be one or two pages.\n- Include personal details, profile, education, skills, activities and referees.\n- Club leadership, such as in a Tax Club, is valuable experience.\n- Be honest, clear and check your spelling.\n\nSource: TRA Tax Club"
+      },
+      "sw": {
+        "title": "Kuandika CV Rahisi",
+        "summary": "CV ni waraka mfupi unaomweleza mwajiri wewe ni nani na unaweza kufanya nini. Jifunze mambo ya kuweka, jinsi ya kuipanga na makosa ya kuepuka.",
+        "objectives": [
+          "Kutaja sehemu kuu za CV rahisi",
+          "Kueleza jinsi ya kuonyesha elimu, ujuzi na shughuli kwa uwazi",
+          "Kuepuka makosa ya kawaida yanayowanyima waombaji fursa"
+        ],
+        "keywords": "CV, wasifu, maombi ya kazi, ujuzi, wadhamini, wanafunzi",
+        "body_markdown": "## CV ni nini?\n\n**CV (wasifu binafsi)** ni muhtasari mfupi wa elimu, ujuzi na uzoefu wako. Waajiri, vyuo na waratibu wa mafunzo kwa vitendo huitumia kuamua nani aitwe kwenye usaili. Kwa mwanafunzi, kurasa moja au mbili zinatosha.\n\n## Sehemu kuu\n\n1. **Taarifa binafsi:** jina kamili, namba ya simu, barua pepe na mahali unapoishi. Tumia barua pepe rahisi na yenye heshima.\n2. **Maelezo mafupi:** sentensi mbili au tatu kuhusu wewe ni nani na unatafuta nini, kwa mfano: \"Mwanafunzi mchapakazi wa uhasibu anayependa usimamizi wa kodi.\"\n3. **Elimu:** orodhesha shule au vyuo, kuanzia cha karibuni zaidi, pamoja na tarehe na kozi au kidato.\n4. **Ujuzi:** kompyuta, lugha (Kiswahili, Kiingereza), mawasiliano, kufanya kazi kwa timu na ujuzi mwingine wa vitendo.\n5. **Uzoefu na shughuli:** kazi za muda, kujitolea, mafunzo kwa vitendo na nafasi katika vilabu. Kuwa mwenyekiti au katibu wa **Klabu ya Kodi** kunaonyesha uongozi na uwajibikaji.\n6. **Mafanikio:** zawadi, ushindi wa midahalo, vyeti.\n7. **Wadhamini (referees):** watu wawili au watatu, kama mwalimu au patroni, wanaokufahamu vizuri. Waombe ruhusa kwanza.\n\n## Vidokezo vya CV bora\n\n- **Iwe fupi na wazi.** Tumia vichwa vidogo na vitone.\n- **Kuwa mkweli.** Usiandike sifa au uzoefu usio nao. Uadilifu ni muhimu kwa kila mwajiri.\n- **Tumia maneno ya vitendo:** \"niliandaa\", \"niliongoza\", \"nilifundisha\".\n- **Ibadilishe kulingana na nafasi.** Rekebisha maelezo na ujuzi ili ulingane na kila kazi au nafasi ya mafunzo unayoomba.\n- **Hakiki tahajia na sarufi.** Mwombe mwalimu au rafiki aisome.\n- **Ihifadhi kama PDF** yenye jina wazi, kama \"Amina_Juma_CV.pdf\".\n\n## Makosa ya kuepuka\n\n- Aya ndefu zisizosomeka kwa urahisi\n- Namba za simu zisizo sahihi au kukosekana\n- Picha au barua pepe zisizo na heshima\n- Kunakili CV ya mtu mwingine neno kwa neno\n\n## Mambo muhimu\n\n- CV ya mwanafunzi iwe kurasa moja au mbili.\n- Weka taarifa binafsi, maelezo mafupi, elimu, ujuzi, shughuli na wadhamini.\n- Uongozi wa klabu, kama Klabu ya Kodi, ni uzoefu wenye thamani.\n- Kuwa mkweli, mwazi na hakiki tahajia.\n\nSource: TRA Tax Club"
+      },
+      "quiz": null
+    },
+    {
+      "key": "career-interview-preparation",
+      "category": "tax-careers",
+      "level": "beginner",
+      "estimated_minutes": 5,
+      "kind": "career",
+      "sources": [],
+      "en": {
+        "title": "Preparing for an Interview",
+        "summary": "An interview is your chance to show an employer who you are. Learn how to prepare, what to do on the day and how to answer common questions with confidence.",
+        "objectives": [
+          "Describe how to research an organisation before an interview",
+          "Prepare clear answers to common interview questions",
+          "Explain good behaviour and presentation on the interview day"
+        ],
+        "keywords": "interview, job interview, preparation, questions, confidence, professionalism",
+        "body_markdown": "## Before the interview\n\n**Research the organisation.** Read its official website. Learn what it does, its mission and its values. For example, if you are interviewing at a public institution, know its main functions and core values, and think about how your own values match them.\n\n**Read the advert again.** Note the duties and qualifications required, and think of examples from your studies, clubs or work that show you have those skills.\n\n**Prepare your documents.** Carry copies of your CV, certificates, identification and any letters you were asked to bring, in a clean folder.\n\n**Practise.** Ask a friend, teacher or parent to ask you questions. Practise in both Kiswahili and English if the job may need both.\n\n## Common questions and how to answer\n\n- **\"Tell us about yourself.\"** Give a short summary: your studies, key skills and why you want this role. Keep it under two minutes.\n- **\"Why do you want to work here?\"** Show that you know the organisation and connect its work to your interests.\n- **\"What are your strengths and weaknesses?\"** Give a real strength with an example. For a weakness, choose something small and explain how you are improving.\n- **\"Describe a time you worked in a team.\"** Use a simple structure: the situation, what you did, and the result. Your Tax Club debates or projects are good examples.\n- **\"Do you have any questions for us?\"** Always prepare one or two questions, such as asking about training opportunities.\n\n## On the interview day\n\n- **Arrive early** – at least 15 minutes before the time.\n- **Dress neatly and simply.**\n- **Greet the panel politely**, sit when invited and keep good eye contact.\n- **Listen carefully** to each question. It is fine to pause and think before answering.\n- **Be honest.** If you do not know something, say so and show willingness to learn.\n- **Switch off your phone.**\n\n## After the interview\n\nThank the panel. If you are not selected, ask for feedback where possible and keep improving. Every interview is practice for the next one.\n\n## Key points\n\n- Research the organisation and the job before the interview.\n- Prepare documents and practise common questions.\n- Arrive early, dress neatly and listen carefully.\n- Honesty and a positive attitude make a strong impression.\n\nSource: TRA Tax Club"
+      },
+      "sw": {
+        "title": "Kujiandaa kwa Usaili",
+        "summary": "Usaili ni nafasi yako ya kumwonyesha mwajiri wewe ni nani. Jifunze jinsi ya kujiandaa, nini cha kufanya siku ya usaili na jinsi ya kujibu maswali ya kawaida kwa kujiamini.",
+        "objectives": [
+          "Kueleza jinsi ya kuitafiti taasisi kabla ya usaili",
+          "Kuandaa majibu mazuri kwa maswali ya kawaida ya usaili",
+          "Kueleza tabia na mwonekano mzuri siku ya usaili"
+        ],
+        "keywords": "usaili, mahojiano ya kazi, maandalizi, maswali, kujiamini, weledi",
+        "body_markdown": "## Kabla ya usaili\n\n**Itafiti taasisi.** Soma tovuti yake rasmi. Jifunze inafanya nini, dhamira yake na maadili yake. Kwa mfano, ukienda kwenye usaili wa taasisi ya umma, fahamu majukumu yake makuu na maadili yake ya msingi, na fikiria jinsi maadili yako yanavyoendana nayo.\n\n**Soma tangazo tena.** Angalia majukumu na sifa zinazohitajika, na fikiria mifano kutoka masomo yako, vilabu au kazi inayoonyesha kuwa una ujuzi huo.\n\n**Andaa nyaraka zako.** Beba nakala za CV, vyeti, kitambulisho na barua ulizoombwa kuleta, kwenye faili safi.\n\n**Fanya mazoezi.** Mwombe rafiki, mwalimu au mzazi akuulize maswali. Jizoeze kwa Kiswahili na Kiingereza kama kazi inaweza kuhitaji lugha zote mbili.\n\n## Maswali ya kawaida na jinsi ya kujibu\n\n- **\"Tueleze kuhusu wewe.\"** Toa muhtasari mfupi: masomo yako, ujuzi mkuu na kwa nini unataka nafasi hii. Usizidi dakika mbili.\n- **\"Kwa nini unataka kufanya kazi hapa?\"** Onyesha kuwa unaifahamu taasisi na unganisha kazi zake na mapenzi yako.\n- **\"Uwezo na udhaifu wako ni upi?\"** Taja uwezo halisi pamoja na mfano. Kwa udhaifu, chagua jambo dogo na ueleze unavyojiboresha.\n- **\"Eleza wakati ulifanya kazi kwenye timu.\"** Tumia mpangilio rahisi: hali ilivyokuwa, ulichofanya, na matokeo. Midahalo au miradi ya Klabu ya Kodi ni mifano mizuri.\n- **\"Una swali lolote kwetu?\"** Andaa swali moja au mawili, kama kuuliza kuhusu fursa za mafunzo.\n\n## Siku ya usaili\n\n- **Fika mapema** – angalau dakika 15 kabla ya muda.\n- **Vaa nadhifu na kwa urahisi.**\n- **Wasalimie wasaili kwa heshima**, keti unapokaribishwa na watazame machoni.\n- **Sikiliza kwa makini** kila swali. Ni sawa kutulia na kufikiri kabla ya kujibu.\n- **Kuwa mkweli.** Usipojua jambo, sema hivyo na onyesha utayari wa kujifunza.\n- **Zima simu yako.**\n\n## Baada ya usaili\n\nWashukuru wasaili. Usipochaguliwa, omba maoni pale inapowezekana na endelea kujiboresha. Kila usaili ni mazoezi kwa ujao.\n\n## Mambo muhimu\n\n- Itafiti taasisi na kazi kabla ya usaili.\n- Andaa nyaraka na jizoeze maswali ya kawaida.\n- Fika mapema, vaa nadhifu na sikiliza kwa makini.\n- Ukweli na mtazamo chanya huacha picha nzuri.\n\nSource: TRA Tax Club"
+      },
+      "quiz": null
+    },
+    {
+      "key": "career-internships-attachments",
+      "category": "tax-careers",
+      "level": "beginner",
+      "estimated_minutes": 5,
+      "kind": "career",
+      "sources": [
+        "https://www.tra.go.tz/faq",
+        "https://www.tra.go.tz/vacancies",
+        "https://www.tra.go.tz/images/uploads/pages/CLIENT_SERVICE_CHARTER.pdf",
+        "https://www.tra.go.tz/tax-club",
+        "https://www.tra.go.tz/sw/tax-club"
+      ],
+      "en": {
+        "title": "Internships and Attachments at Public Institutions like TRA",
+        "summary": "Field attachments and internships let students learn real work. Here is what TRA's website confirms about recruitment and training, plus practical tips for seeking a placement.",
+        "objectives": [
+          "Explain the difference between an attachment and an internship",
+          "Identify official TRA channels for opportunities and training",
+          "Prepare a professional request for a placement"
+        ],
+        "keywords": "internship, field attachment, practical training, TRA, public institutions, vacancies, ITA",
+        "body_markdown": "## Attachments and internships\n\nA **field attachment** (practical training) is usually part of a college or university course: students spend a period working in an organisation to apply what they learn. An **internship** is often for recent graduates and helps them gain work experience. Both are valuable for anyone interested in tax, accounting, ICT, law or customs work.\n\n## What TRA's website confirms\n\n- TRA, like other government institutions, **publicly advertises job vacancies** through newspapers, the official TRA website and official social media, and allows applicants to **apply online** when positions are announced.\n- The TRA website has a **Vacancies** page. Check it regularly; when nothing is open, it asks you to check back later.\n- TRA offices are located nationwide, in every region, district, business centre and official border post.\n- TRA's Client Service Charter lists **Training and Taxpayers' Education** among TRA's services, and lists recognised tax programmes at the **Institute of Tax Administration (ITA)**, from Certificate (1 year) to Masters (2 years).\n- Tax Club members are encouraged to **visit TRA offices** to increase their tax knowledge.\n\nTRA's website does not publish a dedicated internship or attachment programme page, so rely only on official TRA announcements for any placement opportunity.\n\n## How to seek a placement (general advice)\n\n1. **Start early.** Speak to your college attachment coordinator months before the placement period.\n2. **Prepare documents:** a short CV, an introduction letter from your college and copies of your identification.\n3. **Write a polite request letter** addressed to the head of the office, stating your course, the period and the skills you hope to build.\n4. **Follow official channels only.** Never pay anyone who promises to \"secure\" a placement or job. Report such offers.\n5. **Be professional during the placement:** arrive on time, dress neatly, keep information confidential and ask questions.\n\n## Making the most of your placement\n\nKeep a daily logbook of tasks, ask your supervisor for feedback, and request a reference letter at the end. These will strengthen future applications.\n\n## Key points\n\n- Attachments are part of a course; internships often follow graduation.\n- TRA advertises opportunities publicly and accepts online applications when positions are announced.\n- Use only official TRA channels and never pay for a placement.\n- Professional behaviour and confidentiality matter in public institutions.\n\nSource: [Frequently Asked Questions](https://www.tra.go.tz/faq); [Vacancies](https://www.tra.go.tz/vacancies); [Client's Service Charter (PDF)](https://www.tra.go.tz/images/uploads/pages/CLIENT_SERVICE_CHARTER.pdf); [TRA Tax Club Corner](https://www.tra.go.tz/tax-club)"
+      },
+      "sw": {
+        "title": "Mafunzo kwa Vitendo na Uzoefu Kazini katika Taasisi za Umma kama TRA",
+        "summary": "Mafunzo kwa vitendo na programu za uzoefu kazini huwawezesha wanafunzi kujifunza kazi halisi. Haya ndiyo tovuti ya TRA inathibitisha kuhusu ajira na mafunzo, pamoja na vidokezo vya kutafuta nafasi.",
+        "objectives": [
+          "Kueleza tofauti kati ya mafunzo kwa vitendo na programu ya uzoefu kazini (internship)",
+          "Kutambua vyanzo rasmi vya TRA vya fursa na mafunzo",
+          "Kuandaa ombi la nafasi kwa weledi"
+        ],
+        "keywords": "internship, mafunzo kwa vitendo, field attachment, TRA, taasisi za umma, nafasi za kazi, ITA",
+        "body_markdown": "## Mafunzo kwa vitendo na uzoefu kazini\n\n**Mafunzo kwa vitendo (field attachment)** kwa kawaida ni sehemu ya kozi ya chuo: wanafunzi hukaa muda fulani katika taasisi ili kutumia wanachojifunza. **Programu ya uzoefu kazini (internship)** mara nyingi ni kwa wahitimu wapya ili wapate uzoefu wa kazi. Zote ni muhimu kwa yeyote anayependa kazi za kodi, uhasibu, TEHAMA, sheria au forodha.\n\n## Tovuti ya TRA inathibitisha nini\n\n- TRA, kama taasisi nyingine za Serikali, **inatangaza ajira kwa uwazi** kupitia magazeti, tovuti rasmi ya TRA na mitandao rasmi ya kijamii, na huruhusu waombaji **kuomba mtandaoni** nafasi zinapotangazwa.\n- Tovuti ya TRA ina ukurasa wa **Vacancies (Nafasi za Kazi)**. Utembelee mara kwa mara; pasipo nafasi, hukuomba uangalie tena baadaye.\n- Ofisi za TRA zipo nchi nzima, katika kila mkoa, wilaya, vituo vya biashara na vituo rasmi vya mipakani.\n- Mkataba wa Huduma kwa Mteja wa TRA unataja **Mafunzo na Elimu kwa Mlipakodi** kama mojawapo ya huduma za TRA, na unaorodhesha programu za kodi zinazotambuliwa za **Chuo Cha Usimamizi Wa Kodi (ITA)**, kuanzia Cheti (mwaka 1) hadi Shahada ya Uzamili (miaka 2).\n- Wanachama wa Klabu za Kodi wanahimizwa **kutembelea ofisi za TRA** ili kuongeza maarifa ya kodi.\n\nTovuti ya TRA haina ukurasa maalum wa programu ya mafunzo kwa vitendo au internship, hivyo tegemea matangazo rasmi ya TRA pekee kwa fursa yoyote.\n\n## Jinsi ya kutafuta nafasi (ushauri wa jumla)\n\n1. **Anza mapema.** Ongea na mratibu wa mafunzo kwa vitendo wa chuo chako miezi kadhaa kabla.\n2. **Andaa nyaraka:** CV fupi, barua ya utambulisho kutoka chuoni na nakala za kitambulisho.\n3. **Andika barua ya ombi kwa heshima** kwa mkuu wa ofisi, ukieleza kozi yako, kipindi na ujuzi unaotarajia kujenga.\n4. **Tumia njia rasmi tu.** Usimlipe mtu yeyote anayeahidi \"kukutafutia\" nafasi au kazi. Ripoti ofa kama hizo.\n5. **Kuwa na weledi wakati wa mafunzo:** fika kwa wakati, vaa nadhifu, tunza siri za taarifa na uliza maswali.\n\n## Kunufaika zaidi na mafunzo yako\n\nTunza daftari la kila siku la kazi ulizofanya, omba maoni kwa msimamizi wako, na omba barua ya utambulisho (reference) mwishoni. Hizi zitaimarisha maombi yako ya baadaye.\n\n## Mambo muhimu\n\n- Mafunzo kwa vitendo ni sehemu ya kozi; internship mara nyingi hufuata baada ya kuhitimu.\n- TRA hutangaza fursa kwa uwazi na hupokea maombi mtandaoni nafasi zinapotangazwa.\n- Tumia njia rasmi za TRA pekee na usilipe ili kupata nafasi.\n- Weledi na usiri ni muhimu katika taasisi za umma.\n\nSource: [Maswali Yanayoulizwa Mara kwa Mara](https://www.tra.go.tz/faq); [Vacancies](https://www.tra.go.tz/vacancies); [Client's Service Charter (PDF)](https://www.tra.go.tz/images/uploads/pages/CLIENT_SERVICE_CHARTER.pdf); [Kona ya Klabu za Kodi](https://www.tra.go.tz/sw/tax-club)"
+      },
+      "quiz": null
+    }
+  ]
+}

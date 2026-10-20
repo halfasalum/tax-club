@@ -29,6 +29,8 @@ class Modules extends Component
 
     public string $level = 'beginner';
 
+    public string $language = '';
+
     /** @var list<string> */
     public array $audience = [];
 
@@ -61,6 +63,7 @@ class Modules extends Component
         $this->summary = (string) $module->summary;
         $this->category_id = $module->category_id ? (string) $module->category_id : null;
         $this->level = $module->level;
+        $this->language = (string) $module->language;
         $this->audience = $module->audience ?? [];
         $this->items = $module->lessons->map(fn (Content $lesson) => ['content_id' => $lesson->content_id, 'is_required' => (bool) $lesson->pivot->is_required])->all();
     }
@@ -97,6 +100,7 @@ class Modules extends Component
             'summary' => 'nullable|string|max:1000',
             'category_id' => 'nullable|exists:content_categories,id',
             'level' => 'required|in:'.implode(',', Content::LEVELS),
+            'language' => 'nullable|in:sw,en',
             'audience.*' => 'in:'.implode(',', Content::AUDIENCES),
             'items' => $publish ? 'array|min:1' : 'array',
             'items.*.content_id' => 'exists:content,content_id',
@@ -108,6 +112,7 @@ class Modules extends Component
             'summary' => trim($this->summary) ?: null,
             'category_id' => $this->category_id ?: null,
             'level' => $this->level,
+            'language' => $this->language ?: null,
             'audience' => $this->audience ?: null,
         ]);
 
@@ -152,7 +157,7 @@ class Modules extends Component
 
     private function resetForm(): void
     {
-        $this->reset('editingId', 'editing', 'title', 'summary', 'category_id', 'level', 'audience', 'items', 'addLesson');
+        $this->reset('editingId', 'editing', 'title', 'summary', 'category_id', 'level', 'language', 'audience', 'items', 'addLesson');
     }
 
     private function authorizePublish(): void

@@ -1,6 +1,9 @@
 <div>
     <h1 class="text-3xl font-black tracking-tight sm:text-4xl">{{ __('Quizzes') }}</h1>
-    <p class="mt-1 text-lg text-slate">{{ __('Test what you have learned and earn points.') }}</p>
+    <div class="mt-1 flex flex-wrap items-center justify-between gap-3">
+        <p class="text-lg text-slate">{{ __('Test what you have learned and earn points.') }}</p>
+        <x-language-filter class="w-auto" />
+    </div>
 
     <ul class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         @forelse ($open as $quiz)

@@ -240,6 +240,11 @@ final class EventManager
 
         $event->registrations()->where('status', EventRegistration::WAITLISTED)->update(['status' => EventRegistration::CANCELLED, 'cancelled_at' => now()]);
         Review::event($event, 'closed', $notes, $by);
+
+        // Everyone who attended gets a certificate of participation (CER-REQ01).
+        $event->registrations()->where('status', EventRegistration::ATTENDED)->with('user')->each(
+            fn (EventRegistration $registration) => Certificates::forEvent($registration->user, $event)
+        );
     }
 
     public static function archive(Event $event, User $by, string $reason): void

@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Web\AnswersController;
+use App\Http\Controllers\Web\CertificateVerifyController;
 use App\Http\Controllers\Web\EventController;
 use App\Http\Controllers\Web\LearnController;
 use App\Http\Controllers\Web\PageController;
@@ -39,6 +41,8 @@ use App\Livewire\Admin\Opportunities\Form as OpportunityForm;
 use App\Livewire\Admin\Opportunities\Index as OpportunityIndex;
 use App\Livewire\Admin\Opportunities\Report as OpportunityReport;
 use App\Livewire\Admin\Opportunities\Show as OpportunityShow;
+use App\Livewire\Admin\Questions\Index as QuestionIndex;
+use App\Livewire\Admin\Questions\Show as QuestionShow;
 use App\Livewire\Admin\Quizzes\Builder as QuizBuilder;
 use App\Livewire\Admin\Quizzes\Index as QuizIndex;
 use App\Livewire\Admin\Quizzes\Show as QuizShow;
@@ -49,6 +53,9 @@ use App\Livewire\Admin\Statistics as AdminStatistics;
 use App\Livewire\Auth\ForgotPassword;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Register;
+use App\Livewire\Member\Ask\Answer as MemberAskAnswer;
+use App\Livewire\Member\Ask\Index as MemberAsk;
+use App\Livewire\Member\Ask\Show as MemberAskShow;
 use App\Livewire\Member\Card as MemberCard;
 use App\Livewire\Member\Community\Index as MemberCommunity;
 use App\Livewire\Member\Community\Post as MemberCommunityPost;
@@ -101,6 +108,9 @@ $publicRoutes = function (): void {
     Route::get('/learn/{slug}', [LearnController::class, 'show'])->name('learn.show');
     Route::get('/events', [EventController::class, 'index'])->name('events.index');
     Route::get('/events/{slug}', [EventController::class, 'show'])->name('events.show');
+    Route::get('/answers', [AnswersController::class, 'index'])->name('answers.index');
+    Route::get('/answers/{slug}', [AnswersController::class, 'show'])->name('answers.show');
+    Route::get('/certificates/verify/{token?}', [CertificateVerifyController::class, 'show'])->where('token', '[A-Za-z0-9]{32}')->middleware('throttle:60,1')->name('certificates.verify');
 };
 
 Route::middleware('locale:sw')->name('sw.')->group($publicRoutes);
@@ -173,6 +183,9 @@ Route::middleware(['auth', 'active'])->group(function (): void {
     Route::get('/app/events/{slug}', MemberEvent::class)->name('member.events.show');
     Route::get('/app/feedback', MemberFeedback::class)->name('member.feedback');
     Route::get('/app/community', MemberCommunity::class)->name('member.community');
+    Route::get('/app/ask', MemberAsk::class)->name('member.ask');
+    Route::get('/app/ask/answers/{slug}', MemberAskAnswer::class)->name('member.ask.answer');
+    Route::get('/app/ask/{reference}', MemberAskShow::class)->name('member.ask.show');
     Route::get('/app/community/posts/{post}', MemberCommunityPost::class)->name('member.community.post');
     Route::get('/app/community/{space:slug}', MemberCommunitySpace::class)->name('member.community.space');
     Route::get('/app/opportunities', MemberOpportunities::class)->name('member.opportunities');
@@ -300,6 +313,8 @@ Route::middleware(['auth', 'active'])->group(function (): void {
             Route::get('/report', SafetyReport::class)->middleware('permission:view_safety_reports,manage_safety_settings')->name('report');
             Route::get('/{case}', ModerationShow::class)->middleware($moderators)->name('show');
         });
+        Route::get('/questions', QuestionIndex::class)->middleware('permission:triage_questions,answer_questions,review_answers')->name('questions.index');
+        Route::get('/questions/{question}', QuestionShow::class)->middleware('permission:triage_questions,answer_questions,review_answers')->name('questions.show');
         Route::get('/community', CommunitySpaces::class)->middleware('permission:manage_community_spaces')->name('community.spaces');
         Route::get('/community/{space}/members', CommunityMembers::class)->middleware('permission:manage_community_spaces')->name('community.members');
 

@@ -4,6 +4,7 @@ use App\Support\Broadcasts;
 use App\Support\CompetitionDesk;
 use App\Support\ContentWorkflow;
 use App\Support\EventManager;
+use App\Support\MentorshipDesk;
 use App\Support\OpportunityBoard;
 use App\Support\QuizEngine;
 use App\Support\Reminders;
@@ -24,3 +25,4 @@ Schedule::call(fn () => OpportunityBoard::applySchedule())->name('opportunities:
 Schedule::call(fn () => Broadcasts::applySchedule())->name('broadcasts:send-scheduled')->everyMinute()->withoutOverlapping();
 Schedule::call(fn () => Reminders::run())->name('reminders:send')->hourly()->withoutOverlapping();
 Schedule::call(fn () => CompetitionDesk::applySchedule())->name('competitions:apply-schedule')->everyFiveMinutes()->withoutOverlapping();
+Schedule::call(fn () => MentorshipDesk::flagInactive())->name('mentorship:flag-inactive')->dailyAt('07:30')->withoutOverlapping();

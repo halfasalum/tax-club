@@ -22,7 +22,7 @@ class Event extends Model
 {
     use Auditable, HasFactory, HasReview, HasUuids;
 
-    public const TYPES = ['workshop', 'seminar', 'competition', 'campaign', 'webinar', 'school_visit', 'tax_day', 'other'];
+    public const TYPES = ['workshop', 'seminar', 'competition', 'campaign', 'webinar', 'school_visit', 'tax_day', 'career_talk', 'alumni_session', 'other'];
 
     public const MODES = ['in_person', 'online', 'hybrid'];
 

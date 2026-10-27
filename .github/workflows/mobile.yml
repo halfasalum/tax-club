@@ -1,0 +1,60 @@
+name: Mobile app
+
+on:
+  push:
+    paths: ['mobile/**', '.github/workflows/mobile.yml']
+  pull_request:
+    paths: ['mobile/**', '.github/workflows/mobile.yml']
+  workflow_dispatch:
+    inputs:
+      api_base_url:
+        description: 'API server the app talks to'
+        default: 'https://club.flux.co.tz'
+
+env:
+  FLUTTER_VERSION: '3.47.8'
+  API_BASE_URL: ${{ inputs.api_base_url || 'https://club.flux.co.tz' }}
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+      - name: Build APK for testing on phones
+        run: flutter build apk --release --dart-define=API_BASE_URL=$API_BASE_URL
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tax-club-android-apk
+          path: mobile/build/app/outputs/flutter-apk/app-release.apk
+
+  ios:
+    # Checks that the iOS app compiles. Installing on an iPhone needs an
+    # Apple developer account and signing (see mobile/README.md).
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: flutter build ios --release --no-codesign --dart-define=API_BASE_URL=$API_BASE_URL

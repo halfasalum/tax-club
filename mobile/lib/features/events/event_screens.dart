@@ -4,70 +4,146 @@ import 'package:go_router/go_router.dart';
 import '../../core/api.dart';
 import '../../core/i18n.dart';
 import '../../core/labels.dart';
+import '../../core/shells.dart';
 import '../../core/theme.dart';
+import '../../core/web_ui.dart';
 import '../../core/widgets.dart';
-import '../home/home_screen.dart';
 
+/// "Events" (livewire/member/events/index.blade.php) with the Upcoming /
+/// My events switch.
 class EventsScreen extends StatefulWidget {
-  const EventsScreen({super.key});
+  const EventsScreen({super.key, this.mine = false});
+
+  final bool mine;
 
   @override
   State<EventsScreen> createState() => _EventsScreenState();
 }
 
 class _EventsScreenState extends State<EventsScreen> {
+  late bool _mine = widget.mine;
   String? _type;
 
   @override
   Widget build(BuildContext context) {
-    final types = optionsOf(context, 'event_types');
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(context.tr('Events')),
-        actions: [
-          TextButton.icon(onPressed: () => context.push('/events/mine'), icon: const Icon(Icons.bookmark_outline), label: Text(context.tr('My events'))),
-        ],
-      ),
-      body: Column(children: [
-        if (types.isNotEmpty)
-          SizedBox(
-            height: 56,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.fromLTRB(16, 10, 16, 6),
-              children: [
-                ChoiceChip(label: Text(context.tr('All')), selected: _type == null, onSelected: (_) => setState(() => _type = null)),
-                for (final type in types.entries)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: ChoiceChip(label: Text(type.value), selected: _type == type.key, onSelected: (_) => setState(() => _type = type.key)),
-                  ),
-              ],
-            ),
-          ),
-        Expanded(
-          child: Loader<List<Map<String, dynamic>>>(
-            key: ValueKey(_type),
-            load: () async => listOf(await context.api.get('events', query: {'type': _type})),
-            isEmpty: (events) => events.isEmpty,
-            empty: EmptyPanel(message: context.tr('No upcoming events for you right now.'), icon: Icons.event_busy),
-            builder: (context, events, reload) => RefreshIndicator(
-              onRefresh: reload,
-              child: ListView.separated(
-                padding: const EdgeInsets.all(16),
-                itemCount: events.length,
-                separatorBuilder: (_, _) => const SizedBox(height: 10),
-                itemBuilder: (context, index) => EventCard(event: events[index]),
-              ),
-            ),
+    return MemberScaffold(
+      body: Loader<List<Map<String, dynamic>>>(
+        key: ValueKey('$_mine-$_type'),
+        load: () async => listOf(
+          await context.api.get(
+            _mine ? 'events/mine' : 'events',
+            query: {'type': _type},
           ),
         ),
-      ]),
+        builder: (context, events, reload) => MemberPage(
+          onRefresh: reload,
+          children: [
+            PageTitle(
+              context.tr('Events'),
+              subtitle: context.tr(
+                'Workshops, competitions and campaigns for Tax Club members. Bring your membership card to check in.',
+              ),
+            ),
+            const SizedBox(height: 22),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: Brand.line, width: 2),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _Segment(
+                      label: context.tr('Upcoming'),
+                      selected: !_mine,
+                      onTap: () => setState(() => _mine = false),
+                    ),
+                    _Segment(
+                      label: context.tr('My events'),
+                      selected: _mine,
+                      onTap: () => setState(() => _mine = true),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            if (!_mine) ...[
+              const SizedBox(height: 12),
+              DropdownButtonFormField<String?>(
+                initialValue: _type,
+                items: [
+                  DropdownMenuItem(
+                    value: null,
+                    child: Text(context.tr('All types')),
+                  ),
+                  for (final type in optionsOf(context, 'event_types').entries)
+                    DropdownMenuItem(value: type.key, child: Text(type.value)),
+                ],
+                onChanged: (value) => setState(() => _type = value),
+              ),
+            ],
+            const SizedBox(height: 20),
+            if (events.isEmpty)
+              MistBox(
+                context.tr(
+                  _mine
+                      ? 'You have not registered for any events yet.'
+                      : 'No upcoming events right now. Check back soon.',
+                ),
+                color: Colors.white,
+                center: true,
+              ),
+            for (final event in events)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: EventCard(event: event),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }
 
+class _Segment extends StatelessWidget {
+  const _Segment({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: selected ? Brand.ink : Colors.transparent,
+      borderRadius: BorderRadius.circular(10),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(10),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontWeight: FontWeight.w800,
+              color: selected ? Brand.yellow : Brand.charcoal,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Event row with registration and capacity tags.
 class EventCard extends StatelessWidget {
   const EventCard({super.key, required this.event});
 
@@ -76,55 +152,60 @@ class EventCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final registration = event.obj('my_registration');
-    return Tile(
+    final placesLeft = event.intOrNull('places_left');
+    final status = event.str('status');
+    return EventRowView(
+      title: event.str('title'),
+      startsAt: event.date('starts_at'),
+      location: event.str('mode') == 'online'
+          ? context.tr('Online')
+          : event.strOrNull('location'),
       onTap: () => context.push('/events/${event.str('event_id')}'),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        DateBox(date: event.date('starts_at')),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Wrap(spacing: 6, runSpacing: 4, children: [
-              Pill(labelOf(context, 'event_types', event.str('type'))),
-              if (event.str('status') == 'happening') Pill.tone(labelOf(context, 'event_status', 'happening'), 'good'),
-              if (event.str('status') == 'cancelled') Pill.tone(labelOf(context, 'event_status', 'cancelled'), 'bad'),
-              if (registration != null) Pill.tone(labelOf(context, 'registration_statuses', registration.str('status')), toneOf(registration.str('status'))),
-            ]),
-            const SizedBox(height: 6),
-            Text(event.str('title'), style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
-            InfoRow(icon: Icons.schedule, text: context.dateTime(event.date('starts_at'))),
-            InfoRow(icon: event.str('mode') == 'online' ? Icons.videocam_outlined : Icons.place_outlined, text: event.str('mode') == 'online' ? labelOf(context, 'event_modes', 'online') : event.str('location')),
-          ]),
-        ),
-      ]),
-    );
-  }
-}
-
-class MyEventsScreen extends StatelessWidget {
-  const MyEventsScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(context.tr('My events'))),
-      body: Loader<List<Map<String, dynamic>>>(
-        load: () async => listOf(await context.api.get('events/mine')),
-        isEmpty: (events) => events.isEmpty,
-        empty: EmptyPanel(message: context.tr('You have not registered for any event yet.'), icon: Icons.event_note),
-        builder: (context, events, reload) => RefreshIndicator(
-          onRefresh: reload,
-          child: ListView.separated(
-            padding: const EdgeInsets.all(16),
-            itemCount: events.length,
-            separatorBuilder: (_, _) => const SizedBox(height: 10),
-            itemBuilder: (context, index) => EventCard(event: events[index]),
-          ),
-        ),
+      trailing: Wrap(
+        spacing: 6,
+        runSpacing: 6,
+        children: [
+          Tag(labelOf(context, 'event_types', event.str('type'))),
+          if (status == 'postponed')
+            Tag(context.tr('Postponed'), color: const Color(0xFFFDE68A)),
+          if (status == 'cancelled')
+            Tag(
+              labelOf(context, 'event_status', 'cancelled'),
+              color: const Color(0xFFFEE4E2),
+            ),
+          if (registration != null)
+            Tag(
+              labelOf(
+                context,
+                'registration_statuses',
+                registration.str('status'),
+              ),
+              dark: true,
+            ),
+          if (registration == null && placesLeft == 0)
+            Tag(
+              context.tr(
+                event.flag('waitlist_enabled')
+                    ? 'Full · waitlist open'
+                    : 'Full',
+              ),
+              color: Brand.mist,
+            ),
+        ],
       ),
     );
   }
 }
 
+/// Kept for old links to /events/mine.
+class MyEventsScreen extends StatelessWidget {
+  const MyEventsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) => const EventsScreen(mine: true);
+}
+
+/// One event (livewire/member/events/show.blade.php).
 class EventScreen extends StatefulWidget {
   const EventScreen({super.key, required this.id});
 
@@ -145,14 +226,32 @@ class _EventScreenState extends State<EventScreen> {
       if (answer == null) return;
     }
     if (!mounted) return;
-    final result = await runAction(context, () => context.api.post('events/${widget.id}/register', {'answer': ?answer}), showServerMessage: true);
+    final result = await runAction(
+      context,
+      () =>
+          context.api.post('events/${widget.id}/register', {'answer': ?answer}),
+      showServerMessage: true,
+    );
     if (result != null) _loader.currentState?.reload();
   }
 
   Future<void> _cancel() async {
-    if (!await confirm(context, context.tr('Cancel your registration for this event?'), action: context.tr('Cancel registration'), danger: true)) return;
+    if (!await confirm(
+      context,
+      context.tr(
+        'Cancel your registration? Your place will go to someone on the waitlist.',
+      ),
+      action: context.tr('Cancel my registration'),
+      danger: true,
+    )) {
+      return;
+    }
     if (!mounted) return;
-    final result = await runAction(context, () => context.api.delete('events/${widget.id}/register'), showServerMessage: true);
+    final result = await runAction(
+      context,
+      () => context.api.delete('events/${widget.id}/register'),
+      showServerMessage: true,
+    );
     if (result != null) _loader.currentState?.reload();
   }
 
@@ -161,15 +260,24 @@ class _EventScreenState extends State<EventScreen> {
     return showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(context.tr('One question first')),
-        content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(question),
-          const SizedBox(height: 12),
-          TextField(controller: controller, maxLines: 3, autofocus: true),
-        ]),
+        title: Text(
+          question,
+          style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18),
+        ),
+        content: TextField(
+          controller: controller,
+          maxLines: 3,
+          autofocus: true,
+        ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text(context.tr('Cancel'))),
-          FilledButton(onPressed: () => Navigator.pop(context, controller.text.trim()), child: Text(context.tr('Register'))),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(context.tr('Cancel')),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, controller.text.trim()),
+            child: Text(context.tr('Register')),
+          ),
         ],
       ),
     );
@@ -177,98 +285,295 @@ class _EventScreenState extends State<EventScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(context.tr('Event'))),
+    return MemberScaffold(
       body: Loader<Map<String, dynamic>>(
         key: _loader,
-        load: () async => ((await context.api.get('events/${widget.id}')) as Map).cast<String, dynamic>(),
+        load: () async =>
+            ((await context.api.get('events/${widget.id}')) as Map)
+                .cast<String, dynamic>(),
         builder: (context, event, reload) {
           final registration = event.obj('my_registration');
           final status = registration?.str('status');
           final problem = event.strOrNull('registration_problem');
           final placesLeft = event.intOrNull('places_left');
-          final ended = event.str('status') == 'ended' || event.str('status') == 'cancelled';
+          final eventStatus = event.str('status');
+          final ended = eventStatus == 'ended' || eventStatus == 'cancelled';
+          final starts = event.date('starts_at');
+          final ends = event.date('ends_at');
 
-          return RefreshIndicator(
+          return MemberPage(
             onRefresh: reload,
-            child: ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
-                Wrap(spacing: 6, runSpacing: 6, children: [
-                  Pill(labelOf(context, 'event_types', event.str('type'))),
-                  Pill(labelOf(context, 'event_modes', event.str('mode'))),
-                  if (event.str('status') != 'published') Pill.tone(labelOf(context, 'event_status', event.str('status')), toneOf(event.str('status'))),
-                ]),
-                const SizedBox(height: 10),
-                Text(event.str('title'), style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
-                const SizedBox(height: 8),
-                InfoRow(icon: Icons.schedule, text: '${context.dateTime(event.date('starts_at'))}${event.date('ends_at') != null ? ' – ${context.time(event.date('ends_at'))}' : ''}'),
-                InfoRow(icon: Icons.place_outlined, text: [event.str('location'), event.str('region')].where((s) => s.isNotEmpty).join(', ')),
-                InfoRow(icon: Icons.groups_outlined, text: event.str('organizer')),
-                InfoRow(icon: Icons.people_outline, text: event.str('audience')),
-                if (placesLeft != null) InfoRow(icon: Icons.event_seat_outlined, text: context.trPlural(':count place left|:count places left', placesLeft)),
-                if (event.date('registration_closes_at') != null && registration == null && !ended)
-                  InfoRow(icon: Icons.timer_outlined, text: context.tr('Registration closes :date', {'date': context.dateTime(event.date('registration_closes_at'))})),
-                const SizedBox(height: 16),
-                if (registration != null)
-                  Tile(
-                    color: Brand.yellowWash,
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text(labelOf(context, 'registration_statuses', status), style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
-                      if (status == 'waitlisted' && registration.intOrNull('waitlist_position') != null)
-                        Text(context.tr('You are number :position on the waitlist.', {'position': registration.integer('waitlist_position')})),
-                      if (status == 'registered') Text(context.tr('Show your membership card QR code at the entrance.')),
-                      if (registration.date('checked_in_at') != null) Text(context.tr('Checked in at :time', {'time': context.dateTime(registration.date('checked_in_at'))})),
-                    ]),
+            children: [
+              LinkText(
+                context.tr('Events'),
+                onTap: () => context.go('/events'),
+              ),
+              const SizedBox(height: 16),
+              Wrap(
+                spacing: 8,
+                children: [
+                  Tag(labelOf(context, 'event_types', event.str('type'))),
+                  Tag(
+                    labelOf(context, 'event_modes', event.str('mode')),
+                    color: Colors.white,
                   ),
-                const SizedBox(height: 12),
-                if (event.strOrNull('online_url') != null)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: BusyButton(label: context.tr('Join online'), icon: Icons.videocam_outlined, onPressed: () => openLink(context, event.str('online_url'))),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                event.str('title'),
+                style: const TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w900,
+                  height: 1.15,
+                ),
+              ),
+              if (eventStatus == 'cancelled') ...[
+                const SizedBox(height: 14),
+                MistBox(
+                  context.tr('This event was cancelled.'),
+                  color: const Color(0xFFFEE4E2),
+                ),
+              ],
+              if (eventStatus == 'postponed') ...[
+                const SizedBox(height: 14),
+                MistBox(
+                  context.tr(
+                    'This event was postponed. We will share the new date.',
                   ),
-                if (!ended && registration == null && event.flag('registration_required'))
-                  problem == null
-                      ? BusyButton(label: context.tr('Register'), icon: Icons.how_to_reg, onPressed: () => _register(event))
-                      : Tile(child: Text(problem)),
-                if (!ended && (status == 'registered' || status == 'waitlisted'))
-                  BusyButton(label: context.tr('Cancel registration'), outlined: true, onPressed: _cancel),
-                if (event.strOrNull('objective') != null) ...[
-                  const SizedBox(height: 20),
-                  SectionTitle(context.tr('Why attend')),
-                  Paragraphs(event.str('objective')),
-                ],
-                if (event.strOrNull('description') != null) ...[
-                  const SizedBox(height: 12),
-                  SectionTitle(context.tr('About this event')),
-                  Paragraphs(event.str('description')),
-                ],
-                if (event.list('updates').isNotEmpty) ...[
-                  const SizedBox(height: 12),
-                  SectionTitle(context.tr('Updates and materials')),
-                  for (final update in event.list('updates'))
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Tile(
-                        onTap: (update.strOrNull('file_url') ?? update.strOrNull('link_url')) == null
-                            ? null
-                            : () => openLink(context, update.strOrNull('file_url') ?? update.str('link_url')),
-                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Text(update.str('title'), style: const TextStyle(fontWeight: FontWeight.w700)),
-                          Text(context.ago(update.date('posted_at')), style: const TextStyle(color: Brand.slate, fontSize: 12)),
-                          if (update.strOrNull('body') != null) ...[const SizedBox(height: 6), Text(update.str('body'))],
-                          if (update.strOrNull('file_url') != null || update.strOrNull('link_url') != null)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 6),
-                              child: Text(context.tr('Open'), style: const TextStyle(fontWeight: FontWeight.w700, decoration: TextDecoration.underline)),
-                            ),
-                        ]),
+                  color: Brand.yellowWash,
+                ),
+              ],
+              const SizedBox(height: 20),
+              if (starts != null)
+                FactBox(
+                  label: context.tr('When'),
+                  value:
+                      '${context.date(starts, pattern: 'EEEE, d MMMM y, HH:mm')}${ends == null ? '' : ' – ${context.time(ends)}'}',
+                ),
+              const SizedBox(height: 12),
+              FactBox(
+                label: context.tr('Where'),
+                value: event.str('mode') == 'online'
+                    ? context.tr('Online')
+                    : [
+                            event.str('location'),
+                            event.str('region'),
+                          ].where((s) => s.isNotEmpty).join(', ') +
+                          (event.str('mode') == 'hybrid'
+                              ? ' ${context.tr('or online')}'
+                              : ''),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(22),
+                decoration: BoxDecoration(
+                  color: registration != null ? Brand.yellowWash : Colors.white,
+                  borderRadius: BorderRadius.circular(22),
+                  border: Border.all(
+                    color: registration != null ? Brand.ink : Brand.line,
+                    width: 2,
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      context.tr(
+                        registration != null
+                            ? 'Your registration'
+                            : 'Take part',
+                      ),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w800,
+                        color: Brand.slate,
                       ),
                     ),
+                    const SizedBox(height: 6),
+                    if (registration != null) ...[
+                      Text(
+                        labelOf(context, 'registration_statuses', status),
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                      if (status == 'waitlisted' &&
+                          registration.intOrNull('waitlist_position') != null)
+                        Text(
+                          context.tr(
+                            'You are number :position on the waitlist.',
+                            {
+                              'position': registration.integer(
+                                'waitlist_position',
+                              ),
+                            },
+                          ),
+                        ),
+                      if (registration.date('checked_in_at') != null)
+                        Text(
+                          context.tr(
+                            'Checked in :time. Thank you for coming!',
+                            {
+                              'time': context.dateTime(
+                                registration.date('checked_in_at'),
+                              ),
+                            },
+                          ),
+                        )
+                      else if (status == 'registered') ...[
+                        const SizedBox(height: 6),
+                        Text(
+                          context.tr(
+                            'Show your membership card at the door. The QR code checks you in.',
+                          ),
+                          style: const TextStyle(height: 1.5),
+                        ),
+                        const SizedBox(height: 14),
+                        WebButton(
+                          context.tr('Open my card'),
+                          expand: false,
+                          onPressed: () async => context.go('/card'),
+                        ),
+                      ],
+                      if (!ended &&
+                          (status == 'registered' ||
+                              status == 'waitlisted')) ...[
+                        const SizedBox(height: 12),
+                        WebButton(
+                          context.tr('Cancel my registration'),
+                          kind: BtnKind.ghost,
+                          expand: false,
+                          onPressed: _cancel,
+                        ),
+                      ],
+                    ] else if (!ended &&
+                        event.flag('registration_required')) ...[
+                      if (placesLeft != null)
+                        Text(
+                          placesLeft == 0
+                              ? context.tr('Full. You can join the waitlist.')
+                              : context.trPlural(
+                                  ':count place left|:count places left',
+                                  placesLeft,
+                                ),
+                          style: const TextStyle(fontWeight: FontWeight.w700),
+                        ),
+                      if (event.date('registration_closes_at') != null)
+                        Text(
+                          context.tr('Registration closes :date', {
+                            'date': context.dateTime(
+                              event.date('registration_closes_at'),
+                            ),
+                          }),
+                          style: const TextStyle(color: Brand.slate),
+                        ),
+                      const SizedBox(height: 14),
+                      if (problem == null)
+                        WebButton(
+                          context.tr(
+                            placesLeft == 0 ? 'Join the waitlist' : 'Register',
+                          ),
+                          kind: BtnKind.brand,
+                          onPressed: () => _register(event),
+                        )
+                      else
+                        Text(
+                          problem,
+                          style: const TextStyle(fontWeight: FontWeight.w700),
+                        ),
+                    ],
+                    if (event.strOrNull('online_url') != null) ...[
+                      const SizedBox(height: 12),
+                      WebButton(
+                        context.tr('Join online'),
+                        icon: Icons.videocam_outlined,
+                        onPressed: () =>
+                            openLink(context, event.str('online_url')),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              if (event.strOrNull('description') != null ||
+                  event.strOrNull('objective') != null) ...[
+                const SizedBox(height: 28),
+                if (event.strOrNull('objective') != null) ...[
+                  Paragraphs(event.str('objective')),
+                  const SizedBox(height: 12),
                 ],
-                const SizedBox(height: 24),
+                Paragraphs(event.strOrNull('description')),
               ],
-            ),
+              const SizedBox(height: 28),
+              SectionHeading(context.tr('Updates and materials')),
+              const SizedBox(height: 14),
+              if (event.list('updates').isEmpty)
+                MistBox(context.tr('No updates yet.'), color: Colors.white),
+              for (final update in event.list('updates'))
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: WebCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Tag(
+                              context.tr(
+                                update.str('kind') == 'material'
+                                    ? 'Material'
+                                    : 'Update',
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              context.ago(update.date('posted_at')),
+                              style: const TextStyle(
+                                color: Brand.slate,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          update.str('title'),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w900,
+                            fontSize: 17,
+                          ),
+                        ),
+                        if (update.strOrNull('body') != null) ...[
+                          const SizedBox(height: 6),
+                          Text(
+                            update.str('body'),
+                            style: const TextStyle(height: 1.5),
+                          ),
+                        ],
+                        if (update.strOrNull('file_url') != null ||
+                            update.strOrNull('link_url') != null) ...[
+                          const SizedBox(height: 10),
+                          LinkText(
+                            context.tr('Open link'),
+                            onTap: () => openLink(
+                              context,
+                              update.strOrNull('file_url') ??
+                                  update.str('link_url'),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ),
+              const SizedBox(height: 16),
+              LinkText(
+                context.tr('Share feedback about this event'),
+                onTap: () => context.push('/feedback/new'),
+              ),
+            ],
           );
         },
       ),

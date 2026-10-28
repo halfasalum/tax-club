@@ -41,27 +41,49 @@ ThemeData buildTheme() {
     outlineVariant: Brand.line,
   );
 
-  final base = ThemeData(colorScheme: scheme, useMaterial3: true, scaffoldBackgroundColor: Brand.mist);
+  final base = ThemeData(
+    colorScheme: scheme,
+    useMaterial3: true,
+    scaffoldBackgroundColor: Brand.mist,
+    fontFamily: 'Nunito',
+  );
 
   return base.copyWith(
+    textTheme: base.textTheme.apply(
+      fontFamily: 'Nunito',
+      bodyColor: Brand.ink,
+      displayColor: Brand.ink,
+    ),
     appBarTheme: const AppBarTheme(
-      backgroundColor: Brand.yellow,
+      backgroundColor: Colors.white,
       foregroundColor: Brand.ink,
       elevation: 0,
-      scrolledUnderElevation: 1,
+      scrolledUnderElevation: 0,
       centerTitle: false,
-      titleTextStyle: TextStyle(color: Brand.ink, fontSize: 19, fontWeight: FontWeight.w700),
+      titleTextStyle: TextStyle(
+        fontFamily: 'Nunito',
+        color: Brand.ink,
+        fontSize: 19,
+        fontWeight: FontWeight.w900,
+      ),
     ),
     cardTheme: CardThemeData(
       color: Colors.white,
       elevation: 0,
       margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14), side: const BorderSide(color: Brand.line)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18),
+        side: const BorderSide(color: Brand.line, width: 2),
+      ),
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
         minimumSize: const Size(64, 50),
-        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        textStyle: const TextStyle(
+          fontFamily: 'Nunito',
+          fontSize: 16,
+          fontWeight: FontWeight.w800,
+        ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     ),
@@ -69,24 +91,46 @@ ThemeData buildTheme() {
       style: OutlinedButton.styleFrom(
         minimumSize: const Size(64, 50),
         foregroundColor: Brand.ink,
-        side: const BorderSide(color: Brand.ink),
-        textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        side: const BorderSide(color: Brand.ink, width: 2),
+        textStyle: const TextStyle(
+          fontFamily: 'Nunito',
+          fontSize: 16,
+          fontWeight: FontWeight.w800,
+        ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     ),
-    textButtonTheme: TextButtonThemeData(style: TextButton.styleFrom(foregroundColor: Brand.ink)),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(foregroundColor: Brand.ink),
+    ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: Colors.white,
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Color(0xFFD1D5DB))),
-      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: Brand.ink, width: 2)),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Brand.line, width: 2),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Brand.ink, width: 3),
+      ),
+      labelStyle: const TextStyle(
+        fontWeight: FontWeight.w700,
+        color: Brand.charcoal,
+      ),
+      floatingLabelStyle: const TextStyle(
+        fontWeight: FontWeight.w800,
+        color: Brand.ink,
+      ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
     ),
     navigationBarTheme: NavigationBarThemeData(
       backgroundColor: Colors.white,
       indicatorColor: Brand.yellow,
-      labelTextStyle: WidgetStateProperty.all(const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+      labelTextStyle: WidgetStateProperty.all(
+        const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+      ),
     ),
     chipTheme: base.chipTheme.copyWith(
       selectedColor: Brand.yellow,

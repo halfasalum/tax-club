@@ -10,6 +10,7 @@ use App\Support\EventLabels;
 use App\Support\FeedbackDesk;
 use App\Support\Leaderboard;
 use App\Support\Locales;
+use App\Support\MembershipCard;
 use App\Support\MentorshipDesk;
 use App\Support\NotificationPreferences;
 use App\Support\OpportunityBoard;
@@ -70,6 +71,9 @@ class AppController extends BaseController
                     'video' => __('Video call'),
                     'at_club' => __('At the Tax Club'),
                 ],
+                'content_types' => collect(['article', 'video', 'infographic', 'document'])->mapWithKeys(fn ($type) => [$type => __('content_type.'.$type)])->all(),
+                'account_statuses' => collect(['active', 'pending_verification', 'suspended', 'deactivated', 'rejected'])
+                    ->mapWithKeys(fn ($status) => [$status => MembershipCard::statusLabel($status)])->all(),
                 'certificate_kinds' => Certificates::kindLabels(),
                 'reward_statuses' => Rewards::statusLabels(),
             ],

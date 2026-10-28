@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\CommunitySpace;
+use App\Models\Content;
+use App\Models\Event;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -49,5 +51,26 @@ class MobileAppApiTest extends TestCase
         $this->actingAs($member, 'sanctum')->getJson('/api/v1/community/spaces')->assertJsonPath('data.0.posting_problem', null);
         $this->actingAs($member, 'sanctum')->postJson("/api/v1/community/spaces/{$space->slug}/posts", ['body' => 'Who is going to Tax Day?'])->assertJsonPath('data.is_mine', true);
         $this->actingAs($other, 'sanctum')->getJson("/api/v1/community/spaces/{$space->slug}/posts")->assertJsonPath('data.0.is_mine', false);
+    }
+
+    public function test_visitors_see_the_public_website_pages_without_signing_in(): void
+    {
+        $lesson = Content::factory()->create(['title' => 'VAT ni nini?']);
+        $hidden = Content::factory()->membersOnly()->create();
+        $event = Event::factory()->create(['is_public' => true, 'starts_at' => now()->addDays(3)]);
+
+        $this->getJson('/api/v1/public/home')
+            ->assertOk()
+            ->assertJsonPath('data.lessons.0.slug', $lesson->slug)
+            ->assertJsonPath('data.events.0.slug', $event->slug);
+
+        $this->getJson('/api/v1/public/lessons?search=VAT', ['Accept-Language' => 'sw'])->assertOk()->assertJsonCount(1, 'data');
+        $this->getJson("/api/v1/public/lessons/{$lesson->slug}", ['Accept-Language' => 'sw'])
+            ->assertOk()
+            ->assertJsonPath('data.content_type_label', 'Makala')
+            ->assertJsonStructure(['data' => ['body_html']]);
+        $this->getJson("/api/v1/public/lessons/{$hidden->slug}")->assertNotFound();
+        $this->getJson("/api/v1/public/events/{$event->slug}")->assertOk()->assertJsonPath('data.title', $event->title);
+        $this->getJson('/api/v1/public/answers')->assertOk();
     }
 }

@@ -1,0 +1,17 @@
+.cta-banner {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(120deg, var(--mantine-color-traDark-9) 0%, var(--mantine-color-traDark-8) 55%, #3a2f00 100%);
+}
+
+.cta-banner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 85% 30%, rgba(249, 229, 15, 0.25), transparent 55%);
+  pointer-events: none;
+}
+
+.rank-glow-1 {
+  box-shadow: 0 0 0 3px rgba(249, 229, 15, 0.35);
+}

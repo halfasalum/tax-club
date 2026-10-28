@@ -1,0 +1,89 @@
+/* Shared visual effects — TRA brand surfaces (landing, auth) */
+
+.dot-grid-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.dot-grid-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(249, 229, 15, 0.18) 1.5px, transparent 1.5px);
+  background-size: 26px 26px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 40%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 40%, transparent 100%);
+  pointer-events: none;
+}
+
+.glow-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glow-blob-gold {
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(circle, rgba(249, 229, 15, 0.35) 0%, rgba(249, 229, 15, 0) 70%);
+  top: -120px;
+  right: -80px;
+  animation: float-a 9s ease-in-out infinite;
+}
+
+.glow-blob-gold-2 {
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(249, 229, 15, 0.22) 0%, rgba(249, 229, 15, 0) 70%);
+  bottom: -100px;
+  left: -60px;
+  animation: float-b 11s ease-in-out infinite;
+}
+
+@keyframes float-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-24px, 28px) scale(1.08); }
+}
+
+@keyframes float-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(20px, -22px) scale(1.06); }
+}
+
+.hover-lift {
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px -12px rgba(0, 0, 0, 0.18);
+  border-color: var(--mantine-color-traGold-5) !important;
+}
+
+.scroll-cue {
+  animation: bounce-y 2s ease-in-out infinite;
+}
+
+@keyframes bounce-y {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50% { transform: translateY(8px); opacity: 1; }
+}
+
+.gold-gradient-text {
+  background: linear-gradient(90deg, #f9e50f 0%, #fff7b0 50%, #f9e50f 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shine 6s linear infinite;
+}
+
+@keyframes shine {
+  to { background-position: 200% center; }
+}
+
+.alt-section {
+  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
+}

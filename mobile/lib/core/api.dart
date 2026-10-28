@@ -2,7 +2,10 @@ import 'package:dio/dio.dart';
 
 /// Where the Tax Club API lives. Override at build time with
 /// `--dart-define=API_BASE_URL=https://example.org`.
-const String apiBaseUrl = String.fromEnvironment('API_BASE_URL', defaultValue: 'https://club.flux.co.tz');
+const String apiBaseUrl = String.fromEnvironment(
+  'API_BASE_URL',
+  defaultValue: 'https://club.flux.co.tz',
+);
 
 /// A failed API call, with the server's message and field errors.
 class ApiException implements Exception {
@@ -19,7 +22,8 @@ class ApiException implements Exception {
   String? field(String name) => errors[name]?.firstOrNull;
 
   /// Every field error on its own line, or the general message.
-  String get details => errors.isEmpty ? message : errors.values.expand((e) => e).join('\n');
+  String get details =>
+      errors.isEmpty ? message : errors.values.expand((e) => e).join('\n');
 
   @override
   String toString() => message;
@@ -27,7 +31,12 @@ class ApiException implements Exception {
 
 /// A page of results from a paginated endpoint.
 class Paged<T> {
-  Paged(this.items, {required this.currentPage, required this.lastPage, required this.total});
+  Paged(
+    this.items, {
+    required this.currentPage,
+    required this.lastPage,
+    required this.total,
+  });
 
   final List<T> items;
   final int currentPage;
@@ -41,12 +50,14 @@ class Paged<T> {
 /// `{success, message, data, meta?, errors?}`.
 class Api {
   Api({String? baseUrl, HttpClientAdapter? adapter})
-      : _dio = Dio(BaseOptions(
+    : _dio = Dio(
+        BaseOptions(
           baseUrl: '${baseUrl ?? apiBaseUrl}/api/v1/',
           connectTimeout: const Duration(seconds: 20),
           receiveTimeout: const Duration(seconds: 30),
           headers: {'Accept': 'application/json'},
-        )) {
+        ),
+      ) {
     if (adapter != null) _dio.httpClientAdapter = adapter;
   }
 
@@ -59,34 +70,52 @@ class Api {
   /// Called when the server says the session is no longer valid.
   void Function()? onUnauthorized;
 
-  String get baseUrl => _dio.options.baseUrl.replaceFirst(RegExp(r'/api/v1/$'), '');
+  String get baseUrl =>
+      _dio.options.baseUrl.replaceFirst(RegExp(r'/api/v1/$'), '');
   set locale(String value) => _locale = value;
 
   Map<String, String> get authHeaders => {
-        if (token != null) 'Authorization': 'Bearer $token',
-        'Accept-Language': _locale,
-      };
+    if (token != null) 'Authorization': 'Bearer $token',
+    'Accept-Language': _locale,
+  };
 
   Future<dynamic> get(String path, {Map<String, dynamic>? query}) async =>
-      (await _send(() => _dio.get(path, queryParameters: _clean(query), options: _options()))).data;
+      (await _send(
+        () =>
+            _dio.get(path, queryParameters: _clean(query), options: _options()),
+      )).data;
 
-  Future<Map<String, dynamic>> getEnvelope(String path, {Map<String, dynamic>? query}) =>
-      _send(() => _dio.get(path, queryParameters: _clean(query), options: _options())).then((r) => r.envelope);
+  Future<Map<String, dynamic>> getEnvelope(
+    String path, {
+    Map<String, dynamic>? query,
+  }) => _send(
+    () => _dio.get(path, queryParameters: _clean(query), options: _options()),
+  ).then((r) => r.envelope);
 
   Future<Map<String, dynamic>> post(String path, [Object? body]) =>
-      _send(() => _dio.post(path, data: body, options: _options())).then((r) => r.envelope);
+      _send(() => _dio.post(path, data: body, options: _options()))
+          .then((r) => r.envelope);
 
   Future<Map<String, dynamic>> put(String path, [Object? body]) =>
-      _send(() => _dio.put(path, data: body, options: _options())).then((r) => r.envelope);
+      _send(() => _dio.put(path, data: body, options: _options()))
+          .then((r) => r.envelope);
 
   Future<Map<String, dynamic>> delete(String path, [Object? body]) =>
-      _send(() => _dio.delete(path, data: body, options: _options())).then((r) => r.envelope);
+      _send(() => _dio.delete(path, data: body, options: _options()))
+          .then((r) => r.envelope);
 
   /// A paginated list; [map] turns each row into a value.
-  Future<Paged<T>> paged<T>(String path, T Function(Map<String, dynamic>) map, {Map<String, dynamic>? query}) async {
+  Future<Paged<T>> paged<T>(
+    String path,
+    T Function(Map<String, dynamic>) map, {
+    Map<String, dynamic>? query,
+  }) async {
     final envelope = await getEnvelope(path, query: query);
-    final meta = (envelope['meta'] as Map?)?.cast<String, dynamic>() ?? const {};
-    final items = (envelope['data'] as List? ?? const []).map((row) => map((row as Map).cast<String, dynamic>())).toList();
+    final meta =
+        (envelope['meta'] as Map?)?.cast<String, dynamic>() ?? const {};
+    final items = (envelope['data'] as List? ?? const [])
+        .map((row) => map((row as Map).cast<String, dynamic>()))
+        .toList();
 
     return Paged(
       items,
@@ -98,8 +127,10 @@ class Api {
 
   Options _options() => Options(headers: authHeaders);
 
-  Map<String, dynamic>? _clean(Map<String, dynamic>? query) =>
-      query == null ? null : (Map.of(query)..removeWhere((_, value) => value == null || value == ''));
+  Map<String, dynamic>? _clean(Map<String, dynamic>? query) => query == null
+      ? null
+      : (Map.of(query)
+          ..removeWhere((_, value) => value == null || value == ''));
 
   Future<_Result> _send(Future<Response<dynamic>> Function() request) async {
     try {
@@ -115,17 +146,23 @@ class Api {
 
     if (response == null) {
       return ApiException(switch (error.type) {
-        DioExceptionType.connectionTimeout || DioExceptionType.receiveTimeout || DioExceptionType.sendTimeout => 'timeout',
+        DioExceptionType.connectionTimeout ||
+        DioExceptionType.receiveTimeout ||
+        DioExceptionType.sendTimeout => 'timeout',
         _ => 'offline',
       });
     }
 
-    final body = response.data is Map ? (response.data as Map).cast<String, dynamic>() : const <String, dynamic>{};
+    final body = response.data is Map
+        ? (response.data as Map).cast<String, dynamic>()
+        : const <String, dynamic>{};
     final errors = <String, List<String>>{};
 
     if (body['errors'] is Map) {
       (body['errors'] as Map).forEach((key, value) {
-        errors['$key'] = value is List ? value.map((e) => '$e').toList() : ['$value'];
+        errors['$key'] = value is List
+            ? value.map((e) => '$e').toList()
+            : ['$value'];
       });
     }
 
@@ -134,7 +171,9 @@ class Api {
     }
 
     return ApiException(
-      (body['message'] as String?)?.trim().isNotEmpty == true ? body['message'] as String : 'server_error',
+      (body['message'] as String?)?.trim().isNotEmpty == true
+          ? body['message'] as String
+          : 'server_error',
       statusCode: response.statusCode,
       errors: errors,
     );
@@ -146,7 +185,8 @@ class _Result {
 
   final dynamic raw;
 
-  Map<String, dynamic> get envelope => raw is Map ? (raw as Map).cast<String, dynamic>() : {'data': raw};
+  Map<String, dynamic> get envelope =>
+      raw is Map ? (raw as Map).cast<String, dynamic>() : {'data': raw};
 
   dynamic get data => envelope['data'];
 }
@@ -198,7 +238,9 @@ extension JsonReader on Map<String, dynamic> {
 
   List<Map<String, dynamic>> list(String key) {
     final value = this[key];
-    return value is List ? value.whereType<Map>().map((e) => e.cast<String, dynamic>()).toList() : const [];
+    return value is List
+        ? value.whereType<Map>().map((e) => e.cast<String, dynamic>()).toList()
+        : const [];
   }
 
   List<String> strings(String key) {
@@ -209,8 +251,11 @@ extension JsonReader on Map<String, dynamic> {
 
 /// Reads `data` from a single-object response.
 Map<String, dynamic> dataOf(Map<String, dynamic> envelope) =>
-    envelope['data'] is Map ? (envelope['data'] as Map).cast<String, dynamic>() : const {};
+    envelope['data'] is Map
+    ? (envelope['data'] as Map).cast<String, dynamic>()
+    : const {};
 
 /// Reads `data` from a list response.
-List<Map<String, dynamic>> listOf(dynamic data) =>
-    data is List ? data.whereType<Map>().map((e) => e.cast<String, dynamic>()).toList() : const [];
+List<Map<String, dynamic>> listOf(dynamic data) => data is List
+    ? data.whereType<Map>().map((e) => e.cast<String, dynamic>()).toList()
+    : const [];

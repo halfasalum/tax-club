@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 import '../../core/api.dart';
 import '../../core/i18n.dart';
+import '../../core/session.dart';
+import '../../core/shells.dart';
 import '../../core/theme.dart';
+import '../../core/web_ui.dart';
 import '../../core/widgets.dart';
 
 /// The inbox. Links to the website are opened in the matching app screen
@@ -20,7 +24,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   final _read = <String>{};
 
   Future<Paged<Map<String, dynamic>>> _load(int page) async {
-    final data = ((await context.api.get('notifications', query: {'page': page})) as Map).cast<String, dynamic>();
+    final data = ((await context.api.get(
+      'notifications',
+      query: {'page': page},
+    )) as Map).cast<String, dynamic>();
     if (mounted) context.session.setUnread(data.integer('unread_count'));
     final pagination = data.obj('pagination') ?? const {};
     return Paged(
@@ -35,9 +42,16 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     final id = notification.str('id');
     if (notification.strOrNull('read_at') == null && !_read.contains(id)) {
       setState(() => _read.add(id));
-      context.api.post('notifications/$id/read').then((envelope) {
-        if (mounted) context.session.setUnread(dataOf(envelope).integer('unread_count'));
-      }).catchError((_) {});
+      context.api
+          .post('notifications/$id/read')
+          .then((envelope) {
+            if (mounted) {
+              context.session.setUnread(
+                dataOf(envelope).integer('unread_count'),
+              );
+            }
+          })
+          .catchError((_) {});
     }
 
     final route = appRouteFor(notification.strOrNull('url'));
@@ -52,43 +66,94 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(context.tr('Notifications')),
-        actions: [
-          TextButton(
-            onPressed: () async {
-              final result = await runAction(context, () => context.api.post('notifications/read-all'));
-              if (result != null && context.mounted) {
-                context.session.setUnread(0);
-                _list.currentState?.refresh();
-              }
-            },
-            child: Text(context.tr('Mark all read')),
-          ),
-        ],
-      ),
+    final unread = context.watch<Session>().unread;
+    return MemberScaffold(
       body: PagedList<Map<String, dynamic>>(
         key: _list,
-        separator: 8,
+        padding: const EdgeInsets.fromLTRB(16, 28, 16, 40),
+        separator: 10,
         load: _load,
-        empty: EmptyPanel(message: context.tr('No notifications yet.'), icon: Icons.notifications_none),
-        itemBuilder: (context, notification, _) {
-          final unread = notification.strOrNull('read_at') == null && !_read.contains(notification.str('id'));
-          return Tile(
-            color: unread ? Brand.yellowWash : null,
-            onTap: () => _open(notification),
-            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Icon(unread ? Icons.circle : Icons.circle_outlined, size: 12, color: unread ? Brand.ink : Brand.line),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(notification.str('message'), style: TextStyle(fontWeight: unread ? FontWeight.w600 : FontWeight.w400)),
-                  const SizedBox(height: 4),
-                  Text(context.ago(notification.date('created_at')), style: const TextStyle(color: Brand.slate, fontSize: 12)),
-                ]),
+        header: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            PageTitle(
+              context.tr('Notifications'),
+              subtitle: context.trPlural(
+                '{0} You are all caught up.|{1} :count unread message|[2,*] :count unread messages',
+                unread,
               ),
-            ]),
+            ),
+            if (unread > 0) ...[
+              const SizedBox(height: 14),
+              WebButton(
+                context.tr('Mark all as read'),
+                kind: BtnKind.ghost,
+                expand: false,
+                onPressed: () async {
+                  final result = await runAction(
+                    context,
+                    () => context.api.post('notifications/read-all'),
+                  );
+                  if (result != null && context.mounted) {
+                    context.session.setUnread(0);
+                    _list.currentState?.refresh();
+                  }
+                },
+              ),
+            ],
+            const SizedBox(height: 12),
+          ],
+        ),
+        empty: MistBox(
+          context.tr(
+            'No notifications yet. Updates about your membership will appear here.',
+          ),
+          color: Colors.white,
+          center: true,
+        ),
+        itemBuilder: (context, notification, _) {
+          final isUnread =
+              notification.strOrNull('read_at') == null &&
+              !_read.contains(notification.str('id'));
+          return WebCard(
+            highlight: isUnread,
+            color: isUnread ? Brand.yellowWash : Colors.white,
+            onTap: () => _open(notification),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (isUnread)
+                  const Padding(
+                    padding: EdgeInsets.only(top: 6, right: 10),
+                    child: CircleAvatar(radius: 5, backgroundColor: Brand.ink),
+                  ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        notification.str('message'),
+                        style: TextStyle(
+                          fontSize: 16,
+                          height: 1.45,
+                          fontWeight: isUnread
+                              ? FontWeight.w800
+                              : FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        context.ago(notification.date('created_at')),
+                        style: const TextStyle(
+                          color: Brand.slate,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           );
         },
       ),
@@ -104,11 +169,14 @@ String? appRouteFor(String? url) {
   final path = Uri.tryParse(url)?.path ?? '';
   final patterns = <RegExp, String Function(Match)>{
     RegExp(r'^/(?:en/)?app/events/([^/]+)'): (m) => '/events/${m[1]}',
-    RegExp(r'^/(?:en/)?app/opportunities/([^/]+)'): (m) => '/opportunities/${m[1]}',
+    RegExp(r'^/(?:en/)?app/opportunities/([^/]+)'): (m) =>
+        '/opportunities/${m[1]}',
     RegExp(r'^/(?:en/)?app/quizzes/([0-9a-f-]{36})'): (m) => '/quiz/${m[1]}',
-    RegExp(r'^/(?:en/)?app/community/posts/([^/]+)'): (m) => '/community/post/${m[1]}',
+    RegExp(r'^/(?:en/)?app/community/posts/([^/]+)'): (m) =>
+        '/community/post/${m[1]}',
     RegExp(r'^/(?:en/)?app/feedback/([^/]+)'): (m) => '/feedback/${m[1]}',
-    RegExp(r'^/(?:en/)?app/competitions/([^/]+)'): (m) => '/competitions/${m[1]}',
+    RegExp(r'^/(?:en/)?app/competitions/([^/]+)'): (m) =>
+        '/competitions/${m[1]}',
     RegExp(r'^/(?:en/)?app/quizzes'): (_) => '/quizzes',
     RegExp(r'^/(?:en/)?app/community/([^/]+)$'): (m) => '/community/${m[1]}',
     RegExp(r'^/(?:en/)?app/community'): (_) => '/community',

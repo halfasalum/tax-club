@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../../core/api.dart';
 import '../../core/i18n.dart';
 import '../../core/theme.dart';
+import '../../core/web_ui.dart';
 import '../../core/widgets.dart';
+import '../auth/auth_screens.dart';
 
 /// Check a membership card or a certificate by its number.
 class VerifyScreen extends StatefulWidget {
@@ -30,7 +32,9 @@ class _VerifyScreenState extends State<VerifyScreen> {
     setState(() => _result = null);
     try {
       final envelope = _kind == 'membership'
-          ? await context.api.post('membership/verify', {'membership_number': number})
+          ? await context.api.post('membership/verify', {
+              'membership_number': number,
+            })
           : await context.api.post('certificates/verify', {'number': number});
       if (mounted) setState(() => _result = dataOf(envelope));
     } catch (error) {
@@ -41,69 +45,118 @@ class _VerifyScreenState extends State<VerifyScreen> {
   @override
   Widget build(BuildContext context) {
     final result = _result;
-    final valid = result != null && (result.flag('is_valid') || result.str('result') == 'valid');
+    final valid =
+        result != null &&
+        (result.flag('is_valid') || result.str('result') == 'valid');
 
-    return Scaffold(
-      appBar: AppBar(title: Text(context.tr('Check a card or certificate'))),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          SegmentedButton<String>(
-            showSelectedIcon: false,
-            segments: [
-              ButtonSegment(value: 'membership', label: Text(context.tr('Membership card'))),
-              ButtonSegment(value: 'certificate', label: Text(context.tr('Certificate'))),
-            ],
-            selected: {_kind},
-            onSelectionChanged: (value) => setState(() {
-              _kind = value.first;
-              _result = null;
-            }),
+    return AuthScaffold(
+      title: context.tr('Check a card or certificate'),
+      children: [
+        SegmentedButton<String>(
+          showSelectedIcon: false,
+          style: SegmentedButton.styleFrom(
+            selectedBackgroundColor: Brand.ink,
+            selectedForegroundColor: Brand.yellow,
+            textStyle: const TextStyle(fontWeight: FontWeight.w800),
           ),
-          const SizedBox(height: 20),
-          TextField(
-            controller: _number,
-            textCapitalization: TextCapitalization.characters,
-            onSubmitted: (_) => _check(),
-            decoration: InputDecoration(
-              labelText: context.tr(_kind == 'membership' ? 'Membership number' : 'Certificate number'),
-              hintText: _kind == 'membership' ? 'TC-24-DSM-00123-7' : 'TCC-24-XXXX-XXXX',
+          segments: [
+            ButtonSegment(
+              value: 'membership',
+              label: Text(context.tr('Membership card')),
             ),
+            ButtonSegment(
+              value: 'certificate',
+              label: Text(context.tr('Certificate')),
+            ),
+          ],
+          selected: {_kind},
+          onSelectionChanged: (value) => setState(() {
+            _kind = value.first;
+            _result = null;
+          }),
+        ),
+        const SizedBox(height: 22),
+        WebField(
+          label: context.tr(
+            _kind == 'membership' ? 'Membership number' : 'Certificate number',
           ),
-          const SizedBox(height: 16),
-          BusyButton(label: context.tr('Check'), icon: Icons.search, onPressed: _check),
-          const SizedBox(height: 24),
-          if (result != null)
-            Tile(
-              color: valid ? const Color(0xFFDCFCE7) : const Color(0xFFFEE2E2),
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Row(children: [
-                  Icon(valid ? Icons.verified : Icons.error_outline, color: valid ? Brand.success : Brand.danger, size: 32),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      context.tr(switch (result.str('result')) {
-                        'valid' => _kind == 'membership' ? 'Valid member' : 'Valid certificate',
-                        'revoked' => 'This certificate was withdrawn',
-                        'not_found' => 'Not found',
-                        'mistyped' => 'This number has a typing mistake. Check it and try again.',
-                        'not_valid' => 'Not a valid member',
-                        _ => valid ? 'Valid member' : 'Not a valid member',
-                      }),
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+          controller: _number,
+          hint: _kind == 'membership'
+              ? 'TC-24-DSM-00123-7'
+              : 'TCC-24-XXXX-XXXX',
+          capitalization: TextCapitalization.characters,
+          onSubmitted: (_) => _check(),
+        ),
+        WebButton(context.tr('Check'), onPressed: _check),
+        if (result != null) ...[
+          const SizedBox(height: 22),
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: valid ? const Color(0xFFDCFCE7) : const Color(0xFFFEE4E2),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(
+                color: valid ? Brand.success : Brand.danger,
+                width: 2,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      valid ? Icons.verified : Icons.error_outline,
+                      color: valid ? Brand.success : Brand.danger,
+                      size: 30,
                     ),
-                  ),
-                ]),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        context.tr(switch (result.str('result')) {
+                          'valid' =>
+                            _kind == 'membership'
+                                ? 'Valid member'
+                                : 'Valid certificate',
+                          'revoked' => 'This certificate was withdrawn',
+                          'not_found' => 'Not found',
+                          'mistyped' => 'This number has a typing mistake. Check it and try again.',
+                          _ => 'Not a valid member',
+                        }),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 8),
-                if (result.strOrNull('display_name') != null) Text(result.str('display_name')),
-                if (result.strOrNull('holder') != null) Text(result.str('holder')),
-                if (result.strOrNull('title') != null) Text(result.str('title'), style: const TextStyle(fontWeight: FontWeight.w600)),
-                if (result.strOrNull('subject') != null) Text(result.str('subject')),
-                if (result.strOrNull('issued_at') != null) Text(context.tr('Issued :date', {'date': context.date(result.date('issued_at'))})),
-              ]),
+                for (final key in [
+                  'display_name',
+                  'holder',
+                  'title',
+                  'subject',
+                ])
+                  if (result.strOrNull(key) != null)
+                    Text(
+                      result.str(key),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                if (result.strOrNull('issued_at') != null)
+                  Text(
+                    context.tr('Issued :date', {
+                      'date': context.date(result.date('issued_at')),
+                    }),
+                  ),
+              ],
             ),
+          ),
         ],
-      ),
+      ],
     );
   }
 }

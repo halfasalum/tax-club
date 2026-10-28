@@ -24,8 +24,8 @@ class LoginResult {
 /// Who is signed in, the chosen language and the server's settings.
 class Session extends ChangeNotifier {
   Session({Api? api, FlutterSecureStorage? storage})
-      : api = api ?? Api(),
-        _storage = storage ?? const FlutterSecureStorage() {
+    : api = api ?? Api(),
+      _storage = storage ?? const FlutterSecureStorage() {
     this.api.onUnauthorized = () {
       if (status == SessionStatus.signedIn) {
         _clear(expired: true);
@@ -71,7 +71,9 @@ class Session extends ChangeNotifier {
 
     if (token != null) {
       api.token = token;
-      user = cachedUser != null ? (jsonDecode(cachedUser) as Map).cast<String, dynamic>() : const {};
+      user = cachedUser != null
+          ? (jsonDecode(cachedUser) as Map).cast<String, dynamic>()
+          : const {};
       status = SessionStatus.signedIn;
       refreshUser();
     } else {
@@ -104,14 +106,22 @@ class Session extends ChangeNotifier {
   }
 
   Map<String, String> labels(String group) =>
-      (config.obj('labels')?.obj(group) ?? const {}).map((key, value) => MapEntry(key, '$value'));
+      (config.obj('labels')?.obj(group) ?? const {}).map(
+        (key, value) => MapEntry(key, '$value'),
+      );
 
   Future<LoginResult> login(String identifier, String password) async {
-    final envelope = await api.post('auth/login', {'identifier': identifier.trim(), 'password': password});
+    final envelope = await api.post('auth/login', {
+      'identifier': identifier.trim(),
+      'password': password,
+    });
     final data = dataOf(envelope);
 
     if (data.flag('two_factor_required')) {
-      return LoginResult.needsCode(data.str('challenge'), data.intOrNull('expires_in_minutes'));
+      return LoginResult.needsCode(
+        data.str('challenge'),
+        data.intOrNull('expires_in_minutes'),
+      );
     }
 
     await _signIn(data);
@@ -119,7 +129,10 @@ class Session extends ChangeNotifier {
   }
 
   Future<void> verifyCode(String challenge, String code) async {
-    final envelope = await api.post('auth/login/verify', {'challenge': challenge, 'code': code.trim()});
+    final envelope = await api.post('auth/login/verify', {
+      'challenge': challenge,
+      'code': code.trim(),
+    });
     await _signIn(dataOf(envelope));
   }
 

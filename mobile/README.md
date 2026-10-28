@@ -1,6 +1,11 @@
 # TRA Tax Club mobile app
 
-Flutter app for Android and iOS. Members use it to:
+Flutter app for Android and iOS. It looks and works like the website:
+
+- **Before signing in,** visitors see the public website: home, lessons, events, questions and answers, and About.
+- **After signing in,** members get the member area. It has the same header, side menu, page titles and wording as the website.
+
+Members use it to:
 
 - learn, take quizzes and join events;
 - browse opportunities, use the community and ask TRA;
@@ -90,7 +95,10 @@ To make older app versions ask members to update, set these on the server:
 | `lib/core/api.dart` | Dio client for the API envelope `{success, message, data, meta, errors}`. It sends the token and `Accept-Language`. |
 | `lib/core/session.dart` | Sign-in (including the SMS code for staff), the token in secure storage, the language and the server's labels (`GET /app/config`). |
 | `lib/core/i18n.dart`, `assets/i18n/sw.json` | Kiswahili keyed by the English text, like the website's `lang/sw.json`. |
-| `lib/router.dart` | Routes and the five tabs: Home, Learn, Events, Community, More. |
+| `lib/core/web_ui.dart` | The website's components: buttons, tags, cards, striped yellow headers, the receipt and the membership card. Fonts come from `backend/public/fonts`. |
+| `lib/core/shells.dart` | Page frames. Public pages have the utility bar, header, menu and footer. Member pages have the header and the black side menu. |
+| `lib/router.dart` | Public pages (`/`, `/site/...`, sign-in and registration) and member pages (`/home`, `/learn`, …). |
+| `lib/features/site` | The public website pages, which use `GET /api/v1/public/...`. |
 | `lib/features/*` | One folder per area: learning, quizzes, events, opportunities, community, Ask TRA, competitions, achievements, alumni and mentorship, feedback, notifications, profile. |
 
 ### Adding text

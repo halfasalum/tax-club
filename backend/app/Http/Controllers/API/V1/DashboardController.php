@@ -117,6 +117,16 @@ class DashboardController extends BaseController
             'total_points' => (int) $user->total_points,
             'badges_earned' => DB::table('user_badges')->where('user_id', $userId)->count(),
             'unread_notifications' => $user->unreadNotifications()->count(),
+            'latest_lessons' => Content::live()->availableTo($user)->latest('published_at')->limit(4)->get()
+                ->map(fn (Content $lesson) => [
+                    'content_id' => $lesson->content_id,
+                    'title' => $lesson->title,
+                    'content_type' => $lesson->content_type,
+                    'content_type_label' => __('content_type.'.$lesson->content_type),
+                ]),
+            'events' => Event::upcoming()->orderBy('starts_at')->limit(20)->get()
+                ->filter(fn (Event $event) => $event->isVisibleTo($user))->take(3)->values()
+                ->map(fn (Event $event) => $event->only(['event_id', 'title', 'location', 'starts_at'])),
             'progress' => [
                 'completed' => $progressStats['completed'] ?? 0,
                 'in_progress' => $progressStats['in_progress'] ?? 0,

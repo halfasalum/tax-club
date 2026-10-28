@@ -5,76 +5,122 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/api.dart';
 import '../../core/i18n.dart';
+import '../../core/shells.dart';
 import '../../core/theme.dart';
+import '../../core/web_ui.dart';
 import '../../core/widgets.dart';
+import '../engage/achievements_screen.dart';
 
+/// "Quizzes" (livewire/member/quizzes/index.blade.php).
 class QuizzesScreen extends StatelessWidget {
   const QuizzesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(context.tr('Quizzes')),
-        actions: [IconButton(tooltip: context.tr('Leaderboard'), onPressed: () => context.push('/leaderboard'), icon: const Icon(Icons.leaderboard_outlined))],
-      ),
+    return MemberScaffold(
       body: Loader<List<Map<String, dynamic>>>(
         load: () async => listOf(await context.api.get('quizzes')),
-        isEmpty: (quizzes) => quizzes.isEmpty,
-        empty: EmptyPanel(message: context.tr('No quizzes are open right now.'), icon: Icons.quiz_outlined),
-        builder: (context, quizzes, reload) => RefreshIndicator(
+        builder: (context, quizzes, reload) => MemberPage(
           onRefresh: reload,
-          child: ListView.separated(
-            padding: const EdgeInsets.all(16),
-            itemCount: quizzes.length,
-            separatorBuilder: (_, _) => const SizedBox(height: 10),
-            itemBuilder: (context, index) {
-              final quiz = quizzes[index];
-              final result = quiz.obj('result');
-              return Tile(
-                onTap: () => context.push('/quiz/${quiz.str('quiz_id')}'),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Row(children: [
-                    if (quiz.strOrNull('category') != null) Pill(quiz.str('category')),
-                    if (quiz.str('mode') == 'practice') ...[const SizedBox(width: 6), Pill.tone(context.tr('Practice'), 'info')],
-                    const Spacer(),
-                    if (result != null)
-                      Pill.tone('${result.number('percent').round()}%', result.flag('passed') ? 'good' : 'warn'),
-                  ]),
-                  const SizedBox(height: 8),
-                  Text(quiz.str('title'), style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
-                  const SizedBox(height: 4),
-                  Wrap(spacing: 14, children: [
-                    if (quiz.intOrNull('questions_count') != null)
-                      _Meta(Icons.help_outline, context.trPlural(':count question|:count questions', quiz.integer('questions_count'))),
-                    if (quiz.intOrNull('time_limit_minutes') != null) _Meta(Icons.timer_outlined, context.tr(':count min', {'count': quiz.integer('time_limit_minutes')})),
-                    if (quiz.date('closes_at') != null) _Meta(Icons.event_outlined, context.tr('Closes :date', {'date': context.date(quiz.date('closes_at'))})),
-                  ]),
-                ]),
-              );
-            },
-          ),
+          children: [
+            PageTitle(
+              context.tr('Quizzes'),
+              subtitle: context.tr(
+                'Test what you have learned and earn points.',
+              ),
+            ),
+            const SizedBox(height: 24),
+            if (quizzes.isEmpty)
+              MistBox(
+                context.tr('No quizzes are open right now. Check back soon.'),
+                color: Colors.white,
+              ),
+            for (final quiz in quizzes)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 14),
+                child: WebCard(
+                  highlight: quiz.obj('result') != null,
+                  onTap: () => context.push('/quiz/${quiz.str('quiz_id')}'),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Wrap(
+                        spacing: 10,
+                        runSpacing: 6,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          Tag(
+                            context.tr(
+                              quiz.str('mode') == 'practice'
+                                  ? 'Practice'
+                                  : 'Earns points',
+                            ),
+                          ),
+                          if (quiz.intOrNull('time_limit_minutes') != null)
+                            Text(
+                              context.tr(':minutes min', {
+                                'minutes': quiz.integer('time_limit_minutes'),
+                              }),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14,
+                              ),
+                            ),
+                          if (quiz.date('closes_at') != null)
+                            Text(
+                              context.tr('closes :date', {
+                                'date': context.date(quiz.date('closes_at')),
+                              }),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                color: Brand.slate,
+                                fontSize: 14,
+                              ),
+                            ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        quiz.str('title'),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w900,
+                          height: 1.3,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        quiz.obj('result') != null
+                            ? context.tr('Best so far: :percent%', {
+                                'percent': quiz
+                                    .obj('result')!
+                                    .number('percent')
+                                    .round(),
+                              })
+                            : context.trPlural(
+                                ':count question|:count questions',
+                                quiz.integer('questions_count'),
+                              ),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                          color: quiz.obj('result') != null
+                              ? Brand.ink
+                              : Brand.slate,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );
   }
 }
 
-class _Meta extends StatelessWidget {
-  const _Meta(this.icon, this.text);
-
-  final IconData icon;
-  final String text;
-
-  @override
-  Widget build(BuildContext context) => Row(mainAxisSize: MainAxisSize.min, children: [
-        Icon(icon, size: 16, color: Brand.slate),
-        const SizedBox(width: 4),
-        Text(text, style: const TextStyle(color: Brand.slate, fontSize: 13)),
-      ]);
-}
-
-/// Rules, attempts left, start or resume.
+/// "Before you start" (livewire/member/quizzes/show.blade.php).
 class QuizScreen extends StatelessWidget {
   const QuizScreen({super.key, required this.id});
 
@@ -82,65 +128,171 @@ class QuizScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(context.tr('Quiz'))),
+    return MemberScaffold(
       body: Loader<Map<String, dynamic>>(
-        load: () async => ((await context.api.get('quizzes/$id')) as Map).cast<String, dynamic>(),
+        load: () async {
+          final api = context.api;
+          final results = await Future.wait([
+            api.get('quizzes/$id'),
+            api.get('quizzes/$id/my-attempts').catchError((_) => <dynamic>[]),
+          ]);
+          return {
+            ...(results[0] as Map).cast<String, dynamic>(),
+            'attempts': results[1],
+          };
+        },
         builder: (context, quiz, reload) {
           final resuming = quiz.strOrNull('attempt_in_progress') != null;
-          return RefreshIndicator(
+          final attempts = quiz.list('attempts');
+          final minutes = quiz.intOrNull('time_limit_minutes');
+          final practice = quiz.str('mode') == 'practice';
+
+          return MemberPage(
             onRefresh: reload,
-            child: ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
-                Text(quiz.str('title'), style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800)),
-                const SizedBox(height: 8),
-                Paragraphs(quiz.strOrNull('description')),
-                const SizedBox(height: 16),
-                Card(
-                  child: Column(children: [
-                    if (quiz.intOrNull('questions_count') != null)
-                      ListTile(leading: const Icon(Icons.help_outline), title: Text(context.trPlural(':count question|:count questions', quiz.integer('questions_count')))),
-                    ListTile(
-                      leading: const Icon(Icons.timer_outlined),
-                      title: Text(quiz.intOrNull('time_limit_minutes') == null
-                          ? context.tr('No time limit')
-                          : context.tr(':count minutes to finish', {'count': quiz.integer('time_limit_minutes')})),
+            children: [
+              PageTitle(
+                quiz.str('title'),
+                subtitle: quiz.strOrNull('description'),
+                back: context.tr('Quizzes'),
+                onBack: () => context.go('/quizzes'),
+              ),
+              const SizedBox(height: 24),
+              WebCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      context.tr('Before you start'),
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
-                    if (quiz.str('mode') != 'practice')
-                      ListTile(leading: const Icon(Icons.flag_outlined), title: Text(context.tr('Pass mark: :mark%', {'mark': quiz.integer('pass_mark')}))),
-                    ListTile(
-                      leading: const Icon(Icons.replay),
-                      title: Text(quiz.intOrNull('attempts_left') == null
-                          ? context.tr('Unlimited attempts')
-                          : context.tr('Attempts left: :count', {'count': quiz.integer('attempts_left')})),
-                    ),
-                  ]),
+                    const SizedBox(height: 4),
+                    Bullets([
+                      context.trPlural(
+                        ':count question|:count questions',
+                        quiz.integer('questions_count'),
+                      ),
+                      if (minutes == null)
+                        context.tr('No time limit.')
+                      else
+                        context.tr(
+                          'You have :minutes minutes once you start. The quiz is submitted automatically when time runs out.',
+                          {'minutes': minutes},
+                        ),
+                      if (practice)
+                        context.tr('Practice quiz: no points, just learning.')
+                      else
+                        context.tr('Pass mark: :percent%', {
+                          'percent': quiz.integer('pass_mark'),
+                        }),
+                      if (quiz.intOrNull('attempts_left') == null)
+                        context.tr('You can try as many times as you like.')
+                      else
+                        context.trPlural(
+                          '{0} No attempts left.|{1} :count attempt left.|[2,*] :count attempts left.',
+                          quiz.integer('attempts_left'),
+                        ),
+                      if (!practice)
+                        context.tr(
+                          quiz.str('retained_result') == 'latest'
+                              ? 'Your latest attempt counts.'
+                              : 'Your best attempt counts.',
+                        ),
+                    ]),
+                    if (quiz.strOrNull('instructions') != null) ...[
+                      const SizedBox(height: 16),
+                      Paragraphs(quiz.str('instructions')),
+                    ],
+                    const SizedBox(height: 22),
+                    if (quiz.flag('can_start'))
+                      WebButton(
+                        context.tr(
+                          resuming ? 'Continue your attempt' : 'Start quiz',
+                        ),
+                        kind: BtnKind.brand,
+                        onPressed: () async {
+                          final envelope = await runAction(
+                            context,
+                            () => context.api.post('quizzes/$id/start'),
+                          );
+                          if (envelope != null && context.mounted) {
+                            await context.push(
+                              '/quiz/$id/attempt',
+                              extra: {
+                                ...dataOf(envelope),
+                                'title': quiz.str('title'),
+                              },
+                            );
+                            reload();
+                          }
+                        },
+                      )
+                    else
+                      MistBox(quiz.str('reason')),
+                  ],
                 ),
-                if (quiz.strOrNull('instructions') != null) ...[
-                  const SizedBox(height: 16),
-                  SectionTitle(context.tr('Instructions')),
-                  Paragraphs(quiz.str('instructions')),
-                ],
-                const SizedBox(height: 24),
-                if (quiz.flag('can_start'))
-                  BusyButton(
-                    label: context.tr(resuming ? 'Continue the quiz' : 'Start the quiz'),
-                    icon: Icons.play_arrow,
-                    onPressed: () async {
-                      final envelope = await runAction(context, () => context.api.post('quizzes/$id/start'));
-                      if (envelope != null && context.mounted) {
-                        await context.push('/quiz/$id/attempt', extra: dataOf(envelope));
-                        reload();
-                      }
-                    },
-                  )
-                else
-                  Tile(color: Brand.yellowWash, child: Text(quiz.str('reason'))),
-                const SizedBox(height: 12),
-                BusyButton(label: context.tr('My past attempts'), outlined: true, onPressed: () async => context.push('/quiz/$id/attempts')),
+              ),
+              if (attempts.isNotEmpty) ...[
+                const SizedBox(height: 32),
+                SectionHeading(context.tr('Your attempts')),
+                const SizedBox(height: 14),
+                for (final attempt in attempts)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: WebCard(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 16,
+                      ),
+                      onTap: () => context.push(
+                        '/quiz/$id/result/${attempt.str('attempt_id')}',
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  context.tr('Attempt :number', {
+                                    'number': attempt.integer('attempt_number'),
+                                  }),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w900,
+                                  ),
+                                ),
+                                Text(
+                                  context.dateTime(
+                                    attempt.date('submitted_at'),
+                                  ),
+                                  style: const TextStyle(
+                                    color: Brand.slate,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (attempt.flag('is_best_attempt')) ...[
+                            Tag(context.tr('Counts')),
+                            const SizedBox(width: 10),
+                          ],
+                          LinkText(
+                            context.tr(':percent% · see result', {
+                              'percent': attempt.number('percent').round(),
+                            }),
+                            onTap: () => context.push(
+                              '/quiz/$id/result/${attempt.str('attempt_id')}',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
               ],
-            ),
+            ],
           );
         },
       ),
@@ -148,7 +300,8 @@ class QuizScreen extends StatelessWidget {
   }
 }
 
-/// Answering questions, one per page, with autosave and a timer.
+/// Taking a quiz (livewire/member/quizzes/take.blade.php), one question
+/// per page, saved as you go, with a timer.
 class AttemptScreen extends StatefulWidget {
   const AttemptScreen({super.key, required this.quizId, required this.attempt});
 
@@ -160,16 +313,20 @@ class AttemptScreen extends StatefulWidget {
 }
 
 class _AttemptScreenState extends State<AttemptScreen> {
-  late final List<Map<String, dynamic>> _questions = widget.attempt.list('questions');
+  late final List<Map<String, dynamic>> _questions = widget.attempt.list(
+    'questions',
+  );
   late final Map<String, Set<String>> _answers = {
-    for (final question in _questions) question.str('question_id'): question.strings('selected_answer_ids').toSet(),
+    for (final question in _questions)
+      question.str('question_id'): question
+          .strings('selected_answer_ids')
+          .toSet(),
   };
   final _pages = PageController();
   int _index = 0;
   int? _secondsLeft;
   Timer? _timer;
   bool _submitting = false;
-  final _saving = <String>{};
 
   String get _attemptId => widget.attempt.str('attempt_id');
 
@@ -202,44 +359,55 @@ class _AttemptScreenState extends State<AttemptScreen> {
     setState(() {
       final chosen = _answers[id]!;
       if (multiple) {
-        chosen.contains(answerId) ? chosen.remove(answerId) : chosen.add(answerId);
+        chosen.contains(answerId)
+            ? chosen.remove(answerId)
+            : chosen.add(answerId);
       } else {
         chosen
           ..clear()
           ..add(answerId);
       }
-      _saving.add(id);
     });
 
     try {
-      final envelope = await context.api.put('quizzes/attempts/$_attemptId/answers', {'question_id': id, 'answer_ids': _answers[id]!.toList()});
+      final envelope = await context.api.put(
+        'quizzes/attempts/$_attemptId/answers',
+        {'question_id': id, 'answer_ids': _answers[id]!.toList()},
+      );
       final seconds = dataOf(envelope).intOrNull('seconds_left');
       if (seconds != null && mounted) setState(() => _secondsLeft = seconds);
     } on ApiException catch (error) {
       if (!mounted) return;
       showMessage(context, errorText(context, error), error: true);
       if (error.statusCode == 409) _submit(auto: true);
-    } finally {
-      if (mounted) setState(() => _saving.remove(id));
     }
   }
 
   Future<void> _submit({bool auto = false}) async {
     if (_submitting) return;
-    if (!auto) {
-      final unanswered = _answers.values.where((answer) => answer.isEmpty).length;
-      final message = unanswered > 0
-          ? context.trPlural('You have :count unanswered question. Submit anyway?|You have :count unanswered questions. Submit anyway?', unanswered)
-          : context.tr('Submit your answers? You cannot change them afterwards.');
-      if (!await confirm(context, message, action: context.tr('Submit'))) return;
+    if (!auto && _answers.values.any((answer) => answer.isEmpty)) {
+      if (!await confirm(
+        context,
+        context.tr('Some questions are not answered. Submit anyway?'),
+        action: context.tr('Submit answers'),
+      )) {
+        return;
+      }
     }
     if (!mounted) return;
     setState(() => _submitting = true);
     _timer?.cancel();
 
     try {
-      final envelope = await context.api.post('quizzes/attempts/$_attemptId/submit');
-      if (mounted) context.pushReplacement('/quiz/${widget.quizId}/result', extra: dataOf(envelope));
+      final envelope = await context.api.post(
+        'quizzes/attempts/$_attemptId/submit',
+      );
+      if (mounted) {
+        context.pushReplacement(
+          '/quiz/${widget.quizId}/result',
+          extra: dataOf(envelope),
+        );
+      }
     } catch (error) {
       if (mounted) {
         setState(() => _submitting = false);
@@ -255,89 +423,203 @@ class _AttemptScreenState extends State<AttemptScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final answered = _answers.values.where((answer) => answer.isNotEmpty).length;
+    final answered = _answers.values
+        .where((answer) => answer.isNotEmpty)
+        .length;
 
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
-        if (await confirm(context, context.tr('Leave the quiz? Your answers are saved and you can continue later while time remains.'), action: context.tr('Leave'))) {
+        if (await confirm(
+          context,
+          context.tr(
+            'Your answers are saved as you go. You can leave and come back before time runs out.',
+          ),
+          action: context.tr('Leave'),
+        )) {
           if (context.mounted) Navigator.of(context).pop();
         }
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(context.tr('Question :number of :total', {'number': _index + 1, 'total': _questions.length})),
-          actions: [
-            if (_secondsLeft != null)
-              Padding(
-                padding: const EdgeInsets.only(right: 12),
-                child: Center(
-                  child: Pill(
-                    _clock(_secondsLeft!),
-                    color: (_secondsLeft ?? 0) < 60 ? Brand.danger : Brand.ink,
-                    filled: true,
+      child: MemberScaffold(
+        body: Column(
+          children: [
+            Container(
+              color: Colors.white,
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          widget.attempt.str('title'),
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                      ),
+                      if (_secondsLeft != null)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: (_secondsLeft ?? 0) < 60
+                                ? Brand.danger
+                                : Brand.ink,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            _clock(_secondsLeft!),
+                            style: const TextStyle(
+                              fontFamily: 'IBMPlexMono',
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
-                ),
+                  const SizedBox(height: 8),
+                  Text(
+                    context.tr(':answered of :total answered', {
+                      'answered': answered,
+                      'total': _questions.length,
+                    }),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: Brand.slate,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: LinearProgressIndicator(
+                      value: _questions.isEmpty
+                          ? 0
+                          : answered / _questions.length,
+                      minHeight: 8,
+                      backgroundColor: Brand.mist,
+                      color: Brand.ink,
+                    ),
+                  ),
+                ],
               ),
-          ],
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(4),
-            child: LinearProgressIndicator(value: _questions.isEmpty ? 0 : answered / _questions.length, backgroundColor: Brand.yellowWash, color: Brand.ink),
-          ),
-        ),
-        body: _questions.isEmpty
-            ? EmptyPanel(message: context.tr('This quiz has no questions yet.'))
-            : PageView.builder(
+            ),
+            Expanded(
+              child: PageView.builder(
                 controller: _pages,
                 itemCount: _questions.length,
                 onPageChanged: (index) => setState(() => _index = index),
                 itemBuilder: (context, index) {
                   final question = _questions[index];
                   final id = question.str('question_id');
-                  final multiple = question.str('question_type') == 'multiple_select';
+                  final multiple =
+                      question.str('question_type') == 'multiple_select';
                   return ListView(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
                     children: [
-                      Text(question.str('question_text'), style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700, height: 1.35)),
-                      const SizedBox(height: 6),
-                      Text(context.tr(multiple ? 'Choose all that apply.' : 'Choose one answer.'), style: const TextStyle(color: Brand.slate)),
-                      const SizedBox(height: 16),
-                      for (final answer in question.list('answers'))
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: _AnswerOption(
-                            text: answer.str('answer_text'),
-                            selected: _answers[id]!.contains(answer.str('answer_id')),
-                            multiple: multiple,
-                            onTap: _submitting ? null : () => _choose(question, answer.str('answer_id')),
+                      Text(
+                        '${context.tr('Question :number of :total', {'number': index + 1, 'total': _questions.length})} · ${context.trPlural(':count mark|:count marks', question.integer('points', 1))}',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w800,
+                          color: Brand.slate,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        question.str('question_text'),
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w900,
+                          height: 1.3,
+                        ),
+                      ),
+                      if (multiple) ...[
+                        const SizedBox(height: 6),
+                        Text(
+                          context.tr('Choose all that apply.'),
+                          style: const TextStyle(
+                            color: Brand.slate,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                      if (_saving.contains(id)) Text(context.tr('Saving…'), style: const TextStyle(color: Brand.slate, fontSize: 12)),
+                      ],
+                      const SizedBox(height: 20),
+                      for (final answer in question.list('answers'))
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: _AnswerOption(
+                            text: answer.str('answer_text'),
+                            selected: _answers[id]!.contains(
+                              answer.str('answer_id'),
+                            ),
+                            multiple: multiple,
+                            onTap: _submitting
+                                ? null
+                                : () => _choose(
+                                    question,
+                                    answer.str('answer_id'),
+                                  ),
+                          ),
+                        ),
                     ],
                   );
                 },
               ),
-        bottomNavigationBar: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Row(children: [
-              if (_index > 0)
-                Expanded(child: OutlinedButton(onPressed: () => _pages.previousPage(duration: const Duration(milliseconds: 250), curve: Curves.easeOut), child: Text(context.tr('Back'))))
-              else
-                const Spacer(),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _index < _questions.length - 1
-                    ? FilledButton(onPressed: () => _pages.nextPage(duration: const Duration(milliseconds: 250), curve: Curves.easeOut), child: Text(context.tr('Next')))
-                    : FilledButton(
-                        style: FilledButton.styleFrom(backgroundColor: Brand.success),
-                        onPressed: _submitting ? null : () => _submit(),
-                        child: _submitting ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) : Text(context.tr('Submit')),
-                      ),
+            ),
+            Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                border: Border(top: BorderSide(color: Brand.line, width: 2)),
               ),
-            ]),
-          ),
+              padding: EdgeInsets.fromLTRB(
+                16,
+                12,
+                16,
+                12 + MediaQuery.of(context).padding.bottom,
+              ),
+              child: Row(
+                children: [
+                  if (_index > 0)
+                    Expanded(
+                      child: WebButton(
+                        context.tr('Back'),
+                        kind: BtnKind.ghost,
+                        onPressed: () async => _pages.previousPage(
+                          duration: const Duration(milliseconds: 250),
+                          curve: Curves.easeOut,
+                        ),
+                      ),
+                    )
+                  else
+                    const Spacer(),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _index < _questions.length - 1
+                        ? WebButton(
+                            context.tr('Next'),
+                            onPressed: () async => _pages.nextPage(
+                              duration: const Duration(milliseconds: 250),
+                              curve: Curves.easeOut,
+                            ),
+                          )
+                        : WebButton(
+                            context.tr('Submit answers'),
+                            kind: BtnKind.brand,
+                            onPressed: _submitting ? null : () => _submit(),
+                          ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -345,7 +627,12 @@ class _AttemptScreenState extends State<AttemptScreen> {
 }
 
 class _AnswerOption extends StatelessWidget {
-  const _AnswerOption({required this.text, required this.selected, required this.multiple, this.onTap});
+  const _AnswerOption({
+    required this.text,
+    required this.selected,
+    required this.multiple,
+    this.onTap,
+  });
 
   final String text;
   final bool selected;
@@ -355,29 +642,54 @@ class _AnswerOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: selected ? Brand.yellow : Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12), side: BorderSide(color: selected ? Brand.ink : Brand.line, width: selected ? 2 : 1)),
+      color: selected ? Brand.yellowWash : Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: selected ? Brand.ink : Brand.line, width: 2),
+      ),
       child: InkWell(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(14),
-          child: Row(children: [
-            Icon(multiple
-                ? (selected ? Icons.check_box : Icons.check_box_outline_blank)
-                : (selected ? Icons.radio_button_checked : Icons.radio_button_unchecked)),
-            const SizedBox(width: 12),
-            Expanded(child: Text(text, style: const TextStyle(fontSize: 16))),
-          ]),
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Icon(
+                multiple
+                    ? (selected
+                          ? Icons.check_box
+                          : Icons.check_box_outline_blank)
+                    : (selected
+                          ? Icons.radio_button_checked
+                          : Icons.radio_button_unchecked),
+                color: Brand.ink,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  text,
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-/// Score, points and (when allowed) the correct answers.
+/// Result of an attempt (livewire/member/quizzes/result.blade.php).
 class ResultScreen extends StatelessWidget {
-  const ResultScreen({super.key, required this.quizId, this.result, this.attemptId});
+  const ResultScreen({
+    super.key,
+    required this.quizId,
+    this.result,
+    this.attemptId,
+  });
 
   final String quizId;
   final Map<String, dynamic>? result;
@@ -385,62 +697,169 @@ class ResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(context.tr('Your result'))),
+    return MemberScaffold(
       body: Loader<Map<String, dynamic>>(
-        load: () async => result ?? ((await context.api.get('quizzes/$quizId/attempt/$attemptId/results')) as Map).cast<String, dynamic>(),
+        load: () async =>
+            result ??
+            ((await context.api.get(
+              'quizzes/$quizId/attempt/$attemptId/results',
+            )) as Map).cast<String, dynamic>(),
         builder: (context, data, _) {
           final passed = data.flag('passed');
-          final questions = data.list('questions');
-          return ListView(
-            padding: const EdgeInsets.all(16),
+          final percent = data.number('percent').round();
+          return MemberPage(
             children: [
-              Tile(
-                color: passed ? const Color(0xFFDCFCE7) : Brand.yellowWash,
-                child: Column(children: [
-                  Icon(passed ? Icons.emoji_events : Icons.school, size: 56, color: passed ? Brand.success : Brand.ink),
-                  const SizedBox(height: 8),
-                  Text('${data.number('percent').round()}%', style: Theme.of(context).textTheme.displaySmall?.copyWith(fontWeight: FontWeight.w800)),
-                  Text(context.tr(':score of :max marks', {'score': data.number('score').round(), 'max': data.number('max_score').round()})),
-                  const SizedBox(height: 8),
-                  Text(context.tr(passed ? 'Well done, you passed!' : 'Keep learning and try again.'), style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
-                  if (data.integer('points_awarded') > 0) ...[
-                    const SizedBox(height: 8),
-                    Pill(context.tr('+:points points', {'points': data.integer('points_awarded')}), color: Brand.success, filled: true),
-                  ],
-                  if (data.flag('auto_submitted')) ...[
-                    const SizedBox(height: 8),
-                    Text(context.tr('Time ran out, so your answers were submitted for you.'), textAlign: TextAlign.center),
-                  ],
-                ]),
+              LinkText(
+                context.tr('Quizzes'),
+                onTap: () => context.go('/quizzes'),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 18),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(26),
+                decoration: BoxDecoration(
+                  color: passed ? Brand.yellow : Colors.white,
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: Brand.ink, width: 3),
+                  boxShadow: const [
+                    BoxShadow(color: Brand.ink, offset: Offset(6, 6)),
+                  ],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      context.tr(
+                        passed ? 'You passed!' : 'Not passed this time',
+                      ),
+                      style: const TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.w900,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      '$percent%',
+                      style: const TextStyle(
+                        fontSize: 56,
+                        fontWeight: FontWeight.w900,
+                        height: 1.05,
+                      ),
+                    ),
+                    Text(
+                      context.tr(':score of :max marks', {
+                        'score': data.number('score').round(),
+                        'max': data.number('max_score').round(),
+                      }),
+                      style: const TextStyle(
+                        color: Brand.charcoal,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    if (data.integer('points_awarded') > 0) ...[
+                      const SizedBox(height: 14),
+                      Tag(
+                        '+${data.integer('points_awarded')} ${context.tr('points')}',
+                        dark: true,
+                      ),
+                    ] else if (!data.flag('counts_as_result')) ...[
+                      const SizedBox(height: 12),
+                      Text(
+                        context.tr(
+                          'Your earlier result still counts, so no new points this time.',
+                        ),
+                        style: const TextStyle(color: Brand.charcoal),
+                      ),
+                    ],
+                    if (data.flag('auto_submitted')) ...[
+                      const SizedBox(height: 12),
+                      Text(
+                        context.tr(
+                          'Time ran out, so your saved answers were submitted.',
+                        ),
+                        style: const TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              const SizedBox(height: 28),
               if (!data.flag('answers_visible'))
-                Text(context.tr('The correct answers will be shown after the quiz closes.'), style: const TextStyle(color: Brand.slate))
+                MistBox(
+                  context.tr(
+                    'Correct answers will be shown after the quiz closes.',
+                  ),
+                  color: Colors.white,
+                  center: true,
+                )
               else ...[
-                SectionTitle(context.tr('Review your answers')),
-                for (final (index, question) in questions.indexed)
+                SectionHeading(context.tr('Your answers')),
+                const SizedBox(height: 14),
+                for (final (index, question) in data.list('questions').indexed)
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: Tile(
-                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Icon(question.flag('is_correct') ? Icons.check_circle : Icons.cancel, color: question.flag('is_correct') ? Brand.success : Brand.danger),
-                          const SizedBox(width: 8),
-                          Expanded(child: Text('${index + 1}. ${question.str('question_text')}', style: const TextStyle(fontWeight: FontWeight.w600))),
-                        ]),
-                        if (question.strOrNull('explanation') != null) ...[
-                          const SizedBox(height: 8),
-                          Text(question.str('explanation'), style: const TextStyle(color: Brand.charcoal)),
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: WebCard(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(
+                                question.flag('is_correct')
+                                    ? Icons.check_circle
+                                    : Icons.cancel,
+                                color: question.flag('is_correct')
+                                    ? Brand.success
+                                    : Brand.danger,
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  '${context.tr('Question :number', {'number': index + 1})}: ${question.str('question_text')}',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 16,
+                                    height: 1.35,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          if (question.strOrNull('explanation') != null) ...[
+                            const SizedBox(height: 10),
+                            Text(
+                              question.str('explanation'),
+                              style: const TextStyle(
+                                color: Brand.slate,
+                                height: 1.5,
+                              ),
+                            ),
+                          ],
                         ],
-                      ]),
+                      ),
                     ),
                   ),
               ],
               const SizedBox(height: 16),
-              FilledButton(onPressed: () => context.pop(), child: Text(context.tr('Done'))),
-              const SizedBox(height: 8),
-              OutlinedButton(onPressed: () => context.push('/leaderboard'), child: Text(context.tr('See the leaderboard'))),
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: [
+                  WebButton(
+                    context.tr('Try again'),
+                    expand: false,
+                    onPressed: () async =>
+                        context.pushReplacement('/quiz/$quizId'),
+                  ),
+                  WebButton(
+                    context.tr('More quizzes'),
+                    kind: BtnKind.ghost,
+                    expand: false,
+                    onPressed: () async => context.go('/quizzes'),
+                  ),
+                ],
+              ),
             ],
           );
         },
@@ -449,43 +868,7 @@ class ResultScreen extends StatelessWidget {
   }
 }
 
-class AttemptsScreen extends StatelessWidget {
-  const AttemptsScreen({super.key, required this.quizId});
-
-  final String quizId;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(context.tr('My past attempts'))),
-      body: Loader<List<Map<String, dynamic>>>(
-        load: () async => listOf(await context.api.get('quizzes/$quizId/my-attempts')),
-        isEmpty: (rows) => rows.isEmpty,
-        empty: EmptyPanel(message: context.tr('You have not finished this quiz yet.'), icon: Icons.history),
-        builder: (context, rows, _) => ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            Card(
-              child: Column(children: [
-                for (final row in rows)
-                  ListTile(
-                    title: Text(context.tr('Attempt :number', {'number': row.integer('attempt_number')})),
-                    subtitle: Text(context.dateTime(row.date('submitted_at'))),
-                    trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-                      if (row.flag('is_best_attempt')) const Padding(padding: EdgeInsets.only(right: 8), child: Icon(Icons.star, color: Color(0xFFCA8A04))),
-                      Text('${row.number('percent').round()}%', style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
-                    ]),
-                    onTap: () => context.push('/quiz/$quizId/result/${row.str('attempt_id')}'),
-                  ),
-              ]),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
+/// "Points and leaderboard" (livewire/member/leaderboard.blade.php).
 class LeaderboardScreen extends StatefulWidget {
   const LeaderboardScreen({super.key});
 
@@ -499,55 +882,108 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(context.tr('Leaderboard'))),
-      body: Column(children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-          child: Column(children: [
-            SegmentedButton<String>(
-              showSelectedIcon: false,
-              segments: [
-                ButtonSegment(value: 'national', label: Text(context.tr('Tanzania'))),
-                ButtonSegment(value: 'region', label: Text(context.tr('My region'))),
-                ButtonSegment(value: 'institution', label: Text(context.tr('My school'))),
+    return MemberScaffold(
+      body: Loader<Map<String, dynamic>>(
+        key: ValueKey('$_scope-$_period'),
+        load: () async {
+          final api = context.api;
+          final results = await Future.wait([
+            api.get('leaderboard', query: {'period': _period, 'scope': _scope}),
+            api.get('dashboard').catchError((_) => <String, dynamic>{}),
+            api.get('badges').catchError((_) => <dynamic>[]),
+          ]);
+          return {
+            ...(results[0] as Map).cast<String, dynamic>(),
+            'points': (results[1] as Map)['total_points'] ?? 0,
+            'badges': results[2],
+          };
+        },
+        builder: (context, data, reload) {
+          final entries = data.list('leaderboard');
+          final me = data.obj('me');
+          return MemberPage(
+            onRefresh: reload,
+            children: [
+              PageTitle(context.tr('Points and leaderboard')),
+              const SizedBox(height: 24),
+              StatBox(
+                label: context.tr('Total points'),
+                value: context.number(data.integer('points')),
+              ),
+              if (data.list('badges').isNotEmpty) ...[
+                const SizedBox(height: 32),
+                SectionHeading(context.tr('Badges')),
+                const SizedBox(height: 14),
+                BadgeGrid(badges: data.list('badges')),
               ],
-              selected: {_scope},
-              onSelectionChanged: (value) => setState(() => _scope = value.first),
-            ),
-            const SizedBox(height: 8),
-            Wrap(spacing: 8, children: [
-              for (final option in {'all': 'All time', 'month': 'This month', 'week': 'This week'}.entries)
-                ChoiceChip(label: Text(context.tr(option.value)), selected: _period == option.key, onSelected: (_) => setState(() => _period = option.key)),
-            ]),
-          ]),
-        ),
-        Expanded(
-          child: Loader<Map<String, dynamic>>(
-            key: ValueKey('$_scope-$_period'),
-            load: () async => ((await context.api.get('leaderboard', query: {'period': _period, 'scope': _scope})) as Map).cast<String, dynamic>(),
-            builder: (context, data, reload) {
-              if (data.containsKey('enabled') && !data.flag('enabled')) {
-                return EmptyPanel(message: context.tr('The leaderboard is turned off for now.'), icon: Icons.leaderboard_outlined);
-              }
-              final entries = data.list('leaderboard');
-              final me = data.obj('me');
-              return RefreshIndicator(
-                onRefresh: reload,
-                child: ListView(
-                  padding: const EdgeInsets.all(16),
+              const SizedBox(height: 32),
+              SectionHeading(context.tr('Leaderboard')),
+              const SizedBox(height: 14),
+              if (data.containsKey('enabled') && !data.flag('enabled'))
+                MistBox(
+                  context.tr('Leaderboards are switched off at the moment.'),
+                  color: Colors.white,
+                )
+              else ...[
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
                   children: [
-                    if (me != null && !entries.any((entry) => entry.flag('is_me')))
-                      Padding(padding: const EdgeInsets.only(bottom: 12), child: _Row(entry: me)),
-                    if (entries.isEmpty) EmptyPanel(message: context.tr('No points yet. Complete lessons and quizzes to get on the board.')),
-                    Card(child: Column(children: [for (final entry in entries) _Row(entry: entry)])),
+                    for (final option in {
+                      'national': 'Tanzania',
+                      'region': 'My region',
+                      'institution': 'My school',
+                    }.entries)
+                      ChoiceChip(
+                        label: Text(context.tr(option.value)),
+                        selected: _scope == option.key,
+                        onSelected: (_) => setState(() => _scope = option.key),
+                      ),
                   ],
                 ),
-              );
-            },
-          ),
-        ),
-      ]),
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final option in {
+                      'all': 'All time',
+                      'month': 'This month',
+                      'week': 'This week',
+                    }.entries)
+                      ChoiceChip(
+                        label: Text(context.tr(option.value)),
+                        selected: _period == option.key,
+                        onSelected: (_) => setState(() => _period = option.key),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                if (entries.isEmpty)
+                  MistBox(
+                    context.tr(
+                      'No points earned in this period yet. Be the first!',
+                    ),
+                    color: Colors.white,
+                    center: true,
+                  ),
+                if (entries.isNotEmpty)
+                  WebCard(
+                    padding: EdgeInsets.zero,
+                    child: Column(
+                      children: [
+                        for (final entry in entries) _Row(entry: entry),
+                        if (me != null &&
+                            !entries.any((entry) => entry.flag('is_me')))
+                          _Row(entry: me),
+                      ],
+                    ),
+                  ),
+              ],
+            ],
+          );
+        },
+      ),
     );
   }
 }
@@ -560,17 +996,50 @@ class _Row extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final rank = entry.integer('rank');
-    final medal = switch (rank) { 1 => const Color(0xFFCA8A04), 2 => const Color(0xFF9CA3AF), 3 => const Color(0xFFB45309), _ => null };
-    return ListTile(
-      tileColor: entry.flag('is_me') ? Brand.yellowWash : null,
-      leading: CircleAvatar(
-        backgroundColor: medal ?? Brand.mist,
-        foregroundColor: medal != null ? Colors.white : Brand.ink,
-        child: Text('$rank', style: const TextStyle(fontWeight: FontWeight.w700)),
+    return Container(
+      color: entry.flag('is_me') ? Brand.yellowWash : null,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(
+        children: [
+          Container(
+            width: 38,
+            height: 38,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: rank <= 3 ? Brand.ink : Brand.mist,
+              shape: BoxShape.circle,
+            ),
+            child: Text(
+              '$rank',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+                color: rank <= 3 ? Brand.yellow : Brand.ink,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  entry.str('display_name'),
+                  style: const TextStyle(fontWeight: FontWeight.w800),
+                ),
+                if (entry.strOrNull('place') != null)
+                  Text(
+                    entry.str('place'),
+                    style: const TextStyle(color: Brand.slate, fontSize: 13),
+                  ),
+              ],
+            ),
+          ),
+          Text(
+            context.number(entry.integer('points')),
+            style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 17),
+          ),
+        ],
       ),
-      title: Text(entry.flag('is_me') ? context.tr(':name (you)', {'name': entry.str('display_name')}) : entry.str('display_name'), style: const TextStyle(fontWeight: FontWeight.w600)),
-      subtitle: entry.strOrNull('place') == null ? null : Text(entry.str('place')),
-      trailing: Text(context.tr(':points pts', {'points': context.number(entry.integer('points'))}), style: const TextStyle(fontWeight: FontWeight.w700)),
     );
   }
 }

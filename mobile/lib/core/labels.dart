@@ -17,7 +17,9 @@ String labelOf(BuildContext context, String group, String? key) {
 Map<String, String> optionsOf(BuildContext context, String group) {
   final fromServer = context.read<Session>().labels(group);
   if (fromServer.isNotEmpty) return fromServer;
-  return (_fallback[group] ?? const {}).map((key, value) => MapEntry(key, context.tr(value)));
+  return (_fallback[group] ?? const {}).map(
+    (key, value) => MapEntry(key, context.tr(value)),
+  );
 }
 
 String humanize(String key) {
@@ -27,9 +29,29 @@ String humanize(String key) {
 
 /// Used when the server is older than the app's config endpoint.
 const _fallback = <String, Map<String, String>>{
-  'content_types': {'article': 'Article', 'video': 'Video', 'infographic': 'Infographic', 'document': 'Document'},
-  'user_types': {'secondary': 'Secondary school', 'college': 'College', 'university': 'University'},
-  'guardian_relationships': {'parent': 'Parent', 'guardian': 'Guardian', 'other': 'Other'},
+  'content_types': {
+    'article': 'Article',
+    'video': 'Video',
+    'infographic': 'Infographic',
+    'document': 'Document',
+  },
+  'account_statuses': {
+    'active': 'Active member',
+    'pending_verification': 'Awaiting verification',
+    'suspended': 'Suspended',
+    'deactivated': 'Deactivated',
+    'rejected': 'Not approved',
+  },
+  'user_types': {
+    'secondary': 'Secondary school',
+    'college': 'College',
+    'university': 'University',
+  },
+  'guardian_relationships': {
+    'parent': 'Parent',
+    'guardian': 'Guardian',
+    'other': 'Other',
+  },
   'feedback_categories': {
     'suggestion': 'Suggestion',
     'problem': 'Problem with the app or website',
@@ -64,8 +86,17 @@ const _fallback = <String, Map<String, String>>{
     'study_skills': 'Study skills',
     'leadership': 'Leadership',
   },
-  'session_modes': {'in_person': 'In person', 'phone': 'Phone call', 'video': 'Video call', 'at_club': 'At the Tax Club'},
-  'event_modes': {'in_person': 'In person', 'online': 'Online', 'hybrid': 'In person and online'},
+  'session_modes': {
+    'in_person': 'In person',
+    'phone': 'Phone call',
+    'video': 'Video call',
+    'at_club': 'At the Tax Club',
+  },
+  'event_modes': {
+    'in_person': 'In person',
+    'online': 'Online',
+    'hybrid': 'In person and online',
+  },
   'event_status': {
     'published': 'Upcoming',
     'happening': 'Happening now',
@@ -101,8 +132,31 @@ const _fallback = <String, Map<String, String>>{
 
 /// Tone for a status pill.
 String toneOf(String? status) => switch (status) {
-      'registered' || 'attended' || 'answered' || 'delivered' || 'valid' || 'active' || 'resolved' || 'published' || 'happening' || 'submitted_entry' || 'scored' => 'good',
-      'waitlisted' || 'in_review' || 'assigned' || 'returned' || 'pending' || 'issued' || 'approved' || 'in_progress' || 'pending_approval' => 'info',
-      'cancelled' || 'declined' || 'revoked' || 'disqualified' || 'no_show' || 'closed' => 'bad',
-      _ => 'neutral',
-    };
+  'registered' ||
+  'attended' ||
+  'answered' ||
+  'delivered' ||
+  'valid' ||
+  'active' ||
+  'resolved' ||
+  'published' ||
+  'happening' ||
+  'submitted_entry' ||
+  'scored' => 'good',
+  'waitlisted' ||
+  'in_review' ||
+  'assigned' ||
+  'returned' ||
+  'pending' ||
+  'issued' ||
+  'approved' ||
+  'in_progress' ||
+  'pending_approval' => 'info',
+  'cancelled' ||
+  'declined' ||
+  'revoked' ||
+  'disqualified' ||
+  'no_show' ||
+  'closed' => 'bad',
+  _ => 'neutral',
+};

@@ -1,15 +1,17 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/api.dart';
 import '../../core/i18n.dart';
 import '../../core/labels.dart';
+import '../../core/shells.dart';
 import '../../core/theme.dart';
+import '../../core/web_ui.dart';
 import '../../core/widgets.dart';
+import '../auth/auth_screens.dart';
 
-/// Ask TRA: the member's questions and the public answers.
+/// "Ask TRA" (livewire/member/ask/index.blade.php): your questions and
+/// the published answers.
 class AskScreen extends StatefulWidget {
   const AskScreen({super.key});
 
@@ -18,90 +20,113 @@ class AskScreen extends StatefulWidget {
 }
 
 class _AskScreenState extends State<AskScreen> {
-  final _mine = GlobalKey<LoaderState<List<Map<String, dynamic>>>>();
-  final _answers = GlobalKey<PagedListState<Map<String, dynamic>>>();
-  String _search = '';
-  Timer? _debounce;
+  final _search = TextEditingController();
+  String _query = '';
 
   @override
   void dispose() {
-    _debounce?.cancel();
+    _search.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(context.tr('Ask TRA')),
-          bottom: TabBar(
-            labelColor: Brand.ink,
-            indicatorColor: Brand.ink,
-            tabs: [Tab(text: context.tr('My questions')), Tab(text: context.tr('Answers'))],
-          ),
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          backgroundColor: Brand.ink,
-          foregroundColor: Colors.white,
-          onPressed: () async {
-            final sent = await context.push<bool>('/ask/new');
-            if (sent == true) _mine.currentState?.reload();
-          },
-          icon: const Icon(Icons.add_comment_outlined),
-          label: Text(context.tr('Ask a question')),
-        ),
-        body: TabBarView(children: [
-          Loader<List<Map<String, dynamic>>>(
-            key: _mine,
-            load: () async => listOf(await context.api.get('questions')),
-            isEmpty: (rows) => rows.isEmpty,
-            empty: EmptyPanel(message: context.tr('Have a tax question? Ask a TRA expert. You will get an answer here and by SMS.'), icon: Icons.help_outline),
-            builder: (context, rows, reload) => RefreshIndicator(
-              onRefresh: reload,
-              child: ListView.separated(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
-                itemCount: rows.length,
-                separatorBuilder: (_, _) => const SizedBox(height: 10),
-                itemBuilder: (context, index) => _QuestionCard(question: rows[index]),
-              ),
-            ),
-          ),
-          Column(children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-              child: TextField(
-                decoration: InputDecoration(hintText: context.tr('Search answers'), prefixIcon: const Icon(Icons.search), isDense: true),
-                onChanged: (value) {
-                  _debounce?.cancel();
-                  _debounce = Timer(const Duration(milliseconds: 450), () {
-                    _search = value.trim();
-                    _answers.currentState?.refresh();
-                  });
-                },
-              ),
-            ),
-            Expanded(
-              child: PagedList<Map<String, dynamic>>(
-                key: _answers,
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 96),
-                load: (page) => context.api.paged('answers', (row) => row, query: {'search': _search, 'page': page}),
-                empty: EmptyPanel(message: context.tr('No published answers match.'), icon: Icons.search_off),
-                itemBuilder: (context, answer, _) => Tile(
-                  padding: EdgeInsets.zero,
-                  child: ExpansionTile(
-                    shape: const Border(),
-                    title: Text(answer.str('question'), style: const TextStyle(fontWeight: FontWeight.w600)),
-                    childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                    expandedCrossAxisAlignment: CrossAxisAlignment.start,
-                    children: [Paragraphs(answer.str('answer'))],
-                  ),
+    return MemberScaffold(
+      body: Loader<Map<String, dynamic>>(
+        key: ValueKey(_query),
+        load: () async {
+          final api = context.api;
+          final results = await Future.wait([
+            api.get('questions'),
+            api.getEnvelope('answers', query: {'search': _query}),
+          ]);
+          return {'mine': results[0], 'answers': (results[1] as Map)['data']};
+        },
+        builder: (context, data, reload) {
+          final mine = data.list('mine');
+          final answers = data.list('answers');
+          return MemberPage(
+            onRefresh: reload,
+            children: [
+              PageTitle(
+                context.tr('Ask TRA'),
+                subtitle: context.tr(
+                  'Ask a TRA tax expert anything about taxes. You get a private answer, usually within a few working days.',
                 ),
               ),
-            ),
-          ]),
-        ]),
+              const SizedBox(height: 22),
+              WebButton(
+                context.tr('Ask a question'),
+                kind: BtnKind.brand,
+                icon: Icons.add_comment_outlined,
+                onPressed: () async {
+                  final sent = await context.push<bool>('/ask/new');
+                  if (sent == true) reload();
+                },
+              ),
+              const SizedBox(height: 32),
+              SectionHeading(context.tr('Your questions')),
+              const SizedBox(height: 14),
+              if (mine.isEmpty)
+                MistBox(
+                  context.tr('You have not asked anything yet.'),
+                  color: Colors.white,
+                ),
+              for (final question in mine)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _QuestionCard(question: question),
+                ),
+              const SizedBox(height: 32),
+              SectionHeading(context.tr('Answers from TRA')),
+              const SizedBox(height: 14),
+              TextField(
+                controller: _search,
+                textInputAction: TextInputAction.search,
+                onSubmitted: (value) => setState(() => _query = value.trim()),
+                decoration: InputDecoration(
+                  hintText: context.tr('Search answers, e.g. TIN or VAT'),
+                  prefixIcon: const Icon(Icons.search),
+                ),
+              ),
+              const SizedBox(height: 14),
+              if (answers.isEmpty)
+                MistBox(
+                  context.tr(
+                    _query.isEmpty
+                        ? 'Published answers will appear here.'
+                        : 'No answers match. Ask your own question!',
+                  ),
+                  color: Colors.white,
+                ),
+              for (final answer in answers)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: WebCard(
+                    padding: EdgeInsets.zero,
+                    child: ExpansionTile(
+                      shape: const Border(),
+                      tilePadding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 6,
+                      ),
+                      childrenPadding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+                      expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                      title: Text(
+                        answer.str('question'),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 17,
+                          height: 1.3,
+                        ),
+                      ),
+                      children: [Paragraphs(answer.str('answer'))],
+                    ),
+                  ),
+                ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -115,27 +140,72 @@ class _QuestionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final status = question.str('status');
-    return Tile(
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(children: [
-          Text(question.str('reference'), style: const TextStyle(color: Brand.slate, fontSize: 12)),
-          const Spacer(),
-          Pill.tone(labelOf(context, 'question_statuses', status), toneOf(status)),
-        ]),
-        const SizedBox(height: 6),
-        Text(question.str('subject'), style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
-        Text(context.date(question.date('created_at')), style: const TextStyle(color: Brand.slate, fontSize: 12)),
-        if (question.strOrNull('answer') != null) ...[
-          const Divider(height: 24),
-          Text(context.tr('Answer from TRA'), style: const TextStyle(fontWeight: FontWeight.w700)),
-          const SizedBox(height: 4),
-          Paragraphs(question.str('answer')),
+    final answered = question.strOrNull('answer') != null;
+    return WebCard(
+      highlight: answered,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  question.str('reference'),
+                  style: const TextStyle(
+                    fontFamily: 'IBMPlexMono',
+                    fontSize: 13,
+                    color: Brand.slate,
+                  ),
+                ),
+              ),
+              Tag(
+                labelOf(context, 'question_statuses', status),
+                dark: answered,
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            question.str('subject'),
+            style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 17),
+          ),
+          Text(
+            context.date(question.date('created_at')),
+            style: const TextStyle(color: Brand.slate, fontSize: 13),
+          ),
+          if (answered) ...[
+            const SizedBox(height: 14),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Brand.yellowWash,
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    context.tr('Answer from TRA'),
+                    style: const TextStyle(fontWeight: FontWeight.w900),
+                  ),
+                  const SizedBox(height: 6),
+                  Paragraphs(question.str('answer')),
+                ],
+              ),
+            ),
+          ],
+          if (status == 'declined' &&
+              question.strOrNull('decline_reason') != null) ...[
+            const SizedBox(height: 14),
+            Text(
+              context.tr('Why we could not answer'),
+              style: const TextStyle(fontWeight: FontWeight.w900),
+            ),
+            Text(question.str('decline_reason')),
+          ],
         ],
-        if (status == 'declined' && question.strOrNull('decline_reason') != null) ...[
-          const Divider(height: 24),
-          Text(question.str('decline_reason')),
-        ],
-      ]),
+      ),
     );
   }
 }
@@ -148,7 +218,6 @@ class AskQuestionScreen extends StatefulWidget {
 }
 
 class _AskQuestionScreenState extends State<AskQuestionScreen> {
-  final _form = GlobalKey<FormState>();
   final _subject = TextEditingController();
   final _body = TextEditingController();
   bool _allowPublish = true;
@@ -162,56 +231,82 @@ class _AskQuestionScreenState extends State<AskQuestionScreen> {
   }
 
   Future<void> _send() async {
-    if (!_form.currentState!.validate()) return;
     setState(() => _error = null);
     try {
-      final envelope = await context.api.post('questions', {'subject': _subject.text.trim(), 'body': _body.text.trim(), 'allow_publish': _allowPublish});
+      final envelope = await context.api.post('questions', {
+        'subject': _subject.text.trim(),
+        'body': _body.text.trim(),
+        'allow_publish': _allowPublish,
+      });
       if (!mounted) return;
-      showMessage(context, context.tr('Sent to TRA. Your reference is :reference.', {'reference': dataOf(envelope).str('reference')}));
+      showMessage(
+        context,
+        '${envelope['message']} ${dataOf(envelope).str('reference')}',
+      );
       context.pop(true);
     } on ApiException catch (error) {
       setState(() => _error = error);
-      if (error.errors.isEmpty && mounted) showMessage(context, errorText(context, error), error: true);
+      if (error.errors.isEmpty && mounted) {
+        showMessage(context, errorText(context, error), error: true);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(context.tr('Ask a question'))),
-      body: Form(
-        key: _form,
-        child: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            Text(context.tr('A TRA expert will answer. Do not include your TIN, phone number or other personal details.'), style: const TextStyle(color: Brand.slate)),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _subject,
-              maxLength: 200,
-              decoration: InputDecoration(labelText: context.tr('Your question in a few words'), errorText: _error?.field('subject')),
-              validator: (value) => (value ?? '').trim().length < 8 ? context.tr('Use at least 8 characters.') : null,
+    return MemberScaffold(
+      body: MemberPage(
+        children: [
+          PageTitle(
+            context.tr('Ask a question'),
+            subtitle: context.tr(
+              'A TRA expert will answer. We will tell you by SMS and in your notifications.',
             ),
-            const SizedBox(height: 8),
-            TextFormField(
-              controller: _body,
-              minLines: 5,
-              maxLines: 12,
-              maxLength: 3000,
-              decoration: InputDecoration(labelText: context.tr('Explain your question'), alignLabelWithHint: true, errorText: _error?.field('body')),
-              validator: (value) => (value ?? '').trim().length < 15 ? context.tr('Use at least 15 characters.') : null,
+            back: context.tr('Ask TRA'),
+            onBack: () => context.pop(),
+          ),
+          const SizedBox(height: 24),
+          WebCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                WebField(
+                  label: context.tr('Your question in one line'),
+                  controller: _subject,
+                  error: _error?.field('subject'),
+                ),
+                WebField(
+                  label: context.tr('Details'),
+                  controller: _body,
+                  maxLines: 8,
+                  help: context.tr(
+                    'Do not include your TIN, phone number or other private details.',
+                  ),
+                  error: _error?.field('body'),
+                ),
+                CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  controlAffinity: ListTileControlAffinity.leading,
+                  value: _allowPublish,
+                  onChanged: (value) =>
+                      setState(() => _allowPublish = value ?? false),
+                  title: Text(
+                    context.tr(
+                      'TRA may publish my question and the answer without my name, to help other members',
+                    ),
+                    style: const TextStyle(fontSize: 15),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                WebButton(
+                  context.tr('Send to TRA'),
+                  kind: BtnKind.brand,
+                  onPressed: _send,
+                ),
+              ],
             ),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              value: _allowPublish,
-              onChanged: (value) => setState(() => _allowPublish = value),
-              title: Text(context.tr('TRA may publish my question and the answer without my name')),
-              subtitle: Text(context.tr('This helps other members with the same question.')),
-            ),
-            const SizedBox(height: 16),
-            BusyButton(label: context.tr('Send to TRA'), icon: Icons.send, onPressed: _send),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

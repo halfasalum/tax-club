@@ -16,8 +16,12 @@ extension SessionContext on BuildContext {
 String errorText(BuildContext context, Object error) {
   if (error is ApiException) {
     return switch (error.message) {
-      'offline' => context.tr('No internet connection. Check your data or Wi-Fi and try again.'),
-      'timeout' => context.tr('The server is taking too long. Please try again.'),
+      'offline' => context.tr(
+        'No internet connection. Check your data or Wi-Fi and try again.',
+      ),
+      'timeout' => context.tr(
+        'The server is taking too long. Please try again.',
+      ),
       'server_error' => context.tr('Something went wrong. Please try again.'),
       _ => error.details,
     };
@@ -28,15 +32,22 @@ String errorText(BuildContext context, Object error) {
 void showMessage(BuildContext context, String message, {bool error = false}) {
   final messenger = ScaffoldMessenger.maybeOf(context);
   messenger?.hideCurrentSnackBar();
-  messenger?.showSnackBar(SnackBar(
-    content: Text(message),
-    backgroundColor: error ? Brand.danger : Brand.charcoal,
-  ));
+  messenger?.showSnackBar(
+    SnackBar(
+      content: Text(message),
+      backgroundColor: error ? Brand.danger : Brand.charcoal,
+    ),
+  );
 }
 
 /// Runs an API action, shows the server's message (or the error) and
 /// returns the envelope, or null when it failed.
-Future<T?> runAction<T>(BuildContext context, Future<T> Function() action, {String? success, bool showServerMessage = false}) async {
+Future<T?> runAction<T>(
+  BuildContext context,
+  Future<T> Function() action, {
+  String? success,
+  bool showServerMessage = false,
+}) async {
   try {
     final result = await action();
     if (!context.mounted) return result;
@@ -45,25 +56,47 @@ Future<T?> runAction<T>(BuildContext context, Future<T> Function() action, {Stri
     if (text != null && text.isNotEmpty) showMessage(context, text);
     return result;
   } catch (error) {
-    if (context.mounted) showMessage(context, errorText(context, error), error: true);
+    if (context.mounted) {
+      showMessage(context, errorText(context, error), error: true);
+    }
     return null;
   }
 }
 
 Future<void> openLink(BuildContext context, String? url) async {
   if (url == null || url.isEmpty) return;
-  final uri = Uri.tryParse(url.startsWith('http') || url.startsWith('mailto:') || url.startsWith('tel:') ? url : 'https://$url');
-  if (uri == null || !await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-    if (context.mounted) showMessage(context, context.tr('Could not open the link.'), error: true);
+  final uri = Uri.tryParse(
+    url.startsWith('http') ||
+            url.startsWith('mailto:') ||
+            url.startsWith('tel:')
+        ? url
+        : 'https://$url',
+  );
+  if (uri == null ||
+      !await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+    if (context.mounted) {
+      showMessage(context, context.tr('Could not open the link.'), error: true);
+    }
   }
 }
 
 /// Loads data once, with loading, error (retry) and pull-to-refresh states.
 class Loader<T> extends StatefulWidget {
-  const Loader({super.key, required this.load, required this.builder, this.isEmpty, this.empty});
+  const Loader({
+    super.key,
+    required this.load,
+    required this.builder,
+    this.isEmpty,
+    this.empty,
+  });
 
   final Future<T> Function() load;
-  final Widget Function(BuildContext context, T data, Future<void> Function() reload) builder;
+  final Widget Function(
+    BuildContext context,
+    T data,
+    Future<void> Function() reload,
+  )
+  builder;
   final bool Function(T data)? isEmpty;
   final Widget? empty;
 
@@ -110,7 +143,13 @@ class LoaderState<T> extends State<Loader<T>> {
     if (widget.isEmpty?.call(data) ?? false) {
       return RefreshIndicator(
         onRefresh: reload,
-        child: ListView(children: [const SizedBox(height: 80), widget.empty ?? EmptyPanel(message: context.tr('Nothing here yet.'))]),
+        child: ListView(
+          children: [
+            const SizedBox(height: 80),
+            widget.empty ??
+                EmptyPanel(message: context.tr('Nothing here yet.')),
+          ],
+        ),
       );
     }
 
@@ -120,10 +159,23 @@ class LoaderState<T> extends State<Loader<T>> {
 
 /// An endless list for paginated endpoints.
 class PagedList<T> extends StatefulWidget {
-  const PagedList({super.key, required this.load, required this.itemBuilder, this.empty, this.header, this.padding = const EdgeInsets.all(16), this.separator = 10});
+  const PagedList({
+    super.key,
+    required this.load,
+    required this.itemBuilder,
+    this.empty,
+    this.header,
+    this.padding = const EdgeInsets.all(16),
+    this.separator = 10,
+  });
 
   final Future<Paged<T>> Function(int page) load;
-  final Widget Function(BuildContext context, T item, Future<void> Function() refresh) itemBuilder;
+  final Widget Function(
+    BuildContext context,
+    T item,
+    Future<void> Function() refresh,
+  )
+  itemBuilder;
   final Widget? empty;
   final Widget? header;
   final EdgeInsets padding;
@@ -176,8 +228,12 @@ class PagedListState<T> extends State<PagedList<T>> {
 
   @override
   Widget build(BuildContext context) {
-    if (_items.isEmpty && _loading) return const Center(child: CircularProgressIndicator());
-    if (_items.isEmpty && _error != null) return ErrorPanel(message: errorText(context, _error!), onRetry: refresh);
+    if (_items.isEmpty && _loading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (_items.isEmpty && _error != null) {
+      return ErrorPanel(message: errorText(context, _error!), onRetry: refresh);
+    }
 
     final extra = (widget.header != null ? 1 : 0);
     final showEmpty = _items.isEmpty && !_loading;
@@ -192,18 +248,27 @@ class PagedListState<T> extends State<PagedList<T>> {
         child: ListView.separated(
           padding: widget.padding,
           physics: const AlwaysScrollableScrollPhysics(),
-          itemCount: extra + (showEmpty ? 1 : _items.length) + (_hasMore && _items.isNotEmpty ? 1 : 0),
+          itemCount:
+              extra +
+              (showEmpty ? 1 : _items.length) +
+              (_hasMore && _items.isNotEmpty ? 1 : 0),
           separatorBuilder: (_, _) => SizedBox(height: widget.separator),
           itemBuilder: (context, index) {
             if (widget.header != null && index == 0) return widget.header!;
             final i = index - extra;
-            if (showEmpty) return widget.empty ?? EmptyPanel(message: context.tr('Nothing here yet.'));
+            if (showEmpty) {
+              return widget.empty ??
+                  EmptyPanel(message: context.tr('Nothing here yet.'));
+            }
             if (i >= _items.length) {
               return Padding(
                 padding: const EdgeInsets.all(16),
                 child: Center(
                   child: _error != null
-                      ? TextButton(onPressed: _next, child: Text(context.tr('Try again')))
+                      ? TextButton(
+                          onPressed: _next,
+                          child: Text(context.tr('Try again')),
+                        )
                       : const CircularProgressIndicator(),
                 ),
               );
@@ -232,10 +297,18 @@ class ErrorPanel extends StatelessWidget {
           children: [
             const Icon(Icons.cloud_off_outlined, size: 48, color: Brand.slate),
             const SizedBox(height: 12),
-            Text(message, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyLarge),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
             if (onRetry != null) ...[
               const SizedBox(height: 16),
-              FilledButton.icon(onPressed: onRetry, icon: const Icon(Icons.refresh), label: Text(context.tr('Try again'))),
+              FilledButton.icon(
+                onPressed: onRetry,
+                icon: const Icon(Icons.refresh),
+                label: Text(context.tr('Try again')),
+              ),
             ],
           ],
         ),
@@ -245,7 +318,12 @@ class ErrorPanel extends StatelessWidget {
 }
 
 class EmptyPanel extends StatelessWidget {
-  const EmptyPanel({super.key, required this.message, this.icon = Icons.inbox_outlined, this.action});
+  const EmptyPanel({
+    super.key,
+    required this.message,
+    this.icon = Icons.inbox_outlined,
+    this.action,
+  });
 
   final String message;
   final IconData icon;
@@ -259,7 +337,12 @@ class EmptyPanel extends StatelessWidget {
         children: [
           Icon(icon, size: 48, color: Brand.slate),
           const SizedBox(height: 12),
-          Text(message, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Brand.slate)),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyLarge
+                ?.copyWith(color: Brand.slate),
+          ),
           if (action != null) ...[const SizedBox(height: 16), action!],
         ],
       ),
@@ -269,19 +352,27 @@ class EmptyPanel extends StatelessWidget {
 
 /// A small coloured label such as "Open" or "Waitlisted".
 class Pill extends StatelessWidget {
-  const Pill(this.text, {super.key, this.color = Brand.slate, this.filled = false});
+  const Pill(
+    this.text, {
+    super.key,
+    this.color = Brand.slate,
+    this.filled = false,
+  });
 
   final String text;
   final Color color;
   final bool filled;
 
-  factory Pill.tone(String text, String tone) => Pill(text, color: switch (tone) {
-        'good' => Brand.success,
-        'bad' => Brand.danger,
-        'info' => Brand.info,
-        'warn' => const Color(0xFFB45309),
-        _ => Brand.slate,
-      });
+  factory Pill.tone(String text, String tone) => Pill(
+    text,
+    color: switch (tone) {
+      'good' => Brand.success,
+      'bad' => Brand.danger,
+      'info' => Brand.info,
+      'warn' => const Color(0xFFB45309),
+      _ => Brand.slate,
+    },
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -291,7 +382,14 @@ class Pill extends StatelessWidget {
         color: filled ? color : color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Text(text, style: TextStyle(color: filled ? Colors.white : color, fontSize: 12, fontWeight: FontWeight.w600)),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: filled ? Colors.white : color,
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
     );
   }
 }
@@ -309,8 +407,15 @@ class SectionTitle extends StatelessWidget {
       padding: const EdgeInsets.only(top: 8, bottom: 8),
       child: Row(
         children: [
-          Expanded(child: Text(title, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700))),
-          if (action != null) TextButton(onPressed: onAction, child: Text(action!)),
+          Expanded(
+            child: Text(
+              title,
+              style: Theme.of(context).textTheme.titleMedium
+                  ?.copyWith(fontWeight: FontWeight.w700),
+            ),
+          ),
+          if (action != null)
+            TextButton(onPressed: onAction, child: Text(action!)),
         ],
       ),
     );
@@ -319,7 +424,13 @@ class SectionTitle extends StatelessWidget {
 
 /// A tappable white card.
 class Tile extends StatelessWidget {
-  const Tile({super.key, required this.child, this.onTap, this.padding = const EdgeInsets.all(16), this.color});
+  const Tile({
+    super.key,
+    required this.child,
+    this.onTap,
+    this.padding = const EdgeInsets.all(16),
+    this.color,
+  });
 
   final Widget child;
   final VoidCallback? onTap;
@@ -331,7 +442,10 @@ class Tile extends StatelessWidget {
     return Card(
       color: color,
       clipBehavior: Clip.antiAlias,
-      child: InkWell(onTap: onTap, child: Padding(padding: padding, child: child)),
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(padding: padding, child: child),
+      ),
     );
   }
 }
@@ -352,7 +466,9 @@ class InfoRow extends StatelessWidget {
         children: [
           Icon(icon, size: 18, color: Brand.slate),
           const SizedBox(width: 8),
-          Expanded(child: Text(text, style: const TextStyle(color: Brand.charcoal))),
+          Expanded(
+            child: Text(text, style: const TextStyle(color: Brand.charcoal)),
+          ),
         ],
       ),
     );
@@ -368,13 +484,22 @@ class Paragraphs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (text == null || text!.trim().isEmpty) return const SizedBox.shrink();
-    return SelectableText(text!.trim(), style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.5));
+    return SelectableText(
+      text!.trim(),
+      style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.5),
+    );
   }
 }
 
 /// A full-width button that shows a spinner while its action runs.
 class BusyButton extends StatefulWidget {
-  const BusyButton({super.key, required this.label, required this.onPressed, this.icon, this.outlined = false});
+  const BusyButton({
+    super.key,
+    required this.label,
+    required this.onPressed,
+    this.icon,
+    this.outlined = false,
+  });
 
   final String label;
   final Future<void> Function()? onPressed;
@@ -401,29 +526,51 @@ class _BusyButtonState extends State<BusyButton> {
   Widget build(BuildContext context) {
     final onPressed = widget.onPressed == null || _busy ? null : _run;
     final child = _busy
-        ? const SizedBox(width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2.5))
-        : Row(mainAxisSize: MainAxisSize.min, children: [
-            if (widget.icon != null) ...[Icon(widget.icon, size: 20), const SizedBox(width: 8)],
-            Flexible(child: Text(widget.label, textAlign: TextAlign.center)),
-          ]);
+        ? const SizedBox(
+            width: 22,
+            height: 22,
+            child: CircularProgressIndicator(strokeWidth: 2.5),
+          )
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (widget.icon != null) ...[
+                Icon(widget.icon, size: 20),
+                const SizedBox(width: 8),
+              ],
+              Flexible(child: Text(widget.label, textAlign: TextAlign.center)),
+            ],
+          );
 
     return SizedBox(
       width: double.infinity,
-      child: widget.outlined ? OutlinedButton(onPressed: onPressed, child: child) : FilledButton(onPressed: onPressed, child: child),
+      child: widget.outlined
+          ? OutlinedButton(onPressed: onPressed, child: child)
+          : FilledButton(onPressed: onPressed, child: child),
     );
   }
 }
 
 /// Asks the member to confirm, returning true when they agree.
-Future<bool> confirm(BuildContext context, String message, {String? action, bool danger = false}) async {
+Future<bool> confirm(
+  BuildContext context,
+  String message, {
+  String? action,
+  bool danger = false,
+}) async {
   final result = await showDialog<bool>(
     context: context,
     builder: (context) => AlertDialog(
       content: Text(message),
       actions: [
-        TextButton(onPressed: () => Navigator.pop(context, false), child: Text(context.tr('Cancel'))),
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: Text(context.tr('Cancel')),
+        ),
         FilledButton(
-          style: danger ? FilledButton.styleFrom(backgroundColor: Brand.danger) : null,
+          style: danger
+              ? FilledButton.styleFrom(backgroundColor: Brand.danger)
+              : null,
           onPressed: () => Navigator.pop(context, true),
           child: Text(action ?? context.tr('Yes')),
         ),
@@ -434,18 +581,31 @@ Future<bool> confirm(BuildContext context, String message, {String? action, bool
 }
 
 /// Picks a value from a list in a bottom sheet.
-Future<String?> pickOne(BuildContext context, String title, Map<String, String> options, {String? selected}) {
+Future<String?> pickOne(
+  BuildContext context,
+  String title,
+  Map<String, String> options, {
+  String? selected,
+}) {
   return showModalBottomSheet<String>(
     context: context,
     isScrollControlled: true,
     showDragHandle: true,
     builder: (context) => SafeArea(
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.7),
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.7,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Padding(padding: const EdgeInsets.fromLTRB(16, 0, 16, 8), child: Text(title, style: Theme.of(context).textTheme.titleMedium)),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ),
             Flexible(
               child: ListView(
                 shrinkWrap: true,
@@ -453,7 +613,9 @@ Future<String?> pickOne(BuildContext context, String title, Map<String, String> 
                   for (final entry in options.entries)
                     ListTile(
                       title: Text(entry.value),
-                      trailing: entry.key == selected ? const Icon(Icons.check) : null,
+                      trailing: entry.key == selected
+                          ? const Icon(Icons.check)
+                          : null,
                       onTap: () => Navigator.pop(context, entry.key),
                     ),
                 ],

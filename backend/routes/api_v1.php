@@ -36,6 +36,7 @@ use App\Http\Controllers\API\V1\ModuleController;
 use App\Http\Controllers\API\V1\NotificationController;
 use App\Http\Controllers\API\V1\OpportunityController;
 use App\Http\Controllers\API\V1\ProfileController;
+use App\Http\Controllers\API\V1\PublicController;
 use App\Http\Controllers\API\V1\QuizAuthoringController;
 use App\Http\Controllers\API\V1\QuizController;
 use App\Http\Controllers\API\V1\RoleController;
@@ -60,6 +61,16 @@ Route::post('membership/verify', [MembershipController::class, 'verify'])->middl
 Route::post('certificates/verify', [EngagementController::class, 'verifyCertificate'])->middleware('throttle:20,1');
 
 Route::get('app/config', [AppController::class, 'config']);
+
+// The public website's pages, for visitors who have not signed in
+Route::prefix('public')->middleware('throttle:120,1')->group(function () {
+    Route::get('home', [PublicController::class, 'home']);
+    Route::get('lessons', [PublicController::class, 'lessons']);
+    Route::get('lessons/{slug}', [PublicController::class, 'lesson']);
+    Route::get('events', [PublicController::class, 'events']);
+    Route::get('events/{slug}', [PublicController::class, 'event']);
+    Route::get('answers', [PublicController::class, 'answers']);
+});
 
 Route::get('institutions', [InstitutionController::class, 'index']);
 Route::get('institutions/{id}', [InstitutionController::class, 'show']);

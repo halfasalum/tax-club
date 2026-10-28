@@ -19,7 +19,7 @@ class Institution extends Model
     public const STATUS_INACTIVE = 'inactive';
 
     /** @var list<string> */
-    public const CATEGORIES = ['secondary', 'college', 'university'];
+    public const CATEGORIES = ['primary', 'secondary', 'college', 'university'];
 
     protected $table = 'institutions';
 

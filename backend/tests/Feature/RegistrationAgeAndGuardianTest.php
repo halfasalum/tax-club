@@ -69,7 +69,7 @@ class RegistrationAgeAndGuardianTest extends TestCase
 
     public function test_age_limits_are_enforced(): void
     {
-        $this->form(10)->call('register')->assertHasErrors(['date_of_birth' => 'before_or_equal']);
+        $this->form(5)->call('register')->assertHasErrors(['date_of_birth' => 'before_or_equal']);
         $this->form(36)->call('register')->assertHasErrors(['date_of_birth' => 'after']);
     }
 

@@ -11,7 +11,7 @@
 
     $siteName = 'TRA Tax Club';
     $pageTitle = $title ? $title.' | '.$siteName : $siteName.' — '.__('Learn how taxes build Tanzania');
-    $pageDescription = \Illuminate\Support\Str::limit(strip_tags($description ?? __('Tax Club brings students in secondary schools, colleges and universities together to learn how taxation works, test what they know and take part in national activities run by TRA.')), 160);
+    $pageDescription = \Illuminate\Support\Str::limit(strip_tags($description ?? __('Tax Club brings students in primary and secondary schools, colleges and universities together to learn how taxation works, test what they know and take part in national activities run by TRA.')), 160);
     $canonical = url()->current();
     $alternates = Locales::alternates();
     $locale = app()->getLocale();

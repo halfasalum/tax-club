@@ -25,7 +25,7 @@ final class MemberAccounts
         User::STATUS_DEACTIVATED => [User::STATUS_ACTIVE],
     ];
 
-    public const STUDENT_CATEGORIES = ['secondary', 'college', 'university'];
+    public const STUDENT_CATEGORIES = ['primary', 'secondary', 'college', 'university'];
 
     /**
      * @return list<string>

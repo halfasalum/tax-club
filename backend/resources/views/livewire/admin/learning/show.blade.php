@@ -5,7 +5,7 @@
 
     $types = ['article' => __('Article'), 'video' => __('Video'), 'infographic' => __('Infographic'), 'document' => __('Document')];
     $levels = ['beginner' => __('Beginner'), 'intermediate' => __('Intermediate'), 'advanced' => __('Advanced')];
-    $audiences = ['secondary' => __('Secondary school'), 'college' => __('College'), 'university' => __('University'), 'alumni' => __('Alumni')];
+    $audiences = ['primary' => __('Primary school'), 'secondary' => __('Secondary school'), 'college' => __('College'), 'university' => __('University'), 'alumni' => __('Alumni')];
     $actions = [
         'created' => __('Created'), 'revision_started' => __('New revision started'), 'back_to_draft' => __('Back to draft'),
         'submitted' => __('Sent for review'), 'approved' => __('Approved'), 'returned' => __('Returned for changes'), 'rejected' => __('Rejected'),

@@ -5,7 +5,7 @@
         <div class="max-w-sm">
             @include('partials.brand', ['inverse' => true])
             <p class="mt-5 leading-relaxed text-white/75">
-                {{ __('A Tanzania Revenue Authority programme for students in secondary schools, colleges and universities.') }}
+                {{ __('A Tanzania Revenue Authority programme for students in primary and secondary schools, colleges and universities.') }}
             </p>
         </div>
         <div>

@@ -15,7 +15,7 @@
 
         <h2 class="mt-14 border-l-8 border-brand pl-4 text-2xl font-black">{{ __('Who can join') }}</h2>
         <ul class="mt-4 list-disc space-y-3 pl-6 text-lg leading-relaxed text-ink-soft marker:text-ink">
-            <li>{{ __('Students in secondary schools, colleges and universities with a registered Tax Club.') }}</li>
+            <li>{{ __('Students in primary and secondary schools, colleges and universities with a registered Tax Club.') }}</li>
             <li>{{ __('Former members, who continue as Tax Club alumni after they finish their studies.') }}</li>
         </ul>
 

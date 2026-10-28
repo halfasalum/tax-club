@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
  */
 final class MembershipStatistics
 {
-    public const CATEGORIES = ['secondary', 'college', 'university', 'alumni'];
+    public const CATEGORIES = ['primary', 'secondary', 'college', 'university', 'alumni'];
 
     /**
      * Counted columns, in report order.
@@ -111,6 +111,7 @@ final class MembershipStatistics
     {
         return [
             'active_members' => __('Active members'),
+            'active_primary' => __('Primary school'),
             'active_secondary' => __('Secondary school'),
             'active_college' => __('College'),
             'active_university' => __('University'),

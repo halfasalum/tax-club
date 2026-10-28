@@ -10,7 +10,7 @@
             <span class="grid size-10 shrink-0 place-items-center rounded-full bg-ink font-black text-brand" aria-hidden="true">1</span>
             <div>
                 <p class="font-black">{{ __('Download the template') }}</p>
-                <p class="mt-1 text-slate">{{ __('Columns: name, category (secondary, college or university), region, district, and optional contact_name, contact_phone, contact_email. Region must be one of the 31 regions, spelled as in the list.') }}</p>
+                <p class="mt-1 text-slate">{{ __('Columns: name, category (primary, secondary, college or university), region, district, and optional contact_name, contact_phone, contact_email. Region must be one of the 31 regions, spelled as in the list.') }}</p>
                 <a href="{{ route('admin.institutions.template') }}" class="link mt-3 inline-block">{{ __('Download CSV template') }}</a>
             </div>
         </li>

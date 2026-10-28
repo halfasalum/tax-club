@@ -1,5 +1,5 @@
 @php
-    $categories = ['secondary' => __('Secondary school'), 'college' => __('College'), 'university' => __('University')];
+    $categories = ['primary' => __('Primary school'), 'secondary' => __('Secondary school'), 'college' => __('College'), 'university' => __('University')];
     $errorText = 'mt-2 font-semibold text-danger';
     $isActive = $institution->status === 'active';
     $activeClub = $clubs->firstWhere('status', 'active');

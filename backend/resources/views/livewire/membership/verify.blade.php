@@ -2,7 +2,7 @@
     use App\Support\MembershipCard;
 
     $categories = [
-        'secondary' => __('Secondary school'),
+        'primary' => __('Primary school'), 'secondary' => __('Secondary school'),
         'college' => __('College'),
         'university' => __('University'),
         'alumni' => __('Alumni'),

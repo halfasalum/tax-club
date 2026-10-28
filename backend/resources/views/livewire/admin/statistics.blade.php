@@ -1,7 +1,7 @@
 @php
-    $categories = ['secondary' => __('Secondary school'), 'college' => __('College'), 'university' => __('University')];
-    $byCategory = ['active_secondary', 'active_college', 'active_university', 'active_alumni'];
-    $tableColumns = ['active_members', 'active_secondary', 'active_college', 'active_university', 'active_alumni', 'under_18', 'waiting'];
+    $categories = ['primary' => __('Primary school'), 'secondary' => __('Secondary school'), 'college' => __('College'), 'university' => __('University')];
+    $byCategory = ['active_primary', 'active_secondary', 'active_college', 'active_university', 'active_alumni'];
+    $tableColumns = ['active_members', 'active_primary', 'active_secondary', 'active_college', 'active_university', 'active_alumni', 'under_18', 'waiting'];
     $max = max(1, max(array_map(fn ($column) => $totals[$column], $byCategory)));
 @endphp
 <div>

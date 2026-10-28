@@ -43,6 +43,7 @@ const _fallback = <String, Map<String, String>>{
     'rejected': 'Not approved',
   },
   'user_types': {
+    'primary': 'Primary school',
     'secondary': 'Secondary school',
     'college': 'College',
     'university': 'University',

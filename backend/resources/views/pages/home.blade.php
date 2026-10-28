@@ -12,7 +12,7 @@
                     {{ __('Taxes build our schools, roads and hospitals.') }}
                 </h1>
                 <p class="mt-6 max-w-[54ch] text-lg font-semibold leading-relaxed text-ink-soft sm:text-xl">
-                    {{ __('Tax Club brings students in secondary schools, colleges and universities together to learn how taxation works, test what they know and take part in national activities run by TRA.') }}
+                    {{ __('Tax Club brings students in primary and secondary schools, colleges and universities together to learn how taxation works, test what they know and take part in national activities run by TRA.') }}
                 </p>
                 <div class="mt-8 flex flex-wrap gap-3">
                     <a href="{{ route('register') }}" class="btn-primary px-7 text-lg">{{ __('Join Tax Club') }}</a>

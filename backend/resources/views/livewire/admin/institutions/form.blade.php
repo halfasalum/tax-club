@@ -1,5 +1,5 @@
 @php
-    $categories = ['secondary' => __('Secondary school'), 'college' => __('College'), 'university' => __('University')];
+    $categories = ['primary' => __('Primary school'), 'secondary' => __('Secondary school'), 'college' => __('College'), 'university' => __('University')];
     $errorText = 'mt-2 font-semibold text-danger';
 @endphp
 <div class="max-w-3xl">

@@ -140,6 +140,7 @@ final class Audience
     public static function categoryLabels(): array
     {
         return [
+            'primary' => __('Primary school'),
             'secondary' => __('Secondary school'),
             'college' => __('College'),
             'university' => __('University'),

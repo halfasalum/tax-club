@@ -4,7 +4,7 @@
     use App\Support\MemberAccounts;
     use App\Support\MembershipCard;
 
-    $categories = ['secondary' => __('Secondary school'), 'college' => __('College'), 'university' => __('University'), 'alumni' => __('Alumni')];
+    $categories = ['primary' => __('Primary school'), 'secondary' => __('Secondary school'), 'college' => __('College'), 'university' => __('University'), 'alumni' => __('Alumni')];
     $actions = [
         User::STATUS_SUSPENDED => [__('Suspend'), __('Suspend account'), 'btn-ghost'],
         User::STATUS_DEACTIVATED => [__('Deactivate'), __('Deactivate account'), 'btn-ghost'],
@@ -50,6 +50,7 @@
                         [__('Membership no.'), $member->membership_id ?? '—', true],
                         [__('Registration reference'), $member->registration_reference ?? '—', true],
                         [__('Mobile number'), $member->phone ?? '—', false],
+                        ...($member->tin ? [[__('TIN'), \App\Support\MemberProfile::formatTin($member->tin), false]] : []),
                         [__('Email'), $member->email ?? '—', false],
                         [__('Institution'), trim(($member->institution?->name ?? '—').', '.($member->institution?->region ?? ''), ', '), false],
                         [__('Date of birth'), $member->date_of_birth ? __('Born :date (age :age)', ['date' => $member->date_of_birth->translatedFormat('j M Y'), 'age' => $member->date_of_birth->age]) : '—', false],

@@ -2,7 +2,7 @@
     use App\Support\MemberAccounts;
     use App\Models\User;
 
-    $categories = ['secondary' => __('Secondary school'), 'college' => __('College'), 'university' => __('University'), 'alumni' => __('Alumni')];
+    $categories = ['primary' => __('Primary school'), 'secondary' => __('Secondary school'), 'college' => __('College'), 'university' => __('University'), 'alumni' => __('Alumni')];
     $statuses = [User::STATUS_ACTIVE => __('Active'), User::STATUS_SUSPENDED => __('Suspended'), User::STATUS_DEACTIVATED => __('Deactivated'), User::STATUS_REJECTED => __('Not approved'), '' => __('Everyone')];
     $statusStyles = [User::STATUS_ACTIVE => 'bg-[#dcfce7] text-savanna', User::STATUS_SUSPENDED => 'bg-[#fef3f2] text-danger', User::STATUS_DEACTIVATED => 'bg-mist text-slate', User::STATUS_REJECTED => 'bg-mist text-slate'];
 @endphp

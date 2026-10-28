@@ -46,6 +46,7 @@ class AppController extends BaseController
             ],
             'leaderboard_enabled' => Leaderboard::enabled(),
             'tin_required_for' => MemberRegistration::TIN_REQUIRED_FOR,
+            'min_age' => MemberRegistration::MIN_AGE,
             'labels' => [
                 'user_types' => [
                     'primary' => __('Primary school'),

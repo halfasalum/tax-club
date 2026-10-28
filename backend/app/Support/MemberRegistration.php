@@ -26,7 +26,7 @@ use InvalidArgumentException;
 final class MemberRegistration
 {
     /** Youngest and oldest age accepted at registration (decision D-04). */
-    public const MIN_AGE = 11;
+    public const MIN_AGE = 6;
 
     public const MAX_AGE = 35;
 

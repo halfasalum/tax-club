@@ -192,4 +192,29 @@ class MemberRegistrationTest extends TestCase
         $this->assertSame('primary', $pupil->user_type);
         $this->assertNull($pupil->tin);
     }
+
+    public function test_pupils_can_join_from_age_six(): void
+    {
+        $school = Institution::factory()->create(['type' => 'primary']);
+        $join = fn (string $dateOfBirth, string $phone) => $this->postJson('/api/v1/auth/register', [
+            'full_name' => 'Neema Ali',
+            'phone' => $phone,
+            'date_of_birth' => $dateOfBirth,
+            'guardian_name' => 'Ali Hamisi',
+            'guardian_relationship' => 'parent',
+            'guardian_phone' => '0715 777 888',
+            'guardian_consent' => true,
+            'accepted_terms' => true,
+            'password' => 'secret-pass-1',
+            'password_confirmation' => 'secret-pass-1',
+            'user_type' => 'primary',
+            'institution_id' => $school->institution_id,
+        ]);
+
+        $join(now()->subYears(6)->addDay()->toDateString(), '0716 111 222')
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('date_of_birth');
+
+        $join(now()->subYears(6)->toDateString(), '0716 111 333')->assertCreated();
+    }
 }

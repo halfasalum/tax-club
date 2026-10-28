@@ -624,11 +624,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _pickBirthDate() async {
     final now = DateTime.now();
+    final minAge = (context.session.config['min_age'] as num?)?.toInt() ?? 6;
     final picked = await showDatePicker(
       context: context,
       initialDate: _birthDate ?? DateTime(now.year - 16, 1, 1),
       firstDate: DateTime(now.year - 36),
-      lastDate: DateTime(now.year - 11, now.month, now.day),
+      lastDate: DateTime(now.year - minAge, now.month, now.day),
       helpText: context.tr('Date of birth'),
     );
     if (picked != null) setState(() => _birthDate = picked);

@@ -129,7 +129,7 @@ class _SiteHomeScreenState extends State<SiteHomeScreen> {
               const SizedBox(height: 22),
               Text(
                 context.tr(
-                  'Tax Club brings students in secondary schools, colleges and universities together to learn how taxation works, test what they know and take part in national activities run by TRA.',
+                  'Tax Club brings students in primary and secondary schools, colleges and universities together to learn how taxation works, test what they know and take part in national activities run by TRA.',
                 ),
                 style: const TextStyle(
                   fontSize: 18,
@@ -1119,7 +1119,7 @@ class SiteAboutScreen extends StatelessWidget {
               BarHeading(context.tr('Who can join')),
               Bullets([
                 context.tr(
-                  'Students in secondary schools, colleges and universities with a registered Tax Club.',
+                  'Students in primary and secondary schools, colleges and universities with a registered Tax Club.',
                 ),
                 context.tr(
                   'Former members, who continue as Tax Club alumni after they finish their studies.',

@@ -287,4 +287,23 @@ class InstitutionManagementTest extends TestCase
             ->call('assignPatron', $club->tax_club_id)
             ->assertViewHas('memberCounts', fn (array $counts) => $counts['active'] === 1);
     }
+
+    public function test_registration_options_list_every_active_institution_of_a_type_without_pages(): void
+    {
+        Institution::factory()->count(35)->create(['type' => 'secondary']);
+        Institution::factory()->create(['type' => 'secondary', 'name' => 'Azania Secondary School']);
+        Institution::factory()->inactive()->create(['type' => 'secondary', 'name' => 'Azimio Secondary School']);
+        Institution::factory()->create(['type' => 'primary', 'name' => 'Azimio Primary School']);
+
+        $this->getJson('/api/v1/institutions/options?type=secondary')
+            ->assertOk()
+            ->assertJsonCount(36, 'data')
+            ->assertJsonMissingPath('meta');
+
+        $this->getJson('/api/v1/institutions/options?type=secondary&search=az')
+            ->assertOk()
+            ->assertJsonPath('data.0.name', 'Azania Secondary School');
+
+        $this->getJson('/api/v1/institutions/options?type=nursery')->assertUnprocessable();
+    }
 }

@@ -879,7 +879,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             child: Text(
               _institution == null
-                  ? context.tr('Type at least 2 letters of the name')
+                  ? context.tr('Choose your institution')
                   : '${_institution!.str('name')} · ${_institution!.str('region')}',
               style: TextStyle(
                 fontSize: 17,
@@ -1100,14 +1100,19 @@ class _InstitutionPicker extends StatefulWidget {
 }
 
 class _InstitutionPickerState extends State<_InstitutionPicker> {
-  final _list = GlobalKey<PagedListState<Map<String, dynamic>>>();
+  late Future<List<Map<String, dynamic>>> _institutions = _load();
   String _search = '';
-  Timer? _debounce;
 
-  @override
-  void dispose() {
-    _debounce?.cancel();
-    super.dispose();
+  /// Every active institution of the chosen type, in one list.
+  Future<List<Map<String, dynamic>>> _load() async {
+    final data = await context.api.get(
+      'institutions/options',
+      query: {'type': widget.type},
+    );
+    return (data as List)
+        .cast<Map>()
+        .map((row) => row.cast<String, dynamic>())
+        .toList();
   }
 
   @override
@@ -1119,55 +1124,64 @@ class _InstitutionPickerState extends State<_InstitutionPicker> {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
             child: TextField(
-              autofocus: true,
               decoration: InputDecoration(
                 prefixIcon: const Icon(Icons.search),
-                hintText: context.tr('Type at least 2 letters of the name'),
+                hintText: context.tr('Search by name'),
               ),
-              onChanged: (value) {
-                _debounce?.cancel();
-                _debounce = Timer(const Duration(milliseconds: 400), () {
-                  _search = value.trim();
-                  _list.currentState?.refresh();
-                });
-              },
+              onChanged: (value) =>
+                  setState(() => _search = value.trim().toLowerCase()),
             ),
           ),
           Expanded(
-            child: PagedList<Map<String, dynamic>>(
-              key: _list,
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              separator: 0,
-              load: (page) => context.api.paged(
-                'institutions',
-                (row) => row,
-                query: {
-                  'type': widget.type,
-                  'search': _search,
-                  'page': page,
-                  'per_page': 30,
-                },
-              ),
-              empty: EmptyPanel(
-                message: context.tr(
-                  'No registered institution matches. Ask your patron to register your institution with TRA.',
-                ),
-                icon: Icons.school_outlined,
-              ),
-              itemBuilder: (context, item, _) => ListTile(
-                leading: const Icon(Icons.school_outlined),
-                title: Text(
-                  item.str('name'),
-                  style: const TextStyle(fontWeight: FontWeight.w700),
-                ),
-                subtitle: Text(
-                  [
-                    item.str('district'),
-                    item.str('region'),
-                  ].where((part) => part.isNotEmpty).join(', '),
-                ),
-                onTap: () => Navigator.pop(context, item),
-              ),
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: _institutions,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return ErrorPanel(
+                    message: errorText(context, snapshot.error!),
+                    onRetry: () => setState(() => _institutions = _load()),
+                  );
+                }
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                final matches = snapshot.data!
+                    .where(
+                      (item) =>
+                          _search.isEmpty ||
+                          item.str('name').toLowerCase().contains(_search),
+                    )
+                    .toList();
+                if (matches.isEmpty) {
+                  return EmptyPanel(
+                    message: context.tr(
+                      'No registered institution matches. Ask your patron to register your institution with TRA.',
+                    ),
+                    icon: Icons.school_outlined,
+                  );
+                }
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  itemCount: matches.length,
+                  itemBuilder: (context, index) {
+                    final item = matches[index];
+                    return ListTile(
+                      leading: const Icon(Icons.school_outlined),
+                      title: Text(
+                        item.str('name'),
+                        style: const TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                      subtitle: Text(
+                        [
+                          item.str('district'),
+                          item.str('region'),
+                        ].where((part) => part.isNotEmpty).join(', '),
+                      ),
+                      onTap: () => Navigator.pop(context, item),
+                    );
+                  },
+                );
+              },
             ),
           ),
         ],

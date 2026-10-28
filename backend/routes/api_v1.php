@@ -73,6 +73,7 @@ Route::prefix('public')->middleware('throttle:120,1')->group(function () {
 });
 
 Route::get('institutions', [InstitutionController::class, 'index']);
+Route::get('institutions/options', [InstitutionController::class, 'options']);
 Route::get('institutions/{id}', [InstitutionController::class, 'show']);
 
 // ──────────────────────────────────────────────────────────────

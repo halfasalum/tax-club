@@ -4,9 +4,11 @@ namespace App\Http\Controllers\API\V1;
 
 use App\Models\Institution;
 use App\Support\InstitutionRegistry;
+use App\Support\MemberRegistration;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use InvalidArgumentException;
 
 class InstitutionController extends BaseController
@@ -34,6 +36,32 @@ class InstitutionController extends BaseController
             ->paginate($request->per_page ?? 20);
 
         return $this->paginated($institutions);
+    }
+
+    /**
+     * GET /api/v1/institutions/options
+     * Public — every active institution of one type, for the registration
+     * select. Not paginated.
+     */
+    public function options(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'type' => ['required', Rule::in(MemberRegistration::STUDENT_TYPES)],
+            'search' => ['nullable', 'string', 'max:100'],
+        ]);
+
+        if ($validator->fails()) {
+            return $this->error('Validation failed.', 422, $validator->errors());
+        }
+
+        $institutions = Institution::query()
+            ->active()
+            ->where('type', $request->type)
+            ->when(filled($request->search), fn ($q) => $q->where('name', 'like', '%'.trim($request->search).'%'))
+            ->orderBy('name')
+            ->get(['institution_id', 'name', 'region', 'district']);
+
+        return $this->success($institutions);
     }
 
     /**

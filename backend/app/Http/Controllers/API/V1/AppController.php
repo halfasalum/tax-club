@@ -10,6 +10,7 @@ use App\Support\EventLabels;
 use App\Support\FeedbackDesk;
 use App\Support\Leaderboard;
 use App\Support\Locales;
+use App\Support\MemberRegistration;
 use App\Support\MembershipCard;
 use App\Support\MentorshipDesk;
 use App\Support\NotificationPreferences;
@@ -41,10 +42,13 @@ class AppController extends BaseController
                 'about' => Locales::route('about'),
                 'answers' => Locales::route('answers.index'),
                 'verify_certificate' => Locales::route('certificates.verify'),
+                'tin_registration' => MemberRegistration::TIN_REGISTRATION_URL,
             ],
             'leaderboard_enabled' => Leaderboard::enabled(),
+            'tin_required_for' => MemberRegistration::TIN_REQUIRED_FOR,
             'labels' => [
                 'user_types' => [
+                    'primary' => __('Primary school'),
                     'secondary' => __('Secondary school'),
                     'college' => __('College'),
                     'university' => __('University'),

@@ -22,6 +22,8 @@ class Register extends Component
 
     public string $user_type = 'secondary';
 
+    public string $tin = '';
+
     public string $institution_search = '';
 
     public string $institution_id = '';
@@ -75,6 +77,15 @@ class Register extends Component
      * Whether the date of birth entered makes the applicant a minor, which
      * shows the guardian section.
      */
+    /**
+     * College and university students give their TIN.
+     */
+    #[Computed]
+    public function needsTin(): bool
+    {
+        return in_array($this->user_type, MemberRegistration::TIN_REQUIRED_FOR, true);
+    }
+
     #[Computed]
     public function isMinor(): bool
     {
@@ -86,12 +97,12 @@ class Register extends Component
      */
     public function updated(string $property): void
     {
-        if (! in_array($property, ['full_name', 'phone', 'email', 'date_of_birth', 'guardian_name', 'guardian_phone'], true)) {
+        if (! in_array($property, ['full_name', 'phone', 'email', 'tin', 'date_of_birth', 'guardian_name', 'guardian_phone'], true)) {
             return;
         }
 
-        if (in_array($property, ['phone', 'email', 'guardian_phone'], true)) {
-            $this->{$property} = MemberRegistration::normalizeInput([$property => $this->{$property}])[$property];
+        if (in_array($property, ['phone', 'email', 'tin', 'guardian_phone'], true)) {
+            $this->{$property} = (string) MemberRegistration::normalizeInput([$property => $this->{$property}])[$property];
         }
 
         unset($this->isMinor);
@@ -115,6 +126,8 @@ class Register extends Component
 
     public function updatedUserType(): void
     {
+        unset($this->needsTin);
+        $this->resetErrorBag('tin');
         $this->clearInstitution();
     }
 
@@ -142,9 +155,10 @@ class Register extends Component
             ]);
         }
 
-        $normalized = MemberRegistration::normalizeInput(['phone' => $this->phone, 'email' => $this->email, 'guardian_phone' => $this->guardian_phone]);
+        $normalized = MemberRegistration::normalizeInput(['phone' => $this->phone, 'email' => $this->email, 'tin' => $this->tin, 'guardian_phone' => $this->guardian_phone]);
         $this->phone = $normalized['phone'];
         $this->email = $normalized['email'];
+        $this->tin = (string) $normalized['tin'];
         $this->guardian_phone = $normalized['guardian_phone'];
 
         $validated = $this->validate(MemberRegistration::rules($this->all()) + ['accepted_terms' => ['accepted']]);

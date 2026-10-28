@@ -60,6 +60,7 @@ class User extends Authenticatable implements HasLocalePreference
         'full_name',
         'email',
         'phone',
+        'tin',
         'password_hash',
         'user_type',
         'institution_id',

@@ -1,5 +1,5 @@
 @php
-    $categories = ['secondary' => __('Secondary school'), 'college' => __('College'), 'university' => __('University')];
+    $categories = ['primary' => __('Primary school'), 'secondary' => __('Secondary school'), 'college' => __('College'), 'university' => __('University')];
     $user = auth()->user();
 @endphp
 <div>

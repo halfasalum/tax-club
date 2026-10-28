@@ -62,7 +62,7 @@ class UserController extends BaseController
             'email' => 'required|email|unique:users,email',
             'phone' => 'nullable|string|max:20|unique:users,phone',
             'password' => 'required|string|min:8',
-            'user_type' => 'required|in:secondary,college,university,alumni',
+            'user_type' => 'required|in:primary,secondary,college,university,alumni',
             'institution_id' => 'nullable|uuid|exists:institutions,institution_id',
             'role_ids' => 'nullable|array',
             'role_ids.*' => 'nullable|uuid|exists:roles,role_id',
@@ -118,7 +118,7 @@ class UserController extends BaseController
         $validator = Validator::make($request->all(), [
             'full_name' => 'sometimes|string|max:150',
             'phone' => "sometimes|string|max:20|unique:users,phone,{$user->user_id},user_id",
-            'user_type' => 'sometimes|in:secondary,college,university,alumni',
+            'user_type' => 'sometimes|in:primary,secondary,college,university,alumni',
             'institution_id' => 'nullable|uuid|exists:institutions,institution_id',
             'is_verified' => 'sometimes|boolean',
         ]);

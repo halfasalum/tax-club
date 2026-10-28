@@ -2,7 +2,7 @@
     use App\Models\LearningModule;
 
     $levels = ['beginner' => __('Beginner'), 'intermediate' => __('Intermediate'), 'advanced' => __('Advanced')];
-    $audiences = ['secondary' => __('Secondary school'), 'college' => __('College'), 'university' => __('University'), 'alumni' => __('Alumni')];
+    $audiences = ['primary' => __('Primary school'), 'secondary' => __('Secondary school'), 'college' => __('College'), 'university' => __('University'), 'alumni' => __('Alumni')];
 @endphp
 <div>
     <a wire:navigate href="{{ route('admin.learning.index') }}" class="link">← {{ __('Learning content') }}</a>

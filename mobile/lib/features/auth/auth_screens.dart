@@ -576,6 +576,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _confirm = TextEditingController();
   final _guardianName = TextEditingController();
   final _guardianPhone = TextEditingController();
+  final _tin = TextEditingController();
 
   DateTime? _birthDate;
   String? _gender;
@@ -586,6 +587,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _agree = false;
   ApiException? _error;
   String? _reference;
+
+  /// College and university students give their TIN.
+  bool get _needsTin =>
+      (context.session.config['tin_required_for'] as List? ??
+              const ['college', 'university'])
+          .contains(_userType);
 
   bool get _isMinor {
     if (_birthDate == null) return false;
@@ -608,6 +615,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _confirm,
       _guardianName,
       _guardianPhone,
+      _tin,
     ]) {
       controller.dispose();
     }
@@ -655,6 +663,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           'date_of_birth': _birthDate!.toIso8601String().substring(0, 10),
         if (_gender != null) 'gender': _gender,
         'user_type': _userType,
+        if (_needsTin) 'tin': _tin.text.trim(),
         if (_institution != null)
           'institution_id': _institution!.str('institution_id'),
         if (_isMinor) ...{
@@ -797,25 +806,66 @@ class _RegisterScreenState extends State<RegisterScreen> {
           error: _error?.field('email'),
         ),
         FormSection(context.tr('Where do you study?')),
-        Row(
+        GridView.count(
+          crossAxisCount: 2,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          mainAxisSpacing: 8,
+          crossAxisSpacing: 8,
+          childAspectRatio: 2.6,
           children: [
             for (final option in optionsOf(context, 'user_types').entries)
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 8),
-                  child: _ChoiceBox(
-                    label: option.value,
-                    selected: _userType == option.key,
-                    onTap: () => setState(() {
-                      if (_userType != option.key) _institution = null;
-                      _userType = option.key;
-                    }),
-                  ),
-                ),
+              _ChoiceBox(
+                label: option.value,
+                selected: _userType == option.key,
+                onTap: () => setState(() {
+                  if (_userType != option.key) _institution = null;
+                  _userType = option.key;
+                }),
               ),
           ],
         ),
         const SizedBox(height: 20),
+        if (_needsTin) ...[
+          WebField(
+            label: context.tr('Your TIN (Taxpayer Identification Number)'),
+            controller: _tin,
+            hint: '123-456-789',
+            keyboard: TextInputType.number,
+            error: _error?.field('tin'),
+          ),
+          Container(
+            margin: const EdgeInsets.only(bottom: 20),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Brand.yellowWash,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  context.tr(
+                    'College and university students need a TIN to join.',
+                  ),
+                  style: const TextStyle(fontWeight: FontWeight.w800),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  context.tr(
+                    'No TIN yet? Register for one free on the TRA website, then come back and finish joining.',
+                  ),
+                  style: const TextStyle(color: Brand.slate, height: 1.5),
+                ),
+                const SizedBox(height: 10),
+                LinkText(
+                  '${context.tr('Register for a TIN')} ↗',
+                  onTap: () => openLink(context, tinRegistrationUrl(context)),
+                ),
+              ],
+            ),
+          ),
+        ],
         _label(context.tr('Your institution')),
         InkWell(
           onTap: _pickInstitution,
@@ -1124,3 +1174,8 @@ class _InstitutionPickerState extends State<_InstitutionPicker> {
     );
   }
 }
+
+/// TRA's online TIN registration, from the server or the known address.
+String tinRegistrationUrl(BuildContext context) =>
+    context.session.config.obj('links')?.strOrNull('tin_registration') ??
+    'https://idras-ept.tra.go.tz/ept/reg/tpap/reg-tpap0101004';

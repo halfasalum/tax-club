@@ -33,6 +33,15 @@ final class MemberRegistration
     /** @var list<string> */
     public const GUARDIAN_RELATIONSHIPS = ['parent', 'guardian', 'other'];
 
+    /** @var list<string> */
+    public const STUDENT_TYPES = ['primary', 'secondary', 'college', 'university'];
+
+    /** College and university students give their TIN when they register. */
+    public const TIN_REQUIRED_FOR = ['college', 'university'];
+
+    /** TRA's online TIN registration for individuals. */
+    public const TIN_REGISTRATION_URL = 'https://idras-ept.tra.go.tz/ept/reg/tpap/reg-tpap0101004';
+
     /** Tanzanian mobile number: 07…, 06…, 2557… or +2557…. */
     public const PHONE_PATTERN = '/^(\+?255|0)[67]\d{8}$/';
 
@@ -50,7 +59,11 @@ final class MemberRegistration
             'phone' => ['required', 'string', 'regex:'.self::PHONE_PATTERN, 'unique:users,phone'],
             'email' => ['nullable', 'email', 'max:150', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'user_type' => ['required', 'in:secondary,college,university'],
+            'user_type' => ['required', Rule::in(self::STUDENT_TYPES)],
+            'tin' => [
+                Rule::requiredIf(in_array($input['user_type'] ?? null, self::TIN_REQUIRED_FOR, true)),
+                'nullable', 'digits:9', 'unique:users,tin',
+            ],
             'institution_id' => ['required', 'uuid', Rule::exists('institutions', 'institution_id')->where('status', Institution::STATUS_ACTIVE)],
             'date_of_birth' => [
                 'required', 'date',
@@ -81,6 +94,9 @@ final class MemberRegistration
             'phone.regex' => __('Enter a Tanzanian mobile number, for example 0712 345 678.'),
             'phone.unique' => __('This phone number is already registered. Sign in or recover your account.'),
             'email.unique' => __('This email is already registered. Sign in or recover your account.'),
+            'tin.required' => __('College and university students need a TIN. If you do not have one, register for it with TRA first.'),
+            'tin.digits' => __('A TIN has 9 digits, for example 123-456-789.'),
+            'tin.unique' => __('This TIN is already registered to another member.'),
             'guardian_phone.regex' => __('Enter a Tanzanian mobile number, for example 0712 345 678.'),
             'date_of_birth.before_or_equal' => __('Tax Club members must be at least :age years old.', ['age' => self::MIN_AGE]),
             'date_of_birth.after' => __('Tax Club membership is for people aged :age or younger.', ['age' => self::MAX_AGE]),
@@ -123,6 +139,10 @@ final class MemberRegistration
             $input['guardian_phone'] = self::normalizePhone($guardianPhone);
         }
 
+        if (isset($input['tin']) && is_string($input['tin'])) {
+            $input['tin'] = preg_replace('/[\s-]+/', '', $input['tin']) ?: null;
+        }
+
         if (isset($input['email']) && is_string($input['email'])) {
             $input['email'] = Str::lower(trim($input['email']));
         }
@@ -153,7 +173,7 @@ final class MemberRegistration
     }
 
     /**
-     * @param  array{full_name: string, phone: string, email?: ?string, password: string, user_type: string, institution_id: string, date_of_birth: string, gender?: ?string, guardian_name?: ?string, guardian_phone?: ?string, guardian_relationship?: ?string}  $data
+     * @param  array{full_name: string, phone: string, email?: ?string, password: string, user_type: string, tin?: ?string, institution_id: string, date_of_birth: string, gender?: ?string, guardian_name?: ?string, guardian_phone?: ?string, guardian_relationship?: ?string}  $data
      */
     public static function register(array $data): User
     {
@@ -168,6 +188,7 @@ final class MemberRegistration
                 'email' => filled($data['email'] ?? null) ? Str::lower($data['email']) : null,
                 'password_hash' => Hash::make($data['password']),
                 'user_type' => $data['user_type'],
+                'tin' => in_array($data['user_type'], self::TIN_REQUIRED_FOR, true) ? ($data['tin'] ?? null) : null,
                 'institution_id' => $data['institution_id'],
                 'registration_reference' => self::newReference(),
                 'is_verified' => false,

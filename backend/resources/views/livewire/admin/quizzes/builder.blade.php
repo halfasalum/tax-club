@@ -1,7 +1,7 @@
 @php
     use App\Models\QuizQuestion;
 
-    $audiences = ['secondary' => __('Secondary school'), 'college' => __('College'), 'university' => __('University'), 'alumni' => __('Alumni')];
+    $audiences = ['primary' => __('Primary school'), 'secondary' => __('Secondary school'), 'college' => __('College'), 'university' => __('University'), 'alumni' => __('Alumni')];
     $typeLabels = [QuizQuestion::SINGLE_CHOICE => __('One correct answer'), QuizQuestion::TRUE_FALSE => __('True or false'), QuizQuestion::MULTIPLE_SELECT => __('Several correct answers')];
     $errorText = 'mt-2 font-semibold text-danger';
 @endphp

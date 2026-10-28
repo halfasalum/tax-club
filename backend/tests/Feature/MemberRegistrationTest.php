@@ -109,6 +109,7 @@ class MemberRegistrationTest extends TestCase
             'password' => 'secret-pass-1',
             'password_confirmation' => 'secret-pass-1',
             'user_type' => 'college',
+            'tin' => '123-456-789',
             'institution_id' => $institution->institution_id,
         ])
             ->assertCreated()
@@ -126,5 +127,69 @@ class MemberRegistrationTest extends TestCase
         $this->actingAs($user, 'sanctum')->postJson('/api/v1/auth/verify')->assertForbidden();
 
         $this->assertSame(User::STATUS_PENDING_VERIFICATION, $user->fresh()->account_status);
+    }
+
+    public function test_college_and_university_students_must_give_a_tin(): void
+    {
+        $college = Institution::factory()->create(['type' => 'college']);
+
+        $form = Livewire::test(Register::class)
+            ->set('full_name', 'Neema Paul')
+            ->set('phone', '0713 222 333')
+            ->set('date_of_birth', now()->subYears(20)->toDateString())
+            ->set('user_type', 'college')
+            ->assertSee(__('Register for a TIN'))
+            ->assertSee('https://idras-ept.tra.go.tz/ept/reg/tpap/reg-tpap0101004')
+            ->call('selectInstitution', $college->institution_id)
+            ->set('password', 'secret-pass-1')
+            ->set('password_confirmation', 'secret-pass-1')
+            ->set('accepted_terms', true)
+            ->call('register')
+            ->assertHasErrors(['tin' => 'required']);
+
+        $form->set('tin', '12345')->call('register')->assertHasErrors(['tin' => 'digits']);
+        $form->set('tin', '123 456 789')->call('register')->assertHasNoErrors();
+
+        $this->assertSame('123456789', User::where('phone', '+255713222333')->value('tin'));
+
+        $this->postJson('/api/v1/auth/register', [
+            'full_name' => 'Juma Ally',
+            'phone' => '0754000111',
+            'date_of_birth' => now()->subYears(21)->toDateString(),
+            'password' => 'secret-pass-1',
+            'password_confirmation' => 'secret-pass-1',
+            'user_type' => 'university',
+            'tin' => '123-456-789',
+            'institution_id' => $college->institution_id,
+        ])->assertUnprocessable()->assertJsonValidationErrors('tin');
+    }
+
+    public function test_primary_school_pupils_can_join_without_a_tin(): void
+    {
+        $school = Institution::factory()->create(['type' => 'primary']);
+
+        Livewire::test(Register::class)
+            ->set('user_type', 'primary')
+            ->assertSee(__('Primary school'))
+            ->assertDontSee(__('Register for a TIN'))
+            ->set('full_name', 'Baraka John')
+            ->set('phone', '0714 555 666')
+            ->set('date_of_birth', now()->subYears(12)->toDateString())
+            ->set('institution_search', substr($school->name, 0, 4))
+            ->assertSee($school->name)
+            ->call('selectInstitution', $school->institution_id)
+            ->set('tin', '999999999')
+            ->set('guardian_name', 'Rehema John')
+            ->set('guardian_phone', '0715 777 888')
+            ->set('guardian_consent', true)
+            ->set('password', 'secret-pass-1')
+            ->set('password_confirmation', 'secret-pass-1')
+            ->set('accepted_terms', true)
+            ->call('register')
+            ->assertHasNoErrors();
+
+        $pupil = User::where('phone', '+255714555666')->firstOrFail();
+        $this->assertSame('primary', $pupil->user_type);
+        $this->assertNull($pupil->tin);
     }
 }

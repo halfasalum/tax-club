@@ -174,6 +174,7 @@ final class MemberProfile
             'full_name' => $member->full_name,
             'membership_id' => $member->membership_id,
             'phone' => $member->phone,
+            'tin' => $member->tin,
             'email' => $member->email,
             'gender' => $member->gender,
             'date_of_birth' => $member->date_of_birth?->toDateString(),
@@ -188,6 +189,14 @@ final class MemberProfile
                 'relationship' => $member->guardian_relationship,
             ] : null,
         ];
+    }
+
+    /**
+     * 123456789 → 123-456-789, the way TRA prints a TIN.
+     */
+    public static function formatTin(?string $tin): string
+    {
+        return $tin && strlen($tin) === 9 ? implode('-', str_split($tin, 3)) : (string) $tin;
     }
 
     public static function canSeePhoto(?User $viewer, User $member): bool

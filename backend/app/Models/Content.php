@@ -27,7 +27,7 @@ class Content extends Model
 
     public const LANGUAGES = ['sw', 'en'];
 
-    public const AUDIENCES = ['secondary', 'college', 'university', 'alumni'];
+    public const AUDIENCES = ['primary', 'secondary', 'college', 'university', 'alumni'];
 
     public const NOT_PUBLISHED = 'not_published';
 

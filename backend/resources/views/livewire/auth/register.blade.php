@@ -1,5 +1,6 @@
 @php
     $categories = [
+        'primary' => __('Primary school'),
         'secondary' => __('Secondary school'),
         'college' => __('College'),
         'university' => __('University'),
@@ -79,7 +80,7 @@
             <fieldset class="space-y-5">
                 <legend class="text-sm font-black text-slate">{{ __('Where do you study?') }}</legend>
 
-                <div class="grid grid-cols-3 gap-2" role="radiogroup" aria-label="{{ __('Where do you study?') }}">
+                <div class="grid grid-cols-2 gap-2 sm:grid-cols-4" role="radiogroup" aria-label="{{ __('Where do you study?') }}">
                     @foreach ($categories as $value => $label)
                         <label @class(['flex min-h-14 cursor-pointer items-center justify-center rounded-xl border-2 px-2 py-2 text-center font-extrabold leading-tight transition-colors has-[:focus-visible]:outline has-[:focus-visible]:outline-3 has-[:focus-visible]:outline-ink', 'border-ink bg-brand' => $user_type === $value, 'border-line bg-white hover:border-ink' => $user_type !== $value])>
                             <input type="radio" wire:model.live="user_type" value="{{ $value }}" class="sr-only">
@@ -88,6 +89,20 @@
                     @endforeach
                 </div>
                 @error('user_type')<p class="{{ $errorText }}" role="alert">{{ $message }}</p>@enderror
+
+                @if ($this->needsTin)
+                    <div wire:key="tin-section">
+                        <label for="tin" class="block font-extrabold">{{ __('Your TIN (Taxpayer Identification Number)') }}</label>
+                        <input wire:model.blur="tin" id="tin" type="text" inputmode="numeric" autocomplete="off" maxlength="11" placeholder="123-456-789"
+                               @class(['field', 'field-error' => $errors->has('tin')]) aria-describedby="tin-help">
+                        @error('tin')<p class="{{ $errorText }}" role="alert">{{ $message }}</p>@enderror
+                        <div id="tin-help" class="mt-3 rounded-xl bg-brand-wash p-4">
+                            <p class="font-bold">{{ __('College and university students need a TIN to join.') }}</p>
+                            <p class="mt-1 text-slate">{{ __('No TIN yet? Register for one free on the TRA website, then come back and finish joining.') }}</p>
+                            <a href="{{ \App\Support\MemberRegistration::TIN_REGISTRATION_URL }}" target="_blank" rel="noopener" class="link mt-2 inline-block">{{ __('Register for a TIN') }} ↗</a>
+                        </div>
+                    </div>
+                @endif
 
                 <div>
                     <label for="institution_search" class="block font-extrabold">{{ __('Your institution') }}</label>

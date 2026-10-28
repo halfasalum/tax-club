@@ -267,6 +267,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   context.date(user.date('date_of_birth')),
                 ),
                 detail(context.tr('Mobile number'), user.str('phone')),
+                if (user.strOrNull('tin') != null)
+                  detail(context.tr('TIN'), formatTin(user.str('tin'))),
                 if (user.obj('guardian') != null)
                   detail(
                     context.tr('Parent or guardian'),
@@ -782,3 +784,8 @@ class _PasswordCardState extends State<_PasswordCard> {
     );
   }
 }
+
+/// 123456789 → 123-456-789, the way TRA prints a TIN.
+String formatTin(String tin) => tin.length == 9
+    ? '${tin.substring(0, 3)}-${tin.substring(3, 6)}-${tin.substring(6)}'
+    : tin;

@@ -2,7 +2,7 @@
     use App\Models\MemberStatusChange;
     use App\Support\MemberAccounts;
 
-    $categories = ['secondary' => __('Secondary school'), 'college' => __('College'), 'university' => __('University'), 'alumni' => __('Alumni')];
+    $categories = ['primary' => __('Primary school'), 'secondary' => __('Secondary school'), 'college' => __('College'), 'university' => __('University'), 'alumni' => __('Alumni')];
     $errorText = 'mt-2 font-semibold text-danger';
     $initials = collect(explode(' ', trim($member->full_name)))->filter()->take(2)->map(fn ($part) => mb_substr($part, 0, 1))->implode('');
 @endphp
@@ -60,6 +60,7 @@
                         [__('Member since'), $member->membership_issued_at?->translatedFormat('j M Y') ?? '—'],
                         [__('Date of birth'), $member->date_of_birth?->translatedFormat('j M Y') ?? '—'],
                         [__('Mobile number'), $member->phone],
+                        ...($member->tin ? [[__('TIN'), \App\Support\MemberProfile::formatTin($member->tin)]] : []),
                     ] as [$label, $value])
                         <div>
                             <dt class="text-sm font-extrabold text-slate">{{ $label }}</dt>

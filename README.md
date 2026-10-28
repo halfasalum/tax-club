@@ -5,7 +5,7 @@ Website, member portal, Administration Portal and mobile API for the Tanzania Re
 | Part | Where | Technology |
 |---|---|---|
 | Public website (SEO), member portal, Administration Portal, `/api/v1` | `backend/` | Laravel 13, Blade, Livewire 4, Tailwind CSS 4, Sanctum |
-| iOS and Android apps | to be added (Flutter) | Calls `/api/v1` |
+| iOS and Android apps | `mobile/` (Flutter) | Calls `/api/v1`; see [mobile/README.md](mobile/README.md) |
 | Legacy React admin (frozen, being replaced) | `frontend/` | React 19, Mantine |
 
 Delivery documents, the requirements traceability matrix and architecture decisions are in [`docs/`](docs/README.md).
@@ -161,6 +161,13 @@ php artisan db:seed --class=SuperAdminRoleSeeder
 php artisan db:seed --class=PatronRoleSeeder           # coordinators manage mentorships
 php artisan db:seed --class=CommunityAndRewardsSeeder  # national + club spaces, starter rewards
 ```
+
+## Mobile app
+
+The Flutter app for Android and iOS is in [`mobile/`](mobile/README.md). It uses the same API, in the language the phone asks for (`Accept-Language: sw` or `en`).
+
+- **Download a test build:** the **Mobile app** workflow builds an Android APK on every change to `mobile/`. Download it from the run in the Actions tab.
+- **Force older versions to update:** set `MOBILE_MIN_VERSION`, `MOBILE_LATEST_VERSION`, `MOBILE_ANDROID_URL` and `MOBILE_IOS_URL` in `.env`. The app reads them from `GET /api/v1/app/config`.
 
 ## Speed
 

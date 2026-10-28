@@ -31,6 +31,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'active' => EnsureAccountActive::class,
         ]);
 
+        $middleware->api(append: [
+            SetLocale::class,
+        ]);
+
         $middleware->web(append: [
             SetLocale::class,
             AddSecurityHeaders::class,

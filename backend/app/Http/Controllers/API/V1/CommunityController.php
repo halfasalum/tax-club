@@ -21,6 +21,7 @@ class CommunityController extends BaseController
         return $this->success(Community::spacesFor($request->user())->map(fn (CommunitySpace $space) => [
             'slug' => $space->slug, 'name' => $space->name, 'description' => $space->description, 'type' => $space->type,
             'status' => $space->status, 'posts_count' => $space->posts_count,
+            'posting_problem' => Community::postingProblem($space, $request->user()),
         ]));
     }
 
@@ -133,6 +134,7 @@ class CommunityController extends BaseController
             'status' => $post->status,
             'author' => $post->author?->publicName(),
             'comments_count' => $post->comments_count,
+            'is_mine' => $post->user_id === request()->user()?->user_id,
             'created_at' => $post->created_at?->toIso8601String(),
         ];
     }

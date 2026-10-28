@@ -171,3 +171,16 @@ The catalogue above is the target design. Release 3 ships these endpoints; offic
 | `GET /alumni/directory?search=` (adults only) · `GET /mentorships` · `POST /mentorships/requests {interests[], goals, mode?, guardian_consent?}` · `POST /mentorships/{id}/sessions {held_on, mode, topic, summary?, duration_minutes?, milestone?}` | M | ALM-REQ02, MNT-REQ02/04 |
 
 Moderation, reviewing answers, judging, results, rewards, certificates, alumni stories and mentor vetting are done in the Administration Portal. The old `/forum` endpoints were removed.
+
+## 5. Added for the mobile app
+
+All responses use the language in the `Accept-Language` header (`sw` or `en`, Kiswahili by default).
+
+| Method & path | Who | Notes |
+|---|---|---|
+| `GET /app/config` | public | Minimum and latest app version, store links, website links, whether the leaderboard is on, and translated labels for the app's lists (user types, event and opportunity types, feedback and report categories, mentor areas and more) |
+| `GET /notification-preferences` · `PUT /notification-preferences {category, sms, inbox}` | M | NOT-REQ05 |
+| `GET /badges` | M | Every active badge, with `earned` and `earned_at` |
+| `GET /dashboard` | M | Adds `full_name`, `display_name`, `total_points`, `badges_earned` and `unread_notifications` |
+| `GET /community/spaces` · posts | M | Spaces add `posting_problem` (why the member cannot post, or null); posts add `is_mine` |
+| `GET /achievements` | M | Adds `total_points` |

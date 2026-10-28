@@ -21,6 +21,7 @@
  * ============================================================
  */
 
+use App\Http\Controllers\API\V1\AppController;
 use App\Http\Controllers\API\V1\AuthController;
 use App\Http\Controllers\API\V1\CommunityController;
 use App\Http\Controllers\API\V1\ContentController;
@@ -58,6 +59,8 @@ Route::prefix('auth')->group(function () {
 Route::post('membership/verify', [MembershipController::class, 'verify'])->middleware('throttle:20,1');
 Route::post('certificates/verify', [EngagementController::class, 'verifyCertificate'])->middleware('throttle:20,1');
 
+Route::get('app/config', [AppController::class, 'config']);
+
 Route::get('institutions', [InstitutionController::class, 'index']);
 Route::get('institutions/{id}', [InstitutionController::class, 'show']);
 
@@ -91,6 +94,9 @@ Route::middleware(['auth:sanctum', 'active'])->group(function () {
 
     // Notification inbox (NOT-REQ06)
     Route::get('notifications', [NotificationController::class, 'index']);
+    Route::get('notification-preferences', [AppController::class, 'preferences']);
+    Route::put('notification-preferences', [AppController::class, 'updatePreferences']);
+    Route::get('badges', [AppController::class, 'badges']);
     Route::post('notifications/read-all', [NotificationController::class, 'markAllRead']);
     Route::post('notifications/{id}/read', [NotificationController::class, 'markRead'])->whereUuid('id');
 

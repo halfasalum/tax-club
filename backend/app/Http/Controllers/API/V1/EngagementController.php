@@ -127,6 +127,7 @@ class EngagementController extends BaseController
         $member = $request->user();
 
         return $this->success([
+            'total_points' => (int) $member->total_points,
             'certificates' => Certificate::where('user_id', $member->user_id)->latest('issued_at')->get()->map(fn (Certificate $certificate) => [
                 'number' => $certificate->number, 'kind' => $certificate->kind, 'title' => $certificate->title(), 'subject' => $certificate->subject,
                 'issued_at' => $certificate->issued_at->toIso8601String(), 'valid' => $certificate->isValid(), 'verify_url' => Certificates::verifyUrl($certificate),
